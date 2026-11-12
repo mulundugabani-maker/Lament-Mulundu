@@ -738,13 +738,13 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-read
   reader.showModal();reader.scrollTop=0;rBar.style.transform='scaleX(0)';if(s.body.length)loadComments(s.id);if(user)ST.last=s.id;
   var p=ST.prog[s.id];if(user&&p>.03&&p<.97&&ST.read.indexOf(s.id)<0)setTimeout(function(){reader.scrollTop=p*endM()},80)});
 reader.addEventListener('scroll',function(){var m=endM(),p=Math.min(1,reader.scrollTop/m);rBar.style.transform='scaleX('+p+')';
-  if(!user||!openId)return;clearTimeout(tmr);var id=openId;tmr=setTimeout(function(){ST.prog[id]=p;if(p>=.95&&ST.read.indexOf(id)<0){ST.read.push(id);logEvent({type:'finish',pid:id,title:ttl(id)})}persist()},500)},{passive:true});
+  if(!user||!openId)return;clearTimeout(tmr);var id=openId;tmr=setTimeout(function(){ST.prog[id]=p;if(p>=.95&&ST.read.indexOf(id)<0){ST.read.push(id);logEvent({type:'finish',pid:id,title:storyTitle(id)})}persist()},500)},{passive:true});
 reader.addEventListener('close',function(){clearTimeout(tmr);openId=null;if(user){renderFeed();renderAccount()}});
 $('#rClose').addEventListener('click',function(){reader.close()});
 reader.addEventListener('click',function(e){if(e.target===reader)reader.close()});
 document.addEventListener('click',function(e){var b=e.target.closest('[data-toggle]');if(!b||!user)return;
   var k=b.dataset.toggle,id=b.dataset.id,a=ST[k],i=a.indexOf(id);if(i>-1)a.splice(i,1);else a.push(id);
-  logEvent({type:k==='read'?(i<0?'finish':'unread'):(i<0?'save':'unsave'),pid:id,title:ttl(id)});if(k==='read'){if(i<0)ST.prog[id]=1;else delete ST.prog[id]}
+  logEvent({type:k==='read'?(i<0?'finish':'unread'):(i<0?'save':'unsave'),pid:id,title:storyTitle(id)});if(k==='read'){if(i<0)ST.prog[id]=1;else delete ST.prog[id]}
   persist();var s=STORIES.filter(function(x){return x.id===id})[0];b.parentNode.outerHTML=actBtns(s)});
 
 /* contact */
@@ -766,7 +766,7 @@ var ADMIN_UID = "1q8PH5YBoYcjWK7kqVpssb9j2cs2"; /* paste YOUR user ID here (show
 var GOOGLE_SIGNIN = true;
 var fbApp=null, appRes, appReady=new Promise(function(r){appRes=r}), fsP=null, authApi=null, fs=null, pt=null, evq=[], mode='login', amsg='', amsgOk=false, acctEl=$('#acct'), authDlg=$('#auth'), authBody=$('#authBody'), adminDlg=$('#admin');
 var ERR={'auth/email-already-in-use':'That email already has an account. Try logging in.','auth/invalid-credential':'Email or password is incorrect.','auth/wrong-password':'Email or password is incorrect.','auth/user-not-found':'Email or password is incorrect.','auth/weak-password':'Use at least 6 characters for your password.','auth/invalid-email':'Enter a valid email address.','auth/too-many-requests':'Too many attempts. Please try again later.','auth/operation-not-allowed':'This sign-in method is not enabled yet.','auth/popup-closed-by-user':'Sign-in was cancelled.','auth/network-request-failed':'No connection. Check your internet and try again.'};
-function ttl(id){var s=STORIES.filter(function(x){return x.id===id})[0];return s?s.title:id}
+function storyTitle(id){var s=STORIES.filter(function(x){return x.id===id})[0];return s?s.title:id}
 function say(m,ok){amsg=m;amsgOk=!!ok;var e=$('#msg');if(e){e.textContent=m;e.className='msg'+(ok?' ok':'')}}
 function loadLocal(){try{var o=JSON.parse(localStorage.getItem('lm:'+user.uid)||'null')||{},old=JSON.parse(localStorage.getItem('saved:'+user.uid)||'[]');ST={saved:o.saved||old,read:o.read||[],prog:o.prog||{}}}catch(e){ST={saved:[],read:[],prog:{}}}}
 function persist(){try{localStorage.setItem('lm:'+user.uid,JSON.stringify(ST))}catch(e){}
@@ -908,7 +908,7 @@ function renderComments(){var b=$('#cmList');if(!b)return;b.innerHTML=cmCache.le
 function loadComments(pid){cmCache=[];getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'comments'),f.m.where('pid','==',pid)))}).then(function(r){if(openId!==pid)return;cmCache=r.docs.map(function(d){return Object.assign({id:d.id},d.data())}).sort(function(a,b){return b.ts-a.ts});renderComments()}).catch(function(){var b=$('#cmList');if(b)b.innerHTML='<p class="n">Comments are unavailable right now.</p>'})}
 reader.addEventListener('submit',function(e){if(e.target.id!=='cmForm')return;e.preventDefault();var t=$('#cmText').value.trim();if(!t||!user)return;
   var doc={pid:openId,uid:user.uid,name:user.displayName||user.email.split('@')[0],text:t.slice(0,500),ts:Date.now()};
-  getFS().then(function(f){return f.m.addDoc(f.m.collection(f.db,'comments'),doc)}).then(function(ref){cmCache.unshift(Object.assign({id:ref.id},doc));renderComments();$('#cmText').value='';logEvent({type:'comment',pid:doc.pid,title:ttl(doc.pid)})}).catch(function(){var b=$('#cmList');if(b)b.insertAdjacentHTML('beforeend','<p class="n">Could not post. Try again.</p>')})});
+  getFS().then(function(f){return f.m.addDoc(f.m.collection(f.db,'comments'),doc)}).then(function(ref){cmCache.unshift(Object.assign({id:ref.id},doc));renderComments();$('#cmText').value='';logEvent({type:'comment',pid:doc.pid,title:storyTitle(doc.pid)})}).catch(function(){var b=$('#cmList');if(b)b.insertAdjacentHTML('beforeend','<p class="n">Could not post. Try again.</p>')})});
 reader.addEventListener('click',function(e){var b=e.target.closest('[data-cdel]');if(!b)return;var id=b.dataset.cdel;
   getFS().then(function(f){return f.m.deleteDoc(f.m.doc(f.db,'comments',id))}).then(function(){cmCache=cmCache.filter(function(c){return c.id!==id});renderComments()}).catch(function(){})});
 /* onboarding */
