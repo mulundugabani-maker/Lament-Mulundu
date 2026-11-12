@@ -762,7 +762,7 @@ $('#yr').textContent=new Date().getFullYear();
 
 /* ===== ACCOUNTS (Firebase) ===== */
 var FIREBASE = {apiKey:"AIzaSyAOsMfK8RaKqhOy6oetzRBOgIDXseqdnYA", authDomain:"lament-site.firebaseapp.com", projectId:"lament-site", appId:"1:479627390871:web:13bc965d555d470b7eded2"};
-var ADMIN_UID = ""; /* paste YOUR user ID here (shown on your Account page) to unlock the admin dashboard */
+var ADMIN_UID = "1q8PH5YBoYcjWK7kqVpssb9j2cs2"; /* paste YOUR user ID here (shown on your Account page) to unlock the admin dashboard */
 var GOOGLE_SIGNIN = true;
 var fbApp=null, appRes, appReady=new Promise(function(r){appRes=r}), fsP=null, authApi=null, fs=null, pt=null, evq=[], mode='login', amsg='', amsgOk=false, acctEl=$('#acct'), authDlg=$('#auth'), authBody=$('#authBody'), adminDlg=$('#admin');
 var ERR={'auth/email-already-in-use':'That email already has an account. Try logging in.','auth/invalid-credential':'Email or password is incorrect.','auth/wrong-password':'Email or password is incorrect.','auth/user-not-found':'Email or password is incorrect.','auth/weak-password':'Use at least 6 characters for your password.','auth/invalid-email':'Enter a valid email address.','auth/too-many-requests':'Too many attempts. Please try again later.','auth/operation-not-allowed':'This sign-in method is not enabled yet.','auth/popup-closed-by-user':'Sign-in was cancelled.','auth/network-request-failed':'No connection. Check your internet and try again.'};
