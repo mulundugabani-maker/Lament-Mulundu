@@ -267,6 +267,18 @@ dialog:focus,dialog:focus-visible,.oslides:focus,.oslides:focus-visible,.page:fo
 .verse blockquote{font-family:var(--serif);font-style:italic;font-size:1.02rem;line-height:1.65}
 .verse figcaption{margin-top:10px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-tx);font-weight:600}
 .ql{display:flex;flex-wrap:wrap;gap:10px}.ql .btn{padding:11px 18px;font-size:.85rem}
+/* publishing */
+.fld select{width:100%;padding:13px 15px;border-radius:14px;border:1px solid var(--line);background:var(--s2);color:var(--tx);font:inherit;font-size:1rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cta2{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 16px}.cta2 .btn{padding:12px 20px;font-size:.9rem}
+.aw.ed{width:min(100%,640px)}
+.ecov{width:96px;height:96px;border-radius:14px;overflow:hidden;background:var(--s2);border:1px solid var(--line);display:grid;place-items:center;color:var(--grey);font-size:.75rem;flex:0 0 96px}.ecov img{width:100%;height:100%;object-fit:cover}
+.chk{display:flex;gap:10px;align-items:center;color:var(--dim);font-size:.9rem;margin-bottom:14px}.chk input{width:18px;height:18px;accent-color:var(--acc)}
+.pl{margin-top:12px}.pli{cursor:pointer;align-items:center}.pli b{font-weight:600;display:block}.pli small{display:block;color:var(--grey)}
+.pill{font-size:.7rem;padding:3px 10px;border-radius:99px;border:1px solid var(--line);white-space:nowrap;color:var(--dim)}.pill.pub{color:var(--okc);border-color:currentColor}
+.imp{max-width:none;margin:14px 0 6px}.imp p{color:var(--dim);font-size:.9rem;margin:6px 0 12px;line-height:1.55}
+#ePv{margin-top:26px;padding-top:22px;border-top:1px solid var(--line);color:var(--tx)}
+.reader p{white-space:pre-line}
 </style>
 </head>
 <body>
@@ -365,7 +377,7 @@ dialog:focus,dialog:focus-visible,.oslides:focus,.oslides:focus-visible,.page:fo
 <path d="M112 80h84a12 12 0 0 1 12 12v36a12 12 0 0 1-12 12h-12v18l-20-18h-52a12 12 0 0 1-12-12V92a12 12 0 0 1 12-12z" fill="var(--bg)" stroke="var(--acc)"/>
 <path transform="translate(140 92)" d="M12 21s-7-4.5-7-10a4.2 4.2 0 0 1 7-3 4.2 4.2 0 0 1 7 3c0 5.5-7 10-7 10z" stroke="var(--acc)"/></svg><h1>Join the <em>conversation</em></h1><p>A free account lets you comment on pieces and mark what you have read.</p></section></div><div class="odots" id="od"></div><div class="ob-cta"><button class="btn primary" type="button" data-auth="signup">Sign up free</button><button class="btn" type="button" id="obGoogle"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.2 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.1-3.1A11 11 0 0 0 2.1 7.1l3.6 2.8C6.6 7.4 9.1 5.4 12 5.4z"/></svg>Continue with Google</button><button class="btn" type="button" data-auth="login">Continue with email</button><p class="msg" id="obMsg" role="status" style="text-align:center;margin:0"></p><button class="lnk" id="oskip" type="button">Just browse for now</button><p class="legal">By signing up, you agree that your name and email are used to run your account. <button class="lnk" type="button" data-privacy>Privacy</button></p></div></dialog>
 <dialog class="auth" id="auth" aria-label="Log in or sign up"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw" id="authBody"></div></dialog>
-<dialog class="auth" id="admin" aria-label="Admin dashboard"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw wide"><h1>Admin dashboard</h1><button class="btn" id="adminRefresh" type="button" style="margin:12px 0 22px">Refresh</button><div id="adminBody"></div></div></dialog>
+<dialog class="auth" id="admin" aria-label="Admin dashboard"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw wide"><h1>Admin dashboard</h1><div id="adminPosts"></div><h2 style="margin-top:10px">Activity</h2><button class="btn" id="adminRefresh" type="button" style="margin:0 0 22px">Refresh</button><div id="adminBody"></div></div></dialog>
 <dialog class="auth" id="pedit" aria-label="Edit profile"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw left"><h1>Edit profile</h1>
 <form id="pform" novalidate>
 <div class="pph"><div class="av" id="pAv"></div><div class="col"><button class="btn" type="button" id="pPick">Change photo</button><button class="lnk" type="button" id="pRm">Remove photo</button></div><input type="file" id="pFile" accept="image/*" hidden></div>
@@ -381,6 +393,21 @@ dialog:focus,dialog:focus-visible,.oslides:focus,.oslides:focus-visible,.page:fo
 <p>If you add a photo, a short bio or a location in your profile, those are stored too. They are optional and you can remove them at any time.</p>
 <p>The site owner can see which pieces are opened and finished, when people sign in, and which contact links are tapped. This is used only to understand what is read, and is never sold or shared.</p>
 <p>You will only get emails about new pieces if you switch that on in Settings. You can delete your account and data at any time under Profile › Settings.</p></div></dialog>
+<dialog class="auth" id="editor" aria-label="Post editor"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw left ed"><h1 id="eHead">New post</h1>
+<form id="eform" novalidate>
+<label class="fld"><span>Title</span><input id="eTitle" maxlength="120" autocomplete="off" required></label>
+<div class="two"><label class="fld"><span>Category</span><select id="eCat"></select></label>
+<label class="fld"><span>Label</span><input id="eTag" maxlength="60" placeholder="e.g. Personal Essay" autocomplete="off"></label></div>
+<label class="fld"><span>Short description</span><textarea id="eDesc" maxlength="220" rows="2" placeholder="One or two lines shown on the cards"></textarea><small id="eDescN">0/220</small></label>
+<div class="fld"><span>Cover photo</span><div class="pph"><div class="ecov" id="eCov">No photo</div><div class="col"><button class="btn" type="button" id="eCovPick">Choose photo</button><button class="lnk" type="button" id="eCovRm">Remove photo</button></div><input type="file" id="eCovFile" accept="image/*" hidden></div>
+<div class="seg" id="ePos"><button type="button" data-epos="top">Focus top</button><button type="button" data-epos="mid">Centre</button><button type="button" data-epos="bot">Focus bottom</button></div></div>
+<label class="fld"><span>Story text</span><textarea id="eBody" rows="14" placeholder="Write or paste here. Leave a blank line between paragraphs. Line breaks inside a paragraph are kept, so poems work too."></textarea><small id="eBodyN">0 words</small></label>
+<label class="fld"><span>Status label (optional)</span><input id="eStatus" maxlength="40" placeholder="Read now" autocomplete="off"><small>Use for pieces without text yet, e.g. “Manuscript in Development”.</small></label>
+<label class="chk" id="eBumpW" hidden><input type="checkbox" id="eBump"> Move to the top (update the date)</label>
+<p class="msg" id="eMsg" role="status"></p>
+<div class="cta2"><button class="btn" type="button" id="ePrev">Preview</button><button class="btn" type="button" id="eDraft">Save as draft</button><button class="btn primary" type="submit" id="ePub">Publish</button></div>
+<button class="lnk dng" type="button" id="eDel" hidden>Delete this post</button>
+</form><div class="reader" id="ePv" hidden></div></div></dialog>
 <dialog class="reader" id="reader" aria-label="Reader"><div class="rbar" id="rbar"></div><div class="ri"><div class="rc"><button class="ib" type="button" id="rClose" aria-label="Close">✕</button><div class="rg"><button class="ib" type="button" id="rSize" aria-label="Change text size">Aa</button><button class="ib" type="button" data-theme-toggle aria-label="Switch between light and dark mode"><svg class="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg><svg class="moon" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button></div></div><div id="rBody"></div></div></dialog>
 
 <script>
@@ -811,7 +838,7 @@ renderHL();
 /* writings */
 var current='All',tabsEl=$('#tabs'),feed=$('#feed');
 function renderTabs(){tabsEl.innerHTML=TABS.map(function(t){return '<button class="tab" role="tab" type="button" aria-selected="'+(t===current)+'" data-tab="'+t+'">'+t+'</button>'}).join('')}
-function renderFeed(){var l=STORIES.filter(function(s){return current==='All'||s.cat===current});
+function renderFeed(){var l=STORIES.filter(function(s){return current==='All'||s.cat===current}).sort(function(a,b){return (b.ts||0)-(a.ts||0)});
   feed.innerHTML=l.length?l.map(function(s){var r=s.body.length;return '<article class="card glass"'+(r?' data-read="'+s.id+'" role="button" tabindex="0"':'')+'><div class="cb"><span class="tag">'+esc(s.tag)+'</span><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><span class="st">'+esc(stat(s))+(r?'<b>Read →</b>':'')+'</span></div>'+cov(s)+'</article>'}).join(''):'<p class="empty">Nothing here yet. New pieces are on the way.</p>'}
 function setTab(t){current=t;renderTabs();renderFeed()}
 tabsEl.addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(b)setTab(b.dataset.tab)});
@@ -828,6 +855,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-read
   var s=STORIES.filter(function(x){return x.id===b.dataset.read})[0];openId=s.id;if(user)logEvent({type:'open',pid:s.id,title:s.title});
    var wc=s.body.join(' ').split(/\s+/).length,mins=Math.max(1,Math.round(wc/200));
    rBody.innerHTML='<span class="eyebrow">'+esc(s.tag)+'</span><h2>'+esc(s.title)+'</h2>'+(s.body.length?'<div class="by"><span class="lmk">L</span><span><b>Lament Mulundu</b>'+esc(s.cat)+' · '+mins+' min read</span></div>':'')+cov(s)+s.body.map(function(t){return '<p>'+esc(t)+'</p>'}).join('')+'<p class="n">— Lament Mulundu</p><span id="rend"></span>'+actBtns(s)+cmBox(s);
+   if(s.remote&&s.hasFull&&!s.fullDone)loadFullCover(s);
   reader.showModal();reader.scrollTop=0;rBar.style.transform='scaleX(0)';if(s.body.length)loadComments(s.id);if(user)ST.last=s.id;
   var p=ST.prog[s.id];if(user&&p>.03&&p<.97&&ST.read.indexOf(s.id)<0)setTimeout(function(){reader.scrollTop=p*endM()},80)});
 reader.addEventListener('scroll',function(){var m=endM(),p=Math.min(1,reader.scrollTop/m);rBar.style.transform='scaleX('+p+')';
@@ -897,7 +925,7 @@ function renderAccount(){
       ((p.topics||[]).length?'<div class="tags">'+p.topics.map(function(t){return '<span>'+esc(t)+'</span>'}).join('')+'</div>':'')+
       '<button class="btn block" id="editProf" type="button">Edit profile</button>'+
       '<b style="display:block;margin-top:14px">Read '+done+' of '+R.length+'</b><div class="prog"><i style="width:'+Math.round(done/R.length*100)+'%"></i></div>'+
-      (isAdmin?'<button class="btn primary block" id="openAdmin" type="button" style="margin-top:18px">Open admin dashboard</button>':'')+
+      (isAdmin?'<button class="btn primary block" id="newPostQuick" type="button" style="margin-top:18px">Write a new post</button><button class="btn block" id="openAdmin" type="button">Admin dashboard</button>':'')+
       '<button class="btn block" id="logout" type="button" style="margin-top:'+(isAdmin?'8':'16')+'px">Log out</button>'+
       (!ADMIN_UID?'<div class="idb">Setup: your user ID is<br><b>'+esc(user.uid)+'</b></div>':'')+'</div>'+
       (cont.length?'<h2 class="rt">Continue reading <small>'+cont.length+'</small></h2>'+rail(cont):'')+
@@ -949,7 +977,7 @@ authDlg.addEventListener('submit',function(e){
 /* ---- admin dashboard ---- */
 function ago(t){var d=(Date.now()-t)/1000;if(d<60)return 'just now';if(d<3600)return Math.floor(d/60)+'m ago';if(d<86400)return Math.floor(d/3600)+'h ago';return Math.floor(d/86400)+'d ago'}
 function lab(ev){var t=ev.title?'“'+ev.title+'”':'';return ({signup:'signed up',login:'logged in',open:'opened '+t,finish:'finished '+t,unread:'unmarked '+t,save:'saved '+t,unsave:'removed '+t+' from saved',contact:'tapped '+(ev.target||'contact'),comment:'commented on '+t})[ev.type]||ev.type}
-function loadAdmin(){
+function loadAdmin(){loadMyPosts();
   var box=$('#adminBody');if(!fs){box.innerHTML='<p class="psub">Still connecting. Try Refresh in a moment.</p>';return}
   box.innerHTML='<p class="psub">Loading…</p>';
   Promise.all([fs.m.getDocs(fs.m.query(fs.m.collection(fs.db,'events'),fs.m.orderBy('ts','desc'),fs.m.limit(500))),fs.m.getDocs(fs.m.collection(fs.db,'users'))]).then(function(r){
@@ -1031,7 +1059,7 @@ document.addEventListener('click',function(e){
   if(e.target.closest('[data-privacy]')){$('#priv').showModal();return}
   if(e.target.closest('#rSize')){var o=['s','m','l','xl'];SET.size=o[(o.indexOf(SET.size)+1)%o.length];saveSet();applySet();return}
 });
-document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.matches&&e.target.matches('article[data-read]'))e.target.click()});
+document.addEventListener('keydown',function(e){if(e.key==='Enter'&&e.target.matches&&e.target.matches('article[data-read],li[data-edit]'))e.target.click()});
 function doGoogle(){if(!authApi)return;var a=authApi.a,pr=new a.GoogleAuthProvider();
   a.signInWithPopup(authApi.auth,pr).then(function(){logEvent({type:'login'})}).catch(function(e){var c=e&&e.code;
     if(c==='auth/popup-blocked'||c==='auth/operation-not-supported-in-this-environment')return a.signInWithRedirect(authApi.auth,pr);
@@ -1064,6 +1092,90 @@ ped.addEventListener('submit',function(e){e.preventDefault();var pm=$('#pMsg'),n
   pm.className='msg ok';pm.textContent='Saving…';
   var u=authApi.auth.currentUser,job=nm!==(u.displayName||'')?authApi.a.updateProfile(u,{displayName:nm}):Promise.resolve();
   job.then(function(){user=authApi.auth.currentUser;ST.prof=p;persist();persistProf();renderAccount();ped.close()}).catch(function(){pm.className='msg';pm.textContent='Could not save. Check your connection and try again.'})});
+
+/* ---- publishing: posts live in Firestore, covers split into a small thumb + a full image ---- */
+var BUILTIN=STORIES.slice(),REMOTE=[],MY={},ED={},ed=$('#editor'),POS={top:'50% 20%',mid:'50% 50%',bot:'50% 80%'};
+function isAdm(){return !!(user&&ADMIN_UID&&user.uid===ADMIN_UID)}
+function toStory(p){var b=p.body||[];return {id:p.id,cat:p.cat||'Life',tag:p.tag||p.cat||'',title:p.title||'Untitled',cover:p.thumb||'',pos:p.pos||'50% 50%',status:p.status||(b.length?'Read now':'Coming soon'),body:b,desc:p.desc||'',ts:p.ts||0,remote:true,hasFull:!!p.hasFull}}
+function refreshAll(){readable=STORIES.filter(function(s){return s.body.length});$('#stPieces').textContent=readable.length;renderHL();renderFeed();doSearch();renderAccount()}
+function mergePosts(list,imp){var old={};REMOTE.forEach(function(o){old[o.id]=o});
+  list.forEach(function(n){var o=old[n.id];if(o&&o.fullDone){n.cover=o.cover;n.fullDone=true}});
+  REMOTE=list.slice().sort(function(a,b){return (a.ts||0)-(b.ts||0)});
+  var ids={};list.forEach(function(p){ids[p.id]=1});
+  var base=imp?[]:BUILTIN.filter(function(b){return !ids[b.id]});
+  STORIES.length=0;Array.prototype.push.apply(STORIES,base.concat(REMOTE));refreshAll()}
+function loadPosts(){
+  try{var c=JSON.parse(localStorage.getItem('lm:posts')||'null');if(c&&c.l&&c.l.length)mergePosts(c.l,c.imp)}catch(e){}
+  getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'posts'),f.m.where('published','==',true)))}).then(function(r){
+    var imp=false,l=[];r.docs.forEach(function(d){if(d.id==='_site'){imp=true;return}l.push(toStory(Object.assign({id:d.id},d.data())))});
+    mergePosts(l,imp);try{localStorage.setItem('lm:posts',JSON.stringify({imp:imp,l:l}))}catch(e){}}).catch(function(){})}
+function loadFullCover(s){getFS().then(function(f){return f.m.getDoc(f.m.doc(f.db,'postmedia',s.id))}).then(function(d){var x=d.exists()&&d.data().full;if(!x)return;s.cover=x;s.fullDone=true;
+  if(openId===s.id){var im=rBody.querySelector('.cover img');if(im)im.src=x}}).catch(function(){})}
+function readFile(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result)};r.onerror=rej;r.readAsDataURL(f)})}
+function scaleData(src,max,q){return new Promise(function(res,rej){var im=new Image();im.onload=function(){var k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+  var x=c.getContext('2d');x.imageSmoothingQuality='high';x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',q))};im.onerror=rej;im.src=src})}
+/* admin: list of posts */
+function loadMyPosts(){var box=$('#adminPosts');if(!box)return;if(!fs){box.innerHTML='<p class="psub">Still connecting. Try Refresh in a moment.</p>';return}
+  box.innerHTML='<h2>Posts</h2><p class="psub">Loading…</p>';
+  fs.m.getDocs(fs.m.collection(fs.db,'posts')).then(function(r){MY={};var imp=false,rows=[];
+    r.docs.forEach(function(d){if(d.id==='_site'){imp=true;return}var x=d.data();x.id=d.id;MY[d.id]=x;rows.push(x)});
+    rows.sort(function(a,b){return (b.ts||0)-(a.ts||0)});
+    box.innerHTML='<h2>Posts</h2><div class="cta2"><button class="btn primary" type="button" id="newPost">New post</button></div>'+
+      (imp?'':'<div class="glass acc imp"><b>Move your existing '+BUILTIN.length+' pieces here</b><p>One time only. After this, every piece, including the ones already on the site, can be edited, unpublished or deleted from the app.</p><button class="btn" type="button" id="doImport">Import existing pieces</button><small id="impMsg" style="display:block;margin-top:8px;color:var(--dim)"></small></div>')+
+      '<ul class="al pl">'+(rows.length?rows.map(function(x){return '<li class="pli" data-edit="'+esc(x.id)+'" role="button" tabindex="0"><span><b>'+esc(x.title||'Untitled')+'</b><small>'+esc(x.cat||'')+' · '+(x.ts?new Date(x.ts).toLocaleDateString():'')+'</small></span><span class="pill'+(x.published?' pub':'')+'">'+(x.published?'Published':'Draft')+'</span></li>'}).join(''):'<li><span>No posts yet. Tap “New post” to write your first.</span></li>')+'</ul>'
+  }).catch(function(){box.innerHTML='<h2>Posts</h2><p class="psub">Could not load posts. Add the posts rules in Firestore first.</p>'})}
+function doImport(){var btn=$('#doImport'),msg=$('#impMsg'),list=BUILTIN.slice(),n=list.length,T0=Date.now(),i=0;btn.disabled=true;
+  function finish(){fs.m.setDoc(fs.m.doc(fs.db,'posts','_site'),{meta:true,published:true,imported:true,ts:T0}).then(function(){msg.textContent='Done. Everything is now managed here.';loadPosts();setTimeout(loadMyPosts,600)})}
+  function next(){if(i>=n)return finish();var s=list[i];msg.textContent='Importing '+(i+1)+' of '+n+'…';
+    (s.cover?scaleData(s.cover,480,.72):Promise.resolve('')).then(function(th){
+      var doc={title:s.title,cat:s.cat,tag:s.tag||s.cat,desc:s.desc||'',body:s.body||[],thumb:th,pos:s.pos||'50% 50%',status:s.status||'',published:true,ts:T0-(n-1-i)*1000,upd:T0,hasFull:!!s.cover},
+          w=[fs.m.setDoc(fs.m.doc(fs.db,'posts',s.id),doc)];if(s.cover)w.push(fs.m.setDoc(fs.m.doc(fs.db,'postmedia',s.id),{full:s.cover}));return Promise.all(w)})
+    .then(function(){i++;next()}).catch(function(){msg.textContent='Stopped at piece '+(i+1)+'. Check the Firestore rules for posts, then tap Import again.';btn.disabled=false})}
+  next()}
+/* editor */
+function getParas(){return $('#eBody').value.split(/\n\s*\n/).map(function(t){return t.trim()}).filter(Boolean)}
+function ePaint(){var c=$('#eCov');c.innerHTML=ED.thumb?'<img alt="" src="'+esc(ED.thumb)+'" style="object-position:'+ED.pos+'">':'No photo';$('#eCovRm').hidden=!ED.thumb;
+  [].forEach.call(document.querySelectorAll('[data-epos]'),function(b){b.classList.toggle('on',POS[b.dataset.epos]===ED.pos)});
+  var wc=getParas().join(' ').split(/\s+/).filter(Boolean).length;$('#eBodyN').textContent=wc+' words'+(wc?' · about '+Math.max(1,Math.round(wc/200))+' min read':'');$('#eDescN').textContent=$('#eDesc').value.length+'/220'}
+function openEditor(id){if(!isAdm())return;var p=id?MY[id]:null;
+  ED={id:id||null,ts:p?p.ts:0,thumb:p?p.thumb||'':'',full:'',dirty:false,pos:p?p.pos||POS.mid:POS.mid};
+  $('#eHead').textContent=p?'Edit post':'New post';$('#eCat').innerHTML=CATS.map(function(c){return '<option>'+c+'</option>'}).join('');
+  $('#eTitle').value=p?p.title||'':'';$('#eCat').value=p?p.cat||'Life':'Life';$('#eTag').value=p?p.tag||'':'';$('#eDesc').value=p?p.desc||'':'';
+  $('#eBody').value=p?(p.body||[]).join('\n\n'):'';$('#eStatus').value=p&&p.status&&p.status!=='Read now'?p.status:'';
+  $('#eBumpW').hidden=!p;$('#eBump').checked=false;$('#eDel').hidden=!p;$('#eMsg').textContent='';$('#ePv').hidden=true;$('#ePub').textContent=p&&p.published?'Update':'Publish';
+  ePaint();ed.showModal();ed.scrollTop=0;
+  if(p&&p.hasFull)getFS().then(function(f){return f.m.getDoc(f.m.doc(f.db,'postmedia',id))}).then(function(d){if(ED.id===id&&d.exists()&&!ED.dirty)ED.full=d.data().full||''}).catch(function(){})}
+function savePost(pub){var m=$('#eMsg');m.className='msg';var title=$('#eTitle').value.trim(),paras=getParas(),status=$('#eStatus').value.trim();
+  if(!title){m.textContent='Please add a title.';return}
+  if(pub&&!paras.length&&!status){m.textContent='Add the story text, or a status label such as “Coming soon”.';return}
+  var id=ED.id||('p'+Date.now().toString(36)),now=Date.now(),ts=ED.id?($('#eBump').checked?now:(ED.ts||now)):now,cat=$('#eCat').value;
+  var doc={title:title,cat:cat,tag:$('#eTag').value.trim()||cat,desc:$('#eDesc').value.trim(),body:paras,thumb:ED.thumb||'',pos:ED.pos,status:status||(paras.length?'Read now':'Coming soon'),published:!!pub,ts:ts,upd:now,hasFull:!!ED.full};
+  m.className='msg ok';m.textContent=pub?'Publishing…':'Saving…';
+  getFS().then(function(f){var w=[f.m.setDoc(f.m.doc(f.db,'posts',id),doc)];
+    if(ED.dirty)w.push(ED.full?f.m.setDoc(f.m.doc(f.db,'postmedia',id),{full:ED.full}):f.m.deleteDoc(f.m.doc(f.db,'postmedia',id)));return Promise.all(w)})
+  .then(function(){ED.id=id;ED.ts=ts;ED.dirty=false;m.textContent=pub?'Published ✓':'Draft saved ✓';loadPosts();if($('#adminPosts'))loadMyPosts();setTimeout(function(){if(ed.open)ed.close()},700)})
+  .catch(function(er){m.className='msg';m.textContent=er&&er.code==='permission-denied'?'Not allowed yet. Add the posts rules in Firestore first.':'Could not save. Check your connection and try again.'})}
+function prevHtml(){var paras=getParas(),wc=paras.join(' ').split(/\s+/).filter(Boolean).length,cat=$('#eCat').value;
+  return '<span class="eyebrow">'+esc($('#eTag').value.trim()||cat)+'</span><h2>'+esc($('#eTitle').value.trim()||'Untitled')+'</h2><div class="by"><span class="lmk">L</span><span><b>Lament Mulundu</b>'+esc(cat)+' · '+Math.max(1,Math.round(wc/200))+' min read</span></div>'+
+    (ED.thumb?'<div class="cover"><img alt="" src="'+esc(ED.full||ED.thumb)+'"></div>':'')+paras.map(function(t){return '<p>'+esc(t)+'</p>'}).join('')}
+document.addEventListener('click',function(e){
+  if(e.target.closest('#newPost,#newPostQuick')){openEditor();return}
+  var r=e.target.closest('[data-edit]');if(r){openEditor(r.dataset.edit);return}
+  if(e.target.closest('#doImport')){doImport();return}
+  if(e.target.closest('#eCovPick')){$('#eCovFile').click();return}
+  if(e.target.closest('#eCovRm')){ED.thumb='';ED.full='';ED.dirty=true;ePaint();return}
+  var ps=e.target.closest('[data-epos]');if(ps){ED.pos=POS[ps.dataset.epos];ePaint();return}
+  if(e.target.closest('#ePrev')){var pv=$('#ePv');pv.hidden=!pv.hidden;if(!pv.hidden){pv.dataset.size=SET.size;pv.innerHTML=prevHtml();pv.scrollIntoView({behavior:'smooth'})}return}
+  if(e.target.closest('#eDraft')){savePost(false);return}
+  if(e.target.closest('#eDel')){if(!ED.id||!confirm('Delete this post for good?'))return;var m=$('#eMsg');
+    getFS().then(function(f){return Promise.all([f.m.deleteDoc(f.m.doc(f.db,'posts',ED.id)),f.m.deleteDoc(f.m.doc(f.db,'postmedia',ED.id))])}).then(function(){ed.close();loadPosts();if($('#adminPosts'))loadMyPosts()}).catch(function(){m.className='msg';m.textContent='Could not delete. Try again.'})}
+});
+$('#eCovFile').addEventListener('change',function(){var f=this.files&&this.files[0];this.value='';if(!f)return;var m=$('#eMsg');m.className='msg ok';m.textContent='Preparing photo…';
+  readFile(f).then(function(d){return scaleData(d,1000,.8)}).then(function(full){return (full.length>800000?scaleData(full,820,.7):Promise.resolve(full))}).then(function(full){return scaleData(full,480,.72).then(function(th){ED.full=full;ED.thumb=th;ED.dirty=true;m.textContent='';ePaint()})})
+  .catch(function(){m.className='msg';m.textContent='That photo could not be read. Try a JPG or PNG.'})});
+['eBody','eDesc'].forEach(function(i){$('#'+i).addEventListener('input',ePaint)});
+ed.addEventListener('submit',function(e){e.preventDefault();savePost(true)});
+appReady.then(function(){loadPosts()});
 initAuth();
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){addEventListener('load',function(){navigator.serviceWorker.register('sw.js')})}
 </script>
