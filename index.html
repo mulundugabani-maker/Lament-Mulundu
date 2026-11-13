@@ -293,6 +293,35 @@ dialog:focus,dialog:focus-visible,.oslides:focus,.oslides:focus-visible,.page:fo
 .bars div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px}.bars i{display:block;width:100%;max-width:26px;border-radius:6px 6px 2px 2px;background:var(--acc);min-height:3px;opacity:.85}.bars small{font-size:.62rem;color:var(--grey)}.bars b{font-size:.72rem;font-weight:600}
 .pt{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.8rem}.pt th{font-weight:600;color:var(--grey);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;text-align:right;padding:0 6px 8px}.pt th:first-child,.pt td:first-child{text-align:left;padding-left:0}.pt td{padding:9px 6px;border-top:1px solid var(--line);text-align:right}.pt td:first-child{max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .row2{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 22px}.row2 .btn{padding:11px 18px;font-size:.84rem;margin:0}
+
+/* admin v4: compact, ordered */
+.ahd{position:sticky;top:0;z-index:6;display:flex;align-items:center;gap:10px;padding:max(8px,env(safe-area-inset-top)) 14px 8px;background:var(--bg);border-bottom:1px solid var(--line)}
+.ahd b{flex:1;font-size:.95rem;font-weight:600}
+.xb{width:34px;height:34px;border-radius:50%;background:var(--s1);border:1px solid var(--line);font-size:.85rem;line-height:1}
+.btn.sm{padding:8px 16px;font-size:.78rem;margin:0}
+.aw.adm{padding:6px 16px 48px}
+.adm h2{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey);font-weight:600;margin:20px 0 8px}
+.adm .sh{display:flex;align-items:center;justify-content:space-between;margin:14px 0 8px}.adm .sh h2{margin:0}
+.adm .ag{grid-template-columns:repeat(4,1fr);gap:6px;margin:0}
+.adm .ag div{padding:9px 2px;text-align:center;border-radius:12px}
+.adm .ag b{font-size:1.15rem;font-weight:600;line-height:1.2}.adm .ag small{display:block;font-size:.53rem;letter-spacing:.04em;margin-top:1px}
+.adm .bars{height:92px;margin:0;padding:8px 8px 6px;gap:6px}
+.adm .al{gap:6px;margin:0}.adm .pl li{padding:8px 12px;font-size:.84rem}
+.adm .pli>span:first-child{min-width:0;flex:1}.adm .pli b,.adm .pli small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.adm .pill{font-size:.64rem;padding:2px 8px}
+.adm .psub{font-size:.78rem;margin:0 0 8px}
+.adm .row2{margin:0}
+.imp{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px;padding:7px 8px 7px 12px;border-radius:12px;background:var(--s1);border:1px solid var(--line);font-size:.78rem}
+.imp span{min-width:0}.imp small{display:block;color:var(--grey);font-size:.68rem}
+.adm .pt{table-layout:fixed;width:100%;margin:0;font-size:.76rem}
+.adm .pt th{font-size:.54rem;letter-spacing:.06em;padding:0 5px 6px;white-space:nowrap}
+.adm .pt td{padding:6px 5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.adm .pt td:first-child,.adm .pt th:first-child{max-width:none;padding-left:0}
+.adm .pt td.rdr b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.adm .pt td.rdr small{display:block;color:var(--grey);font-size:.66rem;overflow:hidden;text-overflow:ellipsis}
+.adm .act td:nth-child(2),.adm .act th:nth-child(2),.adm .act td:nth-child(3),.adm .act th:nth-child(3){text-align:left}
+.tg:not(.open) .x{display:none}
+.tgb{display:block;margin:4px auto 0;background:none;border:0;color:var(--acc-tx);font-size:.76rem;padding:6px 12px}
 </style>
 </head>
 <body>
@@ -391,7 +420,7 @@ dialog:focus,dialog:focus-visible,.oslides:focus,.oslides:focus-visible,.page:fo
 <path d="M112 80h84a12 12 0 0 1 12 12v36a12 12 0 0 1-12 12h-12v18l-20-18h-52a12 12 0 0 1-12-12V92a12 12 0 0 1 12-12z" fill="var(--bg)" stroke="var(--acc)"/>
 <path transform="translate(140 92)" d="M12 21s-7-4.5-7-10a4.2 4.2 0 0 1 7-3 4.2 4.2 0 0 1 7 3c0 5.5-7 10-7 10z" stroke="var(--acc)"/></svg><h1>Join the <em>conversation</em></h1><p>A free account lets you comment on pieces and mark what you have read.</p></section></div><div class="odots" id="od"></div><div class="ob-cta"><button class="btn primary" type="button" data-auth="signup">Sign up free</button><button class="btn" type="button" id="obGoogle"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.2 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.1-3.1A11 11 0 0 0 2.1 7.1l3.6 2.8C6.6 7.4 9.1 5.4 12 5.4z"/></svg>Continue with Google</button><button class="btn" type="button" data-auth="login">Continue with email</button><p class="msg" id="obMsg" role="status" style="text-align:center;margin:0"></p><button class="lnk" id="oskip" type="button">Just browse for now</button><p class="legal">By signing up, you agree that your name and email are used to run your account. <button class="lnk" type="button" data-privacy>Privacy</button></p></div></dialog>
 <dialog class="auth" id="auth" aria-label="Log in or sign up"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw" id="authBody"></div></dialog>
-<dialog class="auth" id="admin" aria-label="Admin dashboard"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw wide"><h1>Admin dashboard</h1><div id="adminPosts"></div><h2 style="margin-top:10px">Activity</h2><button class="btn" id="adminRefresh" type="button" style="margin:0 0 22px">Refresh</button><div id="adminBody"></div></div></dialog>
+<dialog class="auth" id="admin" aria-label="Admin dashboard"><div class="ahd"><button class="xb" type="button" data-aclose aria-label="Close">✕</button><b tabindex="-1" autofocus style="outline:none">Admin dashboard</b><button class="btn sm" id="adminRefresh" type="button">Refresh</button></div><div class="aw wide adm"><div id="adminPosts"></div><div id="adminBody"></div></div></dialog>
 <dialog class="auth" id="pedit" aria-label="Edit profile"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw left"><h1>Edit profile</h1>
 <form id="pform" novalidate>
 <div class="pph"><div class="av" id="pAv"></div><div class="col"><button class="btn" type="button" id="pPick">Change photo</button><button class="lnk" type="button" id="pRm">Remove photo</button></div><input type="file" id="pFile" accept="image/*" hidden></div>
@@ -1149,9 +1178,10 @@ function loadMyPosts(){var box=$('#adminPosts');if(!box)return;if(!fs){box.inner
   fs.m.getDocs(fs.m.collection(fs.db,'posts')).then(function(r){MY={};var imp=false,rows=[];
     r.docs.forEach(function(d){if(d.id==='_site'){imp=true;return}var x=d.data();x.id=d.id;MY[d.id]=x;rows.push(x)});
     rows.sort(function(a,b){return (b.ts||0)-(a.ts||0)});
-    box.innerHTML='<h2>Posts</h2><div class="cta2"><button class="btn primary" type="button" id="newPost">New post</button></div>'+
-      (imp?'':'<div class="glass acc imp"><b>Move your existing '+BUILTIN.length+' pieces here</b><p>One time only. After this, every piece, including the ones already on the site, can be edited, unpublished or deleted from the app.</p><button class="btn" type="button" id="doImport">Import existing pieces</button><small id="impMsg" style="display:block;margin-top:8px;color:var(--dim)"></small></div>')+
-      '<ul class="al pl">'+(rows.length?rows.map(function(x){return '<li class="pli" data-edit="'+esc(x.id)+'" role="button" tabindex="0"><span><b>'+esc(x.title||'Untitled')+'</b><small>'+esc(x.cat||'')+' · '+(x.ts?new Date(x.ts).toLocaleDateString():'')+'</small></span><span class="pill'+(x.published?' pub':'')+'">'+(x.published?'Published':'Draft')+'</span></li>'}).join(''):'<li><span>No posts yet. Tap “New post” to write your first.</span></li>')+'</ul>'
+    var PL=6;
+    box.innerHTML='<div class="sh"><h2>Posts</h2><button class="btn primary sm" type="button" id="newPost">New post</button></div>'+
+      (imp?'':'<div class="imp"><span>Move your '+BUILTIN.length+' pieces here<small id="impMsg">One time only</small></span><button class="btn sm" type="button" id="doImport">Import</button></div>')+
+      '<div class="tg"><ul class="al pl">'+(rows.length?rows.map(function(x,i){return '<li class="pli'+(i>=PL?' x':'')+'" data-edit="'+esc(x.id)+'" role="button" tabindex="0"><span><b>'+esc(x.title||'Untitled')+'</b><small>'+esc(x.cat||'')+' · '+(x.ts?new Date(x.ts).toLocaleDateString():'')+'</small></span><span class="pill'+(x.published?' pub':'')+'">'+(x.published?'Published':'Draft')+'</span></li>'}).join(''):'<li><span>No posts yet. Tap “New post” to write your first.</span></li>')+'</ul>'+(rows.length>PL?'<button class="tgb" type="button" data-all="Show all ('+rows.length+')" data-less="Show less">Show all ('+rows.length+')</button>':'')+'</div>'
   }).catch(function(){box.innerHTML='<h2>Posts</h2><p class="psub">Could not load posts. Add the posts rules in Firestore first.</p>'})}
 function doImport(){var btn=$('#doImport'),msg=$('#impMsg'),list=BUILTIN.slice(),n=list.length,T0=Date.now(),i=0;btn.disabled=true;
   function finish(){fs.m.setDoc(fs.m.doc(fs.db,'posts','_site'),{meta:true,published:true,imported:true,ts:T0}).then(function(){msg.textContent='Done. Everything is now managed here.';loadPosts();setTimeout(loadMyPosts,600)})}
@@ -1260,16 +1290,22 @@ function loadAdmin(){loadMyPosts();
     var emails=us.filter(function(u){return u.notify&&u.email}).map(function(u){return u.email}),latest=STORIES.filter(function(s){return s.body.length}).sort(function(a,b){return (b.ts||0)-(a.ts||0)})[0];
     var mail='mailto:?bcc='+encodeURIComponent(emails.join(','))+'&subject='+encodeURIComponent(latest?'New on Lament Mulundu: '+latest.title:'New on Lament Mulundu')+'&body='+encodeURIComponent((latest?'A new piece is up: '+latest.title+'\n\n':'')+location.origin+location.pathname);
     us.sort(function(a,b){return (b.joined||0)-(a.joined||0)});
-    box.innerHTML='<div class="ag"><div><b>'+us.length+'</b><small>Readers</small></div><div><b>'+wk(0)+'</b><small>New this week</small></div><div><b>'+(c.open||0)+'</b><small>Piece opens</small></div><div><b>'+(c.finish||0)+'</b><small>Finished reads</small></div><div><b>'+lk.length+'</b><small>Likes</small></div><div><b>'+cm.length+'</b><small>Comments</small></div><div><b>'+saves+'</b><small>Saved pieces</small></div><div><b>'+emails.length+'</b><small>Want updates</small></div></div>'+
+    var T=function(cls,head,w,rws,lim,all){var more=rws.length>lim;return '<div class="tg"><table class="pt '+cls+'"><colgroup>'+w.map(function(x){return '<col'+(x?' style="width:'+x+'"':'')+'>'}).join('')+'</colgroup><tr>'+head.map(function(h){return '<th>'+h+'</th>'}).join('')+'</tr>'+rws.map(function(r,i){return '<tr'+(i>=lim?' class="x"':'')+'>'+r+'</tr>'}).join('')+'</table>'+(more?'<button class="tgb" type="button" data-all="'+all+'" data-less="Show less">'+all+'</button>':'')+'</div>'};
+    var AS=function(t){if(!t)return '–';var d=(Date.now()-t)/1000;return d<60?'now':d<3600?Math.floor(d/60)+'m':d<86400?Math.floor(d/3600)+'h':Math.floor(d/86400)+'d'};
+    var VB={signup:'joined',login:'logged in',open:'opened',finish:'finished',unread:'unmarked',save:'saved',unsave:'unsaved',contact:'tapped',comment:'comment'};
+    var tk=Object.keys(tap);
+    box.innerHTML='<div class="ag" style="margin-top:16px"><div><b>'+us.length+'</b><small>Readers</small></div><div><b>'+wk(0)+'</b><small>New (7d)</small></div><div><b>'+(c.open||0)+'</b><small>Opens</small></div><div><b>'+(c.finish||0)+'</b><small>Finished</small></div><div><b>'+lk.length+'</b><small>Likes</small></div><div><b>'+cm.length+'</b><small>Comments</small></div><div><b>'+saves+'</b><small>Saved</small></div><div><b>'+emails.length+'</b><small>Updates</small></div></div>'+
       '<h2>Opens, last 7 days</h2><div class="bars">'+days.map(function(n,i){return '<div><b>'+n+'</b><i style="height:'+Math.round(n/mx*80)+'%"></i><small>'+dn[new Date(t0-(6-i)*DAY).getDay()]+'</small></div>'}).join('')+'</div>'+
-      '<h2>New readers</h2><ul class="al"><li><span>This week</span><small>'+wk(0)+'</small></li><li><span>Last week</span><small>'+wk(1)+'</small></li><li><span>2 weeks ago</span><small>'+wk(2)+'</small></li><li><span>3 weeks ago</span><small>'+wk(3)+'</small></li></ul>'+
-      '<h2>Pieces</h2><table class="pt"><tr><th>Piece</th><th>Opens</th><th>Done</th><th>Likes</th><th>Notes</th></tr>'+(rows.length?rows.map(function(p){return '<tr><td>'+esc(p.t)+'</td><td>'+p.o+'</td><td>'+p.f+'</td><td>'+p.l+'</td><td>'+p.c+'</td></tr>'}).join(''):'<tr><td>No pieces yet</td><td></td><td></td><td></td><td></td></tr>')+'</table>'+
-      '<h2>Email your readers</h2><p class="psub" style="margin:0 0 12px">'+emails.length+' reader'+(emails.length===1?'':'s')+' chose to get updates. Opens your email app with them in BCC.</p><div class="row2"><a class="btn primary" href="'+mail+'">Write to them</a><button class="btn" type="button" id="copyEm">Copy emails</button></div>'+
-      '<h2>Contact taps</h2><ul class="al">'+(Object.keys(tap).length?Object.keys(tap).map(function(k){return '<li><span>'+esc(k)+'</span><small>'+tap[k]+'</small></li>'}).join(''):'<li><span>None yet</span></li>')+'</ul>'+
-      '<h2>Readers</h2><ul class="al">'+(us.length?us.map(function(u){return '<li><span><b>'+esc(u.name||'No name')+(u.notify?' ✉':'')+'</b><br><small>'+esc(u.email||'')+'</small><br><small>Read '+(u.read||[]).length+' · Saved '+(u.saved||[]).length+'</small></span><small>joined '+(u.joined?ago(u.joined):'?')+'<br>seen '+(u.lastSeen?ago(u.lastSeen):'?')+'</small></li>'}).join(''):'<li><span>No readers yet</span></li>')+'</ul>'+
-      '<h2>Recent activity</h2><ul class="al">'+(ev.length?ev.slice(0,40).map(function(x){return '<li><span><b>'+esc(x.name||'A visitor')+'</b> '+esc(lab(x))+'</span><small>'+ago(x.ts)+'</small></li>'}).join(''):'<li><span>Nothing yet</span></li>')+'</ul><p class="psub">Opens and finishes count signed-in readers (last 500 events).</p>';
+      '<h2>Pieces</h2>'+T('pcs',['Piece','Opens','Done','Likes','Notes'],['','46px','42px','42px','44px'],rows.length?rows.map(function(p){return '<td>'+esc(p.t)+'</td><td>'+p.o+'</td><td>'+p.f+'</td><td>'+p.l+'</td><td>'+p.c+'</td>'}):['<td>No pieces yet</td><td></td><td></td><td></td><td></td>'],10,'Show all ('+rows.length+')')+
+      '<h2>New readers</h2>'+T('nr',['Period','New'],['','70px'],[['This week',0],['Last week',1],['2 weeks ago',2],['3 weeks ago',3]].map(function(p){return '<td>'+p[0]+'</td><td>'+wk(p[1])+'</td>'}),9,'')+
+      '<h2>Readers</h2>'+T('rdrs',['Reader','Read','Saved','Joined','Seen'],['','36px','40px','46px','44px'],us.length?us.map(function(u){return '<td class="rdr"><b>'+esc(u.name||'No name')+(u.notify?' ✉':'')+'</b><small>'+esc(u.email||'')+'</small></td><td>'+(u.read||[]).length+'</td><td>'+(u.saved||[]).length+'</td><td>'+AS(u.joined)+'</td><td>'+AS(u.lastSeen)+'</td>'}):['<td>No readers yet</td><td></td><td></td><td></td><td></td>'],10,'Show all ('+us.length+')')+
+      '<h2>Contact taps</h2>'+T('ct',['Button','Taps'],['','70px'],tk.length?tk.map(function(k){return '<td>'+esc(k)+'</td><td>'+tap[k]+'</td>'}):['<td>None yet</td><td></td>'],9,'')+
+      '<h2>Email your readers</h2><p class="psub">'+emails.length+' reader'+(emails.length===1?'':'s')+' chose to get updates. Opens your email app with them in BCC.</p><div class="row2"><a class="btn primary sm" href="'+mail+'">Write to them</a><button class="btn sm" type="button" id="copyEm">Copy emails</button></div>'+
+      '<h2>Recent activity</h2>'+T('act',['Reader','Did','Piece','When'],['24%','72px','','36px'],ev.length?ev.slice(0,40).map(function(x){return '<td>'+esc(x.name||'Visitor')+'</td><td>'+esc(VB[x.type]||x.type)+'</td><td>'+esc(x.title||x.target||'–')+'</td><td>'+AS(x.ts)+'</td>'}):['<td>Nothing yet</td><td></td><td></td><td></td>'],10,'Show more')+
+      '<p class="psub" style="margin-top:10px">Opens and finishes count signed-in readers (last 500 events).</p>';
     var cb=$('#copyEm');if(cb)cb.onclick=function(){var t=emails.join(', ');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){cb.textContent='Copied ✓'}).catch(function(){prompt('Copy these emails:',t)})};
   }).catch(function(){box.innerHTML='<p class="psub">Could not load. Add the likes rule in Firestore, then tap Refresh.</p>'})}
+document.addEventListener('click',function(e){var b=e.target.closest('.tgb');if(!b)return;var o=b.closest('.tg').classList.toggle('open');b.textContent=o?b.dataset.less:b.dataset.all});
 initAuth();
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){addEventListener('load',function(){navigator.serviceWorker.register('sw.js')})}
 </script>
