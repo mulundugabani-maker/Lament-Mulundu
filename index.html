@@ -279,6 +279,20 @@ dialog:focus,dialog:focus-visible,.oslides:focus,.oslides:focus-visible,.page:fo
 .imp{max-width:none;margin:14px 0 6px}.imp p{color:var(--dim);font-size:.9rem;margin:6px 0 12px;line-height:1.55}
 #ePv{margin-top:26px;padding-top:22px;border-top:1px solid var(--line);color:var(--tx)}
 .reader p{white-space:pre-line}
+/* v3: replies, likes, new, notes, charts */
+.cm .c.re{margin-left:16px;padding-left:12px;border-left:2px solid var(--line)}
+.cm .c .acts{display:flex;gap:14px;margin-top:4px}.cm .c .acts .lnk{font-size:.75rem;padding:2px 0;color:var(--dim)}
+.cm .c .to{color:var(--grey);font-size:.74rem;margin:0 0 0 0}
+.cm .rf{margin:10px 0 4px}.cm .rf textarea{margin-bottom:8px;min-height:64px}.cm .rf .row{display:flex;gap:10px;align-items:center}.cm .rf .btn{padding:9px 18px;font-size:.84rem;margin:0}
+.rd.lk{display:inline-flex;align-items:center;gap:7px}.rd.lk.on{color:var(--acc-tx);border-color:var(--acc)}
+.newp{display:inline-block;margin-left:8px;font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:2px 8px;border-radius:99px;background:var(--acc);color:var(--on-acc);vertical-align:middle}
+.dock button{position:relative}.dock .dot{position:absolute;top:-2px;left:calc(50% + 6px);width:10px;height:10px;border-radius:50%;background:var(--acc);border:2px solid var(--bg)}
+.notes h3{margin-bottom:10px}.notes ul{list-style:none;display:grid;gap:8px}.notes .rl{width:100%;text-align:left;padding:10px 12px;border-radius:12px;background:var(--s2);border:1px solid var(--line);font-size:.86rem;line-height:1.45;color:var(--tx)}
+.notes .rl.un{border-color:var(--acc)}.notes .rl small{display:block;color:var(--grey);margin-top:2px}.notes .lnk{margin-top:8px;font-size:.78rem}
+.bars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:130px;margin:0 0 24px;padding:14px 12px 8px;border-radius:16px;background:var(--s1);border:1px solid var(--line)}
+.bars div{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px}.bars i{display:block;width:100%;max-width:26px;border-radius:6px 6px 2px 2px;background:var(--acc);min-height:3px;opacity:.85}.bars small{font-size:.62rem;color:var(--grey)}.bars b{font-size:.72rem;font-weight:600}
+.pt{width:100%;border-collapse:collapse;margin-bottom:24px;font-size:.8rem}.pt th{font-weight:600;color:var(--grey);font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;text-align:right;padding:0 6px 8px}.pt th:first-child,.pt td:first-child{text-align:left;padding-left:0}.pt td{padding:9px 6px;border-top:1px solid var(--line);text-align:right}.pt td:first-child{max-width:42vw;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row2{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 22px}.row2 .btn{padding:11px 18px;font-size:.84rem;margin:0}
 </style>
 </head>
 <body>
@@ -1032,16 +1046,31 @@ document.addEventListener('click',function(e){
   else if(t.id==='delacc'){if(!confirm('Delete your account and reading data? This cannot be undone.'))return;var u=authApi.auth.currentUser;
     (fs?fs.m.deleteDoc(fs.m.doc(fs.db,'users',u.uid)).catch(function(){}):Promise.resolve()).then(function(){return authApi.a.deleteUser(u)}).then(function(){try{localStorage.removeItem('lm:'+u.uid)}catch(x){}}).catch(function(er){smsg(er&&er.code==='auth/requires-recent-login'?'For safety, log out, log back in, then try again.':'Could not delete. Try again.')})}
 });
-/* comments */
+/* comments with replies */
 var cmCache=[];
 function cmBox(s){if(!s.body.length)return '';return '<div class="cm"><h3>Comments</h3><div id="cmList"><p class="n">Loading…</p></div>'+(user?'<form id="cmForm"><textarea id="cmText" maxlength="500" rows="3" placeholder="Share a thought…"></textarea><button class="btn primary" type="submit">Post comment</button></form>':'<p class="n hint"><button class="lnk" data-auth="login" type="button">Log in</button> to join the conversation.</p>')+'</div>'}
-function renderComments(){var b=$('#cmList');if(!b)return;b.innerHTML=cmCache.length?cmCache.map(function(c){var own=user&&(c.uid===user.uid||user.uid===ADMIN_UID);return '<div class="c"><b>'+esc(c.name||'Reader')+'</b><small>'+ago(c.ts)+'</small>'+(own?'<button class="lnk" type="button" data-cdel="'+c.id+'">Delete</button>':'')+'<p>'+esc(c.text)+'</p></div>'}).join(''):'<p class="n">No comments yet. Be the first.</p>'}
-function loadComments(pid){cmCache=[];getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'comments'),f.m.where('pid','==',pid)))}).then(function(r){if(openId!==pid)return;cmCache=r.docs.map(function(d){return Object.assign({id:d.id},d.data())}).sort(function(a,b){return b.ts-a.ts});renderComments()}).catch(function(){var b=$('#cmList');if(b)b.innerHTML='<p class="n">Comments are unavailable right now.</p>'})}
-reader.addEventListener('submit',function(e){if(e.target.id!=='cmForm')return;e.preventDefault();var t=$('#cmText').value.trim();if(!t||!user)return;
-  var doc={pid:openId,uid:user.uid,name:user.displayName||user.email.split('@')[0],text:t.slice(0,500),ts:Date.now()};
-  getFS().then(function(f){return f.m.addDoc(f.m.collection(f.db,'comments'),doc)}).then(function(ref){cmCache.unshift(Object.assign({id:ref.id},doc));renderComments();$('#cmText').value='';logEvent({type:'comment',pid:doc.pid,title:storyTitle(doc.pid)})}).catch(function(){var b=$('#cmList');if(b)b.insertAdjacentHTML('beforeend','<p class="n">Could not post. Try again.</p>')})});
-reader.addEventListener('click',function(e){var b=e.target.closest('[data-cdel]');if(!b)return;var id=b.dataset.cdel;
-  getFS().then(function(f){return f.m.deleteDoc(f.m.doc(f.db,'comments',id))}).then(function(){cmCache=cmCache.filter(function(c){return c.id!==id});renderComments()}).catch(function(){})});
+function cItem(c,isRe){var own=user&&(c.uid===user.uid||user.uid===ADMIN_UID),root=isRe?c.rid:c.id;
+  return '<div class="c'+(isRe?' re':'')+'" id="c-'+c.id+'"><b>'+esc(c.name||'Reader')+(c.uid===ADMIN_UID?' · Author':'')+'</b><small>'+ago(c.ts)+'</small>'+(c.rname?'<p class="to">replying to '+esc(c.rname)+'</p>':'')+'<p>'+esc(c.text)+'</p>'+
+    '<div class="acts">'+(user?'<button class="lnk" type="button" data-creply="'+root+'" data-cto="'+esc(c.uid)+'" data-cname="'+esc(c.name||'Reader')+'">Reply</button>':'<button class="lnk" type="button" data-auth="login">Log in to reply</button>')+(own?'<button class="lnk" type="button" data-cdel="'+c.id+'">Delete</button>':'')+'</div><div class="rslot" data-slot="'+c.id+'"></div></div>'}
+function renderComments(){var b=$('#cmList');if(!b)return;var ids={},kids={};cmCache.forEach(function(c){ids[c.id]=1});
+  var roots=cmCache.filter(function(c){return !c.rid||!ids[c.rid]});
+  cmCache.forEach(function(c){if(c.rid&&ids[c.rid]){(kids[c.rid]=kids[c.rid]||[]).push(c)}});
+  b.innerHTML=roots.length?roots.map(function(c){return cItem(c,false)+(kids[c.id]||[]).sort(function(a,b){return a.ts-b.ts}).map(function(k){return cItem(k,true)}).join('')}).join(''):'<p class="n">No comments yet. Be the first.</p>'}
+function loadComments(pid){cmCache=[];loadLikes(pid);getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'comments'),f.m.where('pid','==',pid)))}).then(function(r){if(openId!==pid)return;cmCache=r.docs.map(function(d){return Object.assign({id:d.id},d.data())}).sort(function(a,b){return b.ts-a.ts});renderComments()}).catch(function(){var b=$('#cmList');if(b)b.innerHTML='<p class="n">Comments are unavailable right now.</p>'})}
+function postComment(doc,after){getFS().then(function(f){return f.m.addDoc(f.m.collection(f.db,'comments'),doc)}).then(function(ref){cmCache.unshift(Object.assign({id:ref.id},doc));renderComments();if(after)after();logEvent({type:'comment',pid:doc.pid,title:storyTitle(doc.pid)})}).catch(function(){var b=$('#cmList');if(b)b.insertAdjacentHTML('beforeend','<p class="n">Could not post. Try again.</p>')})}
+function myName(){return user.displayName||user.email.split('@')[0]}
+reader.addEventListener('submit',function(e){var f=e.target;if(f.id==='cmForm'){e.preventDefault();var t=$('#cmText').value.trim();if(!t||!user)return;
+    postComment({pid:openId,uid:user.uid,name:myName(),text:t.slice(0,500),ts:Date.now()},function(){var x=$('#cmText');if(x)x.value=''});return}
+  if(f.classList&&f.classList.contains('rf')){e.preventDefault();var ta=f.querySelector('textarea'),tx=ta.value.trim();if(!tx||!user)return;
+    postComment({pid:openId,uid:user.uid,name:myName(),text:tx.slice(0,500),ts:Date.now(),rid:f.dataset.root,rto:f.dataset.to,rname:f.dataset.name})}});
+reader.addEventListener('click',function(e){
+  var r=e.target.closest('[data-creply]');if(r){var old=reader.querySelector('.rf');if(old)old.remove();var slot=r.closest('.c').querySelector('.rslot');
+    slot.innerHTML='<form class="rf" data-root="'+r.dataset.creply+'" data-to="'+esc(r.dataset.cto)+'" data-name="'+esc(r.dataset.cname)+'"><textarea maxlength="500" rows="2" placeholder="Reply to '+esc(r.dataset.cname)+'…"></textarea><div class="row"><button class="btn primary" type="submit">Reply</button><button class="lnk" type="button" data-rcancel>Cancel</button></div></form>';slot.querySelector('textarea').focus();return}
+  if(e.target.closest('[data-rcancel]')){var fo=reader.querySelector('.rf');if(fo)fo.remove();return}
+  var b=e.target.closest('[data-cdel]');if(!b)return;var id=b.dataset.cdel;if(!confirm('Delete this comment?'))return;
+  var kids=cmCache.filter(function(c){return c.rid===id});
+  getFS().then(function(f){return Promise.all([f.m.deleteDoc(f.m.doc(f.db,'comments',id))].concat(kids.map(function(k){return f.m.deleteDoc(f.m.doc(f.db,'comments',k.id)).catch(function(){})})))}).then(function(){cmCache=cmCache.filter(function(c){return c.id!==id&&c.rid!==id});renderComments()}).catch(function(){})});
+
 /* opening screens */
 var onb=$('#onb'),osl=$('#osl'),od=$('#od'),onbT=null;
 function finishOnb(){try{localStorage.setItem('lm:onb','1')}catch(e){}clearInterval(onbT);if(onb.open)onb.close()}
@@ -1105,10 +1134,10 @@ function mergePosts(list,imp){var old={};REMOTE.forEach(function(o){old[o.id]=o}
   var base=imp?[]:BUILTIN.filter(function(b){return !ids[b.id]});
   STORIES.length=0;Array.prototype.push.apply(STORIES,base.concat(REMOTE));refreshAll()}
 function loadPosts(){
-  try{var c=JSON.parse(localStorage.getItem('lm:posts')||'null');if(c&&c.l&&c.l.length)mergePosts(c.l,c.imp)}catch(e){}
+  try{var c=JSON.parse(localStorage.getItem('lm:posts')||'null');if(c&&c.l&&c.l.length){SITETS=c.st||0;mergePosts(c.l,c.imp)}}catch(e){}
   getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'posts'),f.m.where('published','==',true)))}).then(function(r){
-    var imp=false,l=[];r.docs.forEach(function(d){if(d.id==='_site'){imp=true;return}l.push(toStory(Object.assign({id:d.id},d.data())))});
-    mergePosts(l,imp);try{localStorage.setItem('lm:posts',JSON.stringify({imp:imp,l:l}))}catch(e){}}).catch(function(){})}
+    var imp=false,l=[];r.docs.forEach(function(d){if(d.id==='_site'){imp=true;SITETS=(d.data()||{}).ts||0;return}l.push(toStory(Object.assign({id:d.id},d.data())))});
+    mergePosts(l,imp);try{localStorage.setItem('lm:posts',JSON.stringify({imp:imp,l:l,st:SITETS}))}catch(e){}}).catch(function(){})}
 function loadFullCover(s){getFS().then(function(f){return f.m.getDoc(f.m.doc(f.db,'postmedia',s.id))}).then(function(d){var x=d.exists()&&d.data().full;if(!x)return;s.cover=x;s.fullDone=true;
   if(openId===s.id){var im=rBody.querySelector('.cover img');if(im)im.src=x}}).catch(function(){})}
 function readFile(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result)};r.onerror=rej;r.readAsDataURL(f)})}
@@ -1176,6 +1205,71 @@ $('#eCovFile').addEventListener('change',function(){var f=this.files&&this.files
 ['eBody','eDesc'].forEach(function(i){$('#'+i).addEventListener('input',ePaint)});
 ed.addEventListener('submit',function(e){e.preventDefault();savePost(true)});
 appReady.then(function(){loadPosts()});
+
+/* ---- likes ---- */
+var LK={},SITETS=0;
+function heartSvg(on){return '<svg viewBox="0 0 24 24" width="16" height="16" fill="'+(on?'currentColor':'none')+'" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21.2l7.8-7.7 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>'}
+function likeInner(id){var l=LK[id]||{n:0,mine:false};return heartSvg(l.mine)+'<span>'+(l.n?l.n+(l.n===1?' like':' likes'):'Like')+'</span>'}
+function actBtns(s){if(!s.body.length)return '';var l=LK[s.id]||{n:0,mine:false},
+  lk=user?'<button class="rd lk'+(l.mine?' on':'')+'" type="button" data-like="'+s.id+'" aria-pressed="'+!!l.mine+'">'+likeInner(s.id)+'</button>':'<button class="rd lk" type="button" data-auth="login" data-like-anon="'+s.id+'">'+likeInner(s.id)+'</button>';
+  if(!user)return '<div class="ract">'+lk+'</div><p class="n hint"><button class="lnk" type="button" data-auth="login">Log in</button> to like, save your reading progress and comment.</p>';
+  var r=ST.read.indexOf(s.id)>-1,v=ST.saved.indexOf(s.id)>-1;
+  return '<div class="ract">'+lk+'<button class="rd" type="button" data-toggle="read" data-id="'+s.id+'">'+(r?'Marked as read ✓':'Mark as read')+'</button><button class="rd" type="button" data-toggle="saved" data-id="'+s.id+'">'+(v?'Saved ✓':'Save for later')+'</button></div>'}
+function paintLike(id){var b=rBody.querySelector('[data-like="'+id+'"],[data-like-anon="'+id+'"]');if(!b)return;var l=LK[id]||{};b.innerHTML=likeInner(id);b.classList.toggle('on',!!l.mine);b.setAttribute('aria-pressed',!!l.mine)}
+function loadLikes(pid){getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'likes'),f.m.where('pid','==',pid)))}).then(function(r){
+  var mine=!!(user&&r.docs.some(function(d){return d.id===pid+'__'+user.uid}));LK[pid]={n:r.size,mine:mine};if(openId===pid)paintLike(pid)}).catch(function(){})}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-like]');if(!b||!user)return;var id=b.dataset.like,l=LK[id]||(LK[id]={n:0,mine:false}),was=l.mine;
+  l.mine=!was;l.n=Math.max(0,l.n+(was?-1:1));paintLike(id);
+  getFS().then(function(f){var ref=f.m.doc(f.db,'likes',id+'__'+user.uid);return was?f.m.deleteDoc(ref):f.m.setDoc(ref,{pid:id,uid:user.uid,ts:Date.now()})}).catch(function(){l.mine=was;l.n=Math.max(0,l.n+(was?1:-1));paintLike(id)})});
+
+/* ---- new-piece alerts ---- */
+var NEWFROM=(function(){var n=Date.now(),p=0;try{p=+localStorage.getItem('lm:visit')||0;localStorage.setItem('lm:visit',String(n))}catch(e){}return p||n})(),NEWSEEN=false;
+function isNew(s){return !!(s.remote&&s.body.length&&s.ts>NEWFROM&&s.ts>SITETS)}
+function dockDot(i,on){var b=document.querySelector('#dock button[data-i="'+i+'"]');if(!b)return;var d=b.querySelector('.dot');if(on&&!d)b.insertAdjacentHTML('beforeend','<i class="dot"></i>');if(!on&&d)d.remove()}
+function decorateNew(){var n=0;STORIES.forEach(function(s){if(isNew(s))n++});
+  [].forEach.call(document.querySelectorAll('#feed article[data-read]'),function(a){var s=STORIES.filter(function(x){return x.id===a.dataset.read})[0];if(s&&isNew(s)&&!a.querySelector('.newp')){var t=a.querySelector('.tag');if(t)t.insertAdjacentHTML('afterend','<span class="newp">New</span>')}});
+  dockDot(2,n>0&&!NEWSEEN)}
+var _rf=renderFeed;renderFeed=function(){_rf.apply(this,arguments);decorateNew()};
+document.addEventListener('click',function(e){var d=e.target.closest('#dock button[data-i="2"]');if(d){NEWSEEN=true;dockDot(2,false)}});
+
+/* ---- replies to me ---- */
+var RN={uid:null,list:[]};
+function rseenKey(){return 'lm:rseen:'+(user?user.uid:'')}
+function rseen(){try{return +localStorage.getItem(rseenKey())||0}catch(e){return 0}}
+function unseenN(){var s=rseen();return RN.list.filter(function(c){return c.ts>s}).length}
+function paintNotes(){var box=acctEl;if(!box||!user)return;var old=box.querySelector('.notes');if(old)old.remove();dockDot(4,unseenN()>0);if(!RN.list.length)return;var s=rseen();
+  box.insertAdjacentHTML('afterbegin','<div class="glass acc notes"><h3>Replies to you</h3><ul>'+RN.list.slice(0,5).map(function(c){return '<li><button class="rl'+(c.ts>s?' un':'')+'" type="button" data-read="'+esc(c.pid)+'" data-note="1"><b>'+esc(c.name||'Reader')+'</b> replied: “'+esc((c.text||'').slice(0,90))+(c.text&&c.text.length>90?'…':'')+'”<small>on '+esc(storyTitle(c.pid)||'a piece')+' · '+ago(c.ts)+'</small></button></li>'}).join('')+'</ul>'+(unseenN()?'<button class="lnk" type="button" data-notes-clear>Mark all as seen</button>':'')+'</div>')}
+function loadNotes(){if(!user||RN.uid===user.uid)return;RN.uid=user.uid;getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'comments'),f.m.where('rto','==',user.uid)))}).then(function(r){
+  RN.list=r.docs.map(function(d){return Object.assign({id:d.id},d.data())}).filter(function(c){return c.uid!==user.uid}).sort(function(a,b){return b.ts-a.ts});paintNotes()}).catch(function(){})}
+function markSeen(){try{localStorage.setItem(rseenKey(),String(Date.now()))}catch(e){}paintNotes()}
+document.addEventListener('click',function(e){if(e.target.closest('[data-notes-clear]')){markSeen();return}if(e.target.closest('[data-note]'))setTimeout(markSeen,300)});
+var _ra=renderAccount;renderAccount=function(){_ra.apply(this,arguments);if(user){loadNotes();paintNotes()}};
+
+/* ---- admin dashboard with analytics ---- */
+function loadAdmin(){loadMyPosts();
+  var box=$('#adminBody');if(!fs){box.innerHTML='<p class="psub">Still connecting. Try Refresh in a moment.</p>';return}
+  box.innerHTML='<p class="psub">Loading…</p>';var C=fs.m.collection,G=fs.m.getDocs;
+  Promise.all([G(fs.m.query(C(fs.db,'events'),fs.m.orderBy('ts','desc'),fs.m.limit(500))),G(C(fs.db,'users')),G(C(fs.db,'likes')),G(C(fs.db,'comments'))]).then(function(r){
+    var ev=r[0].docs.map(function(d){return d.data()}),us=r[1].docs.map(function(d){return d.data()}),lk=r[2].docs.map(function(d){return d.data()}),cm=r[3].docs.map(function(d){return d.data()}),
+      DAY=864e5,t0=new Date();t0.setHours(0,0,0,0);t0=t0.getTime();var c={},tap={},po={},pf={},pl={},pc={},days=[0,0,0,0,0,0,0];
+    ev.forEach(function(x){c[x.type]=(c[x.type]||0)+1;if(x.type==='open'&&x.pid){po[x.pid]=(po[x.pid]||0)+1;var k=6-Math.floor((t0+DAY-1-x.ts)/DAY);if(k>=0&&k<7)days[k]++}if(x.type==='finish'&&x.pid)pf[x.pid]=(pf[x.pid]||0)+1;if(x.type==='contact')tap[x.target]=(tap[x.target]||0)+1});
+    lk.forEach(function(x){pl[x.pid]=(pl[x.pid]||0)+1});cm.forEach(function(x){pc[x.pid]=(pc[x.pid]||0)+1});
+    var saves=0;us.forEach(function(u){saves+=(u.saved||[]).length});var now=Date.now(),wk=function(n){return us.filter(function(u){return u.joined>now-(n+1)*7*DAY&&u.joined<=now-n*7*DAY}).length};
+    var rows=STORIES.filter(function(s){return s.body.length}).map(function(s){return {t:s.title,o:po[s.id]||0,f:pf[s.id]||0,l:pl[s.id]||0,c:pc[s.id]||0}}).sort(function(a,b){return (b.o+b.l*3+b.c*2)-(a.o+a.l*3+a.c*2)});
+    var mx=Math.max.apply(null,days.concat([1])),dn=['Su','Mo','Tu','We','Th','Fr','Sa'];
+    var emails=us.filter(function(u){return u.notify&&u.email}).map(function(u){return u.email}),latest=STORIES.filter(function(s){return s.body.length}).sort(function(a,b){return (b.ts||0)-(a.ts||0)})[0];
+    var mail='mailto:?bcc='+encodeURIComponent(emails.join(','))+'&subject='+encodeURIComponent(latest?'New on Lament Mulundu: '+latest.title:'New on Lament Mulundu')+'&body='+encodeURIComponent((latest?'A new piece is up: '+latest.title+'\n\n':'')+location.origin+location.pathname);
+    us.sort(function(a,b){return (b.joined||0)-(a.joined||0)});
+    box.innerHTML='<div class="ag"><div><b>'+us.length+'</b><small>Readers</small></div><div><b>'+wk(0)+'</b><small>New this week</small></div><div><b>'+(c.open||0)+'</b><small>Piece opens</small></div><div><b>'+(c.finish||0)+'</b><small>Finished reads</small></div><div><b>'+lk.length+'</b><small>Likes</small></div><div><b>'+cm.length+'</b><small>Comments</small></div><div><b>'+saves+'</b><small>Saved pieces</small></div><div><b>'+emails.length+'</b><small>Want updates</small></div></div>'+
+      '<h2>Opens, last 7 days</h2><div class="bars">'+days.map(function(n,i){return '<div><b>'+n+'</b><i style="height:'+Math.round(n/mx*80)+'%"></i><small>'+dn[new Date(t0-(6-i)*DAY).getDay()]+'</small></div>'}).join('')+'</div>'+
+      '<h2>New readers</h2><ul class="al"><li><span>This week</span><small>'+wk(0)+'</small></li><li><span>Last week</span><small>'+wk(1)+'</small></li><li><span>2 weeks ago</span><small>'+wk(2)+'</small></li><li><span>3 weeks ago</span><small>'+wk(3)+'</small></li></ul>'+
+      '<h2>Pieces</h2><table class="pt"><tr><th>Piece</th><th>Opens</th><th>Done</th><th>Likes</th><th>Notes</th></tr>'+(rows.length?rows.map(function(p){return '<tr><td>'+esc(p.t)+'</td><td>'+p.o+'</td><td>'+p.f+'</td><td>'+p.l+'</td><td>'+p.c+'</td></tr>'}).join(''):'<tr><td>No pieces yet</td><td></td><td></td><td></td><td></td></tr>')+'</table>'+
+      '<h2>Email your readers</h2><p class="psub" style="margin:0 0 12px">'+emails.length+' reader'+(emails.length===1?'':'s')+' chose to get updates. Opens your email app with them in BCC.</p><div class="row2"><a class="btn primary" href="'+mail+'">Write to them</a><button class="btn" type="button" id="copyEm">Copy emails</button></div>'+
+      '<h2>Contact taps</h2><ul class="al">'+(Object.keys(tap).length?Object.keys(tap).map(function(k){return '<li><span>'+esc(k)+'</span><small>'+tap[k]+'</small></li>'}).join(''):'<li><span>None yet</span></li>')+'</ul>'+
+      '<h2>Readers</h2><ul class="al">'+(us.length?us.map(function(u){return '<li><span><b>'+esc(u.name||'No name')+(u.notify?' ✉':'')+'</b><br><small>'+esc(u.email||'')+'</small><br><small>Read '+(u.read||[]).length+' · Saved '+(u.saved||[]).length+'</small></span><small>joined '+(u.joined?ago(u.joined):'?')+'<br>seen '+(u.lastSeen?ago(u.lastSeen):'?')+'</small></li>'}).join(''):'<li><span>No readers yet</span></li>')+'</ul>'+
+      '<h2>Recent activity</h2><ul class="al">'+(ev.length?ev.slice(0,40).map(function(x){return '<li><span><b>'+esc(x.name||'A visitor')+'</b> '+esc(lab(x))+'</span><small>'+ago(x.ts)+'</small></li>'}).join(''):'<li><span>Nothing yet</span></li>')+'</ul><p class="psub">Opens and finishes count signed-in readers (last 500 events).</p>';
+    var cb=$('#copyEm');if(cb)cb.onclick=function(){var t=emails.join(', ');(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){cb.textContent='Copied ✓'}).catch(function(){prompt('Copy these emails:',t)})};
+  }).catch(function(){box.innerHTML='<p class="psub">Could not load. Add the likes rule in Firestore, then tap Refresh.</p>'})}
 initAuth();
 if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){addEventListener('load',function(){navigator.serviceWorker.register('sw.js')})}
 </script>
