@@ -289,6 +289,9 @@ dialog:focus,dialog:focus-visible,.oslides:focus,.oslides:focus-visible,.page:fo
 .verse{max-width:460px;padding:18px 20px;margin:0 0 20px;text-align:center}
 .verse blockquote{font-family:var(--serif);font-style:italic;font-size:1.02rem;line-height:1.65}
 .verse figcaption{margin-top:10px;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-tx);font-weight:600}
+.getapp{margin-top:18px}.gacard{padding:14px;display:flex;flex-direction:column;gap:8px;max-width:none}
+.gacard b{display:block;font-size:1rem}.gacard .gat small{color:var(--dim);font-size:.82rem}
+.gacard .btn{width:100%}.gacard .lnk{align-self:center;font-size:.82rem}.gahint{color:var(--grey);font-size:.74rem;line-height:1.5}
 .ql{display:flex;flex-wrap:wrap;gap:10px}.ql .btn{padding:11px 18px;font-size:.85rem}
 /* publishing */
 .fld select{width:100%;padding:13px 15px;border-radius:14px;border:1px solid var(--line);background:var(--s2);color:var(--tx);font:inherit;font-size:1rem}
@@ -430,6 +433,7 @@ dialog.reader.out{animation:rOut .21s ease forwards}
   <div class="rise"><h2 class="rt" style="margin-top:20px">Browse by topic</h2><div class="tgrid" id="hl"></div></div>
   <div class="rise"><h2 class="rt" style="margin-top:14px"><span id="latestT">Latest pieces</span><button class="lnk" type="button" data-seeall>See all →</button></h2><div class="rail" id="latest"></div></div>
   <div class="rise" id="xfeedW" hidden><h2 class="rt" style="margin-top:14px">Just posted</h2><div id="xfeed"></div></div>
+  <div class="rise getapp" id="getApp" hidden><div class="glass acc gacard"><div class="gat"><b id="getAppT">Get the Android app</b><small>Open Lament·Mulundu straight from your home screen.</small></div><a class="btn primary" id="getAppBtn" href="downloads/Lament.apk" download>Download the app</a><button class="lnk" id="getAppPwa" type="button" hidden>Or add it to your Home Screen</button><small class="gahint" id="getAppHint"></small></div></div>
   <div class="rise"><h2 class="rt">Quick links</h2><div class="ql">
     <button class="btn" type="button" data-go="p-about">About the writer</button>
     <button class="btn" type="button" data-goto="p-about#contact">Get in touch</button>
@@ -1175,6 +1179,28 @@ initAuth();
   chk();addEventListener('online',function(){chk();data()});
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible'){chk();data()}});
   setInterval(function(){if(document.visibilityState==='visible'){chk();data()}},300000);
+})();
+</script>
+<script>
+/* app download card on Home. APK = file in the downloads folder. When the app is on Google Play, put its link in PLAY. */
+(function(){
+  var APK='downloads/Lament.apk',PLAY='';
+  var box=document.getElementById('getApp');if(!box)return;
+  var btn=document.getElementById('getAppBtn'),hint=document.getElementById('getAppHint'),pwa=document.getElementById('getAppPwa'),ttl=document.getElementById('getAppT'),dp=null;
+  var ua=navigator.userAgent||'',android=/Android/i.test(ua),ios=/iPhone|iPad|iPod/i.test(ua),inApp=false;
+  try{inApp=matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true||(document.referrer||'').indexOf('android-app://')===0}catch(e){}
+  if(inApp)return;
+  if(android){
+    if(PLAY){btn.href=PLAY;btn.removeAttribute('download');btn.target='_blank';btn.rel='noopener';btn.textContent='Get it on Google Play'}
+    else{btn.href=APK;hint.textContent='When it finishes downloading, tap the file to install. If Android asks, allow installs from this browser just this once.'}
+    box.hidden=false;
+  }else if(ios){
+    ttl.textContent='Add the app to your iPhone';btn.hidden=true;
+    hint.textContent='Tap the Share button in Safari, then Add to Home Screen.';box.hidden=false;
+  }
+  addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;if(android){pwa.hidden=false;box.hidden=false}});
+  pwa.addEventListener('click',function(){if(!dp)return;dp.prompt();dp.userChoice.then(function(){dp=null;pwa.hidden=true},function(){})});
+  addEventListener('appinstalled',function(){box.hidden=true});
 })();
 </script>
 </body>
