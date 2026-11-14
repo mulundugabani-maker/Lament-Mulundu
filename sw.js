@@ -2,7 +2,7 @@
    - the page itself is always fetched fresh from the network first (so updates and new work show up on their own)
    - the saved copy is only used when the phone is offline
    - bump V when you want to force every phone to refresh its saved files */
-const V = 'lm-2026-11-14b';
+const V = 'lm-2026-11-14e';
 const PUSH = false; // set to true after you create a OneSignal app (phone push alerts)
 const CORE = ['./', 'index.html', 'manifest.webmanifest'];
 
@@ -22,6 +22,7 @@ self.addEventListener('fetch', e => {
   if (r.method !== 'GET') return;
   const u = new URL(r.url);
   if (u.origin !== location.origin) return;              // Firebase, fonts etc. go straight to the network
+  if (u.pathname.indexOf('/audio/') > -1) return;        // music files: let the browser stream and cache them
   const isPage = r.mode === 'navigate' || (r.headers.get('accept') || '').includes('text/html');
   if (isPage) {                                          // network first, saved copy only when offline
     e.respondWith(
