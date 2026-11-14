@@ -972,7 +972,7 @@ document.addEventListener('click',function(e){var b=e.target.closest('[data-like
 
 /* ---- notifications: bell, new pieces, replies. They stay until read. ---- */
 var FIRSTVISIT=(function(){var n=Date.now(),p=0;try{p=+localStorage.getItem('lm:first')||0;if(!p)localStorage.setItem('lm:first',String(n))}catch(e){}return p||n})(),
-    ANONREAD=[],RN={uid:null,list:[],adm:[]},ONESIGNAL_APP_ID='';
+    ANONREAD=[],RN={uid:null,list:[],adm:[]},ONESIGNAL_APP_ID='e1632d3c-5343-41ab-b0df-0e7a1143cbf5';
 try{ANONREAD=JSON.parse(localStorage.getItem('lm:nread')||'[]')}catch(e){}
 function nreadList(){return user?(ST.nread||(ST.nread=[])):ANONREAD}
 function isRead(k){return nreadList().indexOf(k)>-1}
@@ -1023,7 +1023,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pn=$('#
 var _ra=renderAccount;renderAccount=function(){_ra.apply(this,arguments);paintTop();if(user)loadNotes();paintAlerts()};
 /* optional phone push through OneSignal (needs your OneSignal App ID; set PUSH=true in sw.js too) */
 function osInit(){if(!ONESIGNAL_APP_ID||window._osI)return;window._osI=1;window.OneSignalDeferred=window.OneSignalDeferred||[];var s=document.createElement('script');s.src='https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';s.defer=true;document.head.appendChild(s);
-  OneSignalDeferred.push(function(OS){OS.init({appId:ONESIGNAL_APP_ID,serviceWorkerPath:'sw.js',serviceWorkerParam:{scope:location.pathname.replace(/[^/]*$/,'')},notifyButton:{enable:false}}).then(function(){if(user)OS.login(user.uid)})})}
+  OneSignalDeferred.push(function(OS){OS.init({appId:ONESIGNAL_APP_ID,serviceWorkerPath:location.pathname.replace(/^\/|[^/]*$/g,'')+'sw.js',serviceWorkerParam:{scope:location.pathname.replace(/[^/]*$/,'')},safari_web_id:'web.onesignal.auto.54cd441e-7f12-4aed-9845-f98eb5c10ecb',notifyButton:{enable:false}}).then(function(){if(user)OS.login(user.uid)})})}
 function osAsk(){osInit();(window.OneSignalDeferred=window.OneSignalDeferred||[]).push(function(OS){OS.Notifications.requestPermission()})}
 if(ONESIGNAL_APP_ID)osInit();
 
