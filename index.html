@@ -875,10 +875,10 @@ ped.addEventListener('submit',function(e){e.preventDefault();var pm=$('#pMsg'),n
 /* ---- publishing: posts live in Firestore, covers split into a small thumb + a full image ---- */
 var BUILTIN=STORIES.slice(),REMOTE=[],MY={},ED={},ed=$('#editor'),POS={top:'50% 20%',mid:'50% 50%',bot:'50% 80%'};
 function isAdm(){return !!(user&&ADMIN_UID&&user.uid===ADMIN_UID)}
-function toStory(p){var b=p.body||[];return {id:p.id,cat:p.cat||'Life',tag:p.tag||p.cat||'',title:p.title||'Untitled',cover:p.thumb||'',pos:p.pos||'50% 50%',status:p.status||(b.length?'Read now':'Coming soon'),body:b,desc:p.desc||'',ts:p.ts||0,remote:true,hasFull:!!p.hasFull}}
+function toStory(p){var b=p.body||[];return {id:p.id,cat:p.cat||'Life',tag:p.tag||p.cat||'',title:p.title||'Untitled',cover:p.thumb||'',thumb:p.thumb||'',pos:p.pos||'50% 50%',status:p.status||(b.length?'Read now':'Coming soon'),body:b,desc:p.desc||'',ts:p.ts||0,remote:true,hasFull:!!p.hasFull}}
 function refreshAll(){readable=STORIES.filter(function(s){return s.body.length});$('#stPieces').textContent=readable.length;renderHL();renderFeed();doSearch();renderAccount()}
 function mergePosts(list,imp){var old={};REMOTE.forEach(function(o){old[o.id]=o});
-  list.forEach(function(n){var o=old[n.id];if(o&&o.fullDone){n.cover=o.cover;n.fullDone=true}});
+  list.forEach(function(n){var o=old[n.id];if(o&&o.fullDone&&o.thumb===n.thumb){n.cover=o.cover;n.fullDone=true}});
   REMOTE=list.slice().sort(function(a,b){return (a.ts||0)-(b.ts||0)});
   var ids={};list.forEach(function(p){ids[p.id]=1});
   var base=imp?[]:BUILTIN.filter(function(b){return !ids[b.id]});
