@@ -216,6 +216,7 @@ dialog.reader::backdrop{background:rgba(0,0,0,.75)}
 .accp .rdn{display:block;margin-top:6px;font-size:.88rem}.accp .prog{height:6px;margin-top:6px}
 .accp .pb2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 .accp .pb2 .btn{margin:0;padding:10px 8px;font-size:.84rem;width:100%}
+.alb{font-size:.66rem;padding:4px 10px;border-radius:99px;border:1px solid var(--acc);background:none;color:var(--acc-tx);white-space:nowrap;margin-left:auto;margin-right:8px}
 .setc{padding:10px 14px}
 .setc .srow{padding:8px 0}
 .setc .srow>span,.setc summary{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-tx);font-weight:600}
@@ -909,8 +910,18 @@ function loadMyPosts(){var box=$('#adminPosts');if(!box)return;if(!fs){box.inner
     box.innerHTML='<div class="sh"><h2>Posts</h2><button class="btn primary sm" type="button" id="newPost">New post</button></div>'+
       (imp?'':'<div class="imp"><span>Move your '+BUILTIN.length+' pieces here<small id="impMsg">One time only</small></span><button class="btn sm" type="button" id="doImport">Import</button></div>')+
       '<div class="imp"><span>Sharper cover photos<small id="covMsg">Pick a piece, then its original photo</small></span><button class="btn sm" type="button" id="covOpen">Open</button></div><div id="covList" hidden></div>'+
-      '<div class="tg"><ul class="al pl">'+(rows.length?rows.map(function(x,i){return '<li class="pli'+(i>=PL?' x':'')+'" data-edit="'+esc(x.id)+'" role="button" tabindex="0"><span><b>'+esc(x.title||'Untitled')+'</b><small>'+esc(x.cat||'')+' · '+(x.ts?new Date(x.ts).toLocaleDateString():'')+'</small></span><span class="pill'+(x.published?' pub':'')+'">'+(x.published?'Published':'Draft')+'</span></li>'}).join(''):'<li><span>No posts yet. Tap “New post” to write your first.</span></li>')+'</ul>'+(rows.length>PL?'<button class="tgb" type="button" data-all="Show all ('+rows.length+')" data-less="Show less">Show all ('+rows.length+')</button>':'')+'</div>'
+      '<div class="tg"><ul class="al pl">'+(rows.length?rows.map(function(x,i){return '<li class="pli'+(i>=PL?' x':'')+'" data-edit="'+esc(x.id)+'" role="button" tabindex="0"><span><b>'+esc(x.title||'Untitled')+'</b><small>'+esc(x.cat||'')+' · '+(x.ts?new Date(x.ts).toLocaleDateString():'')+'</small></span>'+(x.published?'<button class="alb" type="button" data-alert="'+esc(x.id)+'">Copy alert</button>':'')+'<span class="pill'+(x.published?' pub':'')+'">'+(x.published?'Published':'Draft')+'</span></li>'}).join(''):'<li><span>No posts yet. Tap “New post” to write your first.</span></li>')+'</ul>'+(rows.length>PL?'<button class="tgb" type="button" data-all="Show all ('+rows.length+')" data-less="Show less">Show all ('+rows.length+')</button>':'')+'</div>'
   }).catch(function(){box.innerHTML='<h2>Posts</h2><p class="psub">Could not load posts. Add the posts rules in Firestore first.</p>'})}
+/* admin: copy a short push-alert line (title + first sentence) for a published piece */
+function alertText(x){var t=(x.title||'New piece').trim(),b=(x.body||[]),p='';
+  for(var i=0;i<b.length;i++){var v=String(typeof b[i]==='string'?b[i]:(b[i]&&b[i].t)||'').replace(/[*_#>`]/g,'').replace(/\s+/g,' ').trim();if(v.length>20){p=v;break}}
+  if(!p)p=String(x.desc||'').replace(/\s+/g,' ').trim();
+  var m=p.match(/^(.{20,130}?[.!?])(\s|$)/),sn=m?m[1]:(p.length>120?p.slice(0,120).replace(/\s+\S*$/,'')+'…':p);
+  return sn?t+': '+sn:t}
+function copyTxt(t){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t).catch(function(){return fbCopy(t)});return fbCopy(t)}
+function fbCopy(t){return new Promise(function(res){var a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();res()})}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-alert]');if(!b)return;e.stopPropagation();e.preventDefault();
+  var x=MY[b.dataset.alert];if(!x)return;copyTxt(alertText(x)).then(function(){b.textContent='Copied';setTimeout(function(){b.textContent='Copy alert'},2200)})},true);
 var COVID=null;
 function covRows(){var box=$('#covList');if(!box)return;var rows=Object.keys(MY).map(function(k){return MY[k]}).sort(function(a,b){return (b.ts||0)-(a.ts||0)});
   box.innerHTML='<ul class="cvl">'+rows.map(function(x){return '<li><span class="cvt">'+(x.thumb?'<img alt="" src="'+esc(x.thumb)+'">':'')+'</span><span class="cvn"><b>'+esc(x.title||'Untitled')+'</b><small>'+esc(x.cat||'')+'</small></span><button class="btn sm" type="button" data-cov="'+esc(x.id)+'">Replace photo</button></li>'}).join('')+'</ul><input type="file" id="covFile" accept="image/*" hidden>'}
