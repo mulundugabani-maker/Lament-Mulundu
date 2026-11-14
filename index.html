@@ -1168,7 +1168,10 @@ initAuth();
   var http=location.protocol.indexOf('http')===0,last=0,BASE=(navigator.onLine===false?'offline':null),RL=0;try{RL=+sessionStorage.getItem('lm:rl')||0}catch(e){}
   function toast(t){var d=document.createElement('div');d.className='utoast';d.textContent=t;document.body.appendChild(d);setTimeout(function(){d.remove()},4500)}
   function reload(){if(document.querySelector('dialog[open]')){setTimeout(reload,5000);return}try{sessionStorage.setItem('lm:rl',String(Date.now()))}catch(e){}location.reload()}
-  function fresh(){if(Date.now()-RL<600000)return false;RL=Date.now();toast('Updated. Refreshing…');setTimeout(reload,1500);return true}
+  var PEND=false;
+  /* quiet update: no message and no reload while someone is reading. The new version is applied when the app goes to the background, or next time it opens. */
+  function fresh(){if(Date.now()-RL<600000)return false;RL=Date.now();PEND=true;return true}
+  document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden'&&PEND&&!document.querySelector('dialog[open]')){PEND=false;try{sessionStorage.setItem('lm:rl',String(Date.now()))}catch(e){}location.reload()}});
   function sig(){return fetch(location.pathname,{method:'HEAD',cache:'no-store'}).then(function(r){return r.ok?(r.headers.get('etag')||r.headers.get('last-modified')||''):''}).catch(function(){return ''})}
   function chk(){if(!http)return;sig().then(function(s){if(!s)return;if(BASE===null){BASE=s;return}if(s!==BASE){if(fresh())BASE=s}})}
   function data(){var n=Date.now();if(n-last<60000)return;last=n;try{loadPosts()}catch(e){}try{if(user)refreshNotes()}catch(e){}}
