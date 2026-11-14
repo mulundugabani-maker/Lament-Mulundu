@@ -206,6 +206,16 @@ dialog.reader::backdrop{background:rgba(0,0,0,.75)}
 .pph .col{display:grid;gap:4px;justify-items:start}
 .srow{padding:16px 0;border-top:1px solid var(--line)}.srow>span{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-tx);font-weight:600;margin-bottom:10px}
 .srow .lnk{display:block;color:var(--tx);text-decoration:none;padding:6px 0}.srow .lnk.dng{color:var(--danger)}.srow small{display:block;color:var(--grey);font-size:.78rem;margin-top:4px}
+.accp{padding:14px}
+.accp .me{margin-bottom:8px;gap:12px}
+.accp .av{flex:0 0 46px;width:46px;height:46px;font-size:1.1rem}
+.accp .me b{font-size:1rem}.accp .me small{font-size:.78rem}
+.accp .pbio{font-size:.86rem;line-height:1.5;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.accp .pmeta{margin-bottom:6px;font-size:.78rem}
+.accp .tags{flex-wrap:nowrap;overflow-x:auto;margin-bottom:8px;scrollbar-width:none}.accp .tags::-webkit-scrollbar{display:none}.accp .tags span{white-space:nowrap;flex:0 0 auto}
+.accp .rdn{display:block;margin-top:6px;font-size:.88rem}.accp .prog{height:6px;margin-top:6px}
+.accp .pb2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.accp .pb2 .btn{margin:0;padding:10px 8px;font-size:.84rem;width:100%}
 .setc{padding:10px 14px}
 .setc .srow{padding:8px 0}
 .setc .srow>span,.setc summary{font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--acc-tx);font-weight:600}
@@ -672,13 +682,12 @@ function renderAccount(){
       done=R.filter(function(x){return ST.read.indexOf(x.id)>-1}).length,
       cont=R.filter(function(x){return ST.read.indexOf(x.id)<0&&ST.prog[x.id]>.03}),
       sv=STORIES.filter(function(x){return ST.saved.indexOf(x.id)>-1}),isAdmin=ADMIN_UID&&user.uid===ADMIN_UID,p=ST.prof||{};
-    top='<div class="glass acc"><div class="me">'+avHtml(nm,p)+'<span><b>'+esc(nm)+'</b><small>'+esc(user.email)+'</small></span></div>'+
+    top='<div class="glass acc accp"><div class="me">'+avHtml(nm,p)+'<span><b>'+esc(nm)+'</b><small>'+esc(user.email)+'</small></span></div>'+
       (p.bio?'<p class="pbio">'+esc(p.bio)+'</p>':'')+(p.place?'<p class="pmeta">'+esc(p.place)+'</p>':'')+
       ((p.topics||[]).length?'<div class="tags">'+p.topics.map(function(t){return '<span>'+esc(t)+'</span>'}).join('')+'</div>':'')+
-      '<button class="btn block" id="editProf" type="button">Edit profile</button>'+
-      '<b style="display:block;margin-top:14px">Read '+done+' of '+R.length+'</b><div class="prog"><i style="width:'+Math.round(done/R.length*100)+'%"></i></div>'+
-      (isAdmin?'<button class="btn primary block" id="newPostQuick" type="button" style="margin-top:18px">Write a new post</button><button class="btn block" id="openAdmin" type="button">Admin dashboard</button>':'')+
-      '<button class="btn block" id="logout" type="button" style="margin-top:'+(isAdmin?'8':'16')+'px">Log out</button>'+
+      '<b class="rdn">Read '+done+' of '+R.length+'</b><div class="prog"><i style="width:'+Math.round(done/R.length*100)+'%"></i></div>'+
+      '<div class="pb2">'+(isAdmin?'<button class="btn primary" id="newPostQuick" type="button">New post</button><button class="btn" id="openAdmin" type="button">Admin dashboard</button>':'')+
+      '<button class="btn" id="editProf" type="button">Edit profile</button><button class="btn" id="logout" type="button">Log out</button></div>'+
       (!ADMIN_UID?'<div class="idb">Setup: your user ID is<br><b>'+esc(user.uid)+'</b></div>':'')+'</div>'+
       (cont.length?'<h2 class="rt">Continue reading <small>'+cont.length+'</small></h2>'+rail(cont):'')+
       '<h2 class="rt">Saved pieces <small>'+sv.length+'</small></h2>'+(sv.length?rail(sv):'<p class="psub">Nothing saved yet. Open a piece and tap “Save for later”.</p>')}

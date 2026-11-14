@@ -2,7 +2,7 @@
    - the page itself is always fetched fresh from the network first (so updates and new work show up on their own)
    - the saved copy is only used when the phone is offline
    - bump V when you want to force every phone to refresh its saved files */
-const V = 'lm-2026-11-14i';
+const V = 'lm-2026-11-14j';
 const PUSH = false; // set to true after you create a OneSignal app (phone push alerts)
 const CORE = ['./', 'index.html', 'manifest.webmanifest'];
 
