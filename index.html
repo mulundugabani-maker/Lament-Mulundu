@@ -487,7 +487,7 @@ dialog.reader.out{animation:rOut .21s ease forwards}
 <path d="M48 26h96a12 12 0 0 1 12 12v40a12 12 0 0 1-12 12H84l-22 18V90H48a12 12 0 0 1-12-12V38a12 12 0 0 1 12-12z"/>
 <g fill="currentColor" stroke="none"><circle cx="76" cy="58" r="3.6"/><circle cx="96" cy="58" r="3.6"/><circle cx="116" cy="58" r="3.6"/></g>
 <path d="M112 80h84a12 12 0 0 1 12 12v36a12 12 0 0 1-12 12h-12v18l-20-18h-52a12 12 0 0 1-12-12V92a12 12 0 0 1 12-12z" fill="var(--bg)" stroke="var(--acc)"/>
-<path transform="translate(140 92)" d="M12 21s-7-4.5-7-10a4.2 4.2 0 0 1 7-3 4.2 4.2 0 0 1 7 3c0 5.5-7 10-7 10z" stroke="var(--acc)"/></svg><h1>Join the <em>conversation</em></h1><p>A free account lets you comment on pieces and mark what you have read.</p></section></div><div class="odots" id="od"></div><div class="ob-cta"><button class="btn primary" type="button" data-auth="signup">Sign up free</button><button class="btn" type="button" id="obGoogle"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.2 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.1-3.1A11 11 0 0 0 2.1 7.1l3.6 2.8C6.6 7.4 9.1 5.4 12 5.4z"/></svg>Continue with Google</button><button class="btn" type="button" data-auth="login">Continue with email</button><p class="msg" id="obMsg" role="status" style="text-align:center;margin:0"></p><button class="lnk" id="oskip" type="button">Just browse for now</button><p class="legal">By signing up, you agree that your name and email are used to run your account. <button class="lnk" type="button" data-privacy>Privacy</button></p></div></dialog>
+<path transform="translate(140 92)" d="M12 21s-7-4.5-7-10a4.2 4.2 0 0 1 7-3 4.2 4.2 0 0 1 7 3c0 5.5-7 10-7 10z" stroke="var(--acc)"/></svg><h1>Join the <em>conversation</em></h1><p>A free account lets you comment on pieces and mark what you have read.</p></section></div><div class="odots" id="od"></div><div class="ob-cta"><button class="btn primary" type="button" data-auth="signup">Sign up free</button><button class="btn" type="button" id="obGoogle"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.2 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.1-3.1A11 11 0 0 0 2.1 7.1l3.6 2.8C6.6 7.4 9.1 5.4 12 5.4z"/></svg>Continue with Google</button><button class="btn" type="button" data-auth="login">Continue with email</button><p class="msg" id="obMsg" role="status" style="text-align:center;margin:0"></p><button class="lnk" id="oskip" type="button" hidden style="display:none">Just browse for now</button><p class="legal">By signing up, you agree that your name and email are used to run your account. <button class="lnk" type="button" data-privacy>Privacy</button></p></div></dialog>
 <dialog class="auth" id="auth" aria-label="Log in or sign up"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw" id="authBody"></div></dialog>
 <dialog class="auth" id="admin" aria-label="Admin dashboard"><div class="ahd"><button class="xb" type="button" data-aclose aria-label="Close">✕</button><b tabindex="-1" autofocus style="outline:none">Admin dashboard</b><button class="btn sm" id="adminRefresh" type="button">Refresh</button></div><div class="aw wide adm"><div id="adminPosts"></div><div id="adminBody"></div></div></dialog>
 <dialog class="auth" id="pedit" aria-label="Edit profile"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw left"><h1>Edit profile</h1>
@@ -917,7 +917,7 @@ var ICONS = {
 };
 var CATS=['Love','Faith','Life','Fiction','Poetry','Reviews'];
 function $(s){return document.querySelector(s)}
-var user=null,ST={saved:[],read:[],prog:{}};
+var authReady=false,user=null,ST={saved:[],read:[],prog:{}};
 function stat(s){if(!user||!s.body.length)return s.status;if(ST.read.indexOf(s.id)>-1)return 'Read ✓';var p=ST.prog[s.id];return p>.03?Math.round(p*100)+'% read':s.status}
 function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function cov(st){return st.cover?'<div class="cover"><img style="object-position:'+(st.pos||'50% 50%')+'" src="'+esc(st.cover)+'" alt="" decoding="async" onerror="this.parentNode.remove()"></div>':'<div class="cover tc"><div class="gi t'+(1+st.title.length%5)+'"><svg viewBox="0 0 24 24">'+(ICONS[st.cat]||ICONS.Life)+'</svg></div></div>'}
@@ -1060,15 +1060,15 @@ function initAuth(){
   var v='https://www.gstatic.com/firebasejs/10.12.2/';
   Promise.all([import(v+'firebase-app.js'),import(v+'firebase-auth.js')]).then(function(m){
     var a=m[1],app=m[0].initializeApp(FIREBASE);authApi={a:a,auth:a.getAuth(app)};fbApp=app;appRes();
-    a.onAuthStateChanged(authApi.auth,function(u){user=u;
-      if(u){if(authDlg.open)authDlg.close();if(onb.open)finishOnb();loadLocal();getFS().then(pull).catch(function(){})}
-      else ST={saved:[],read:[],prog:{}};
+    a.onAuthStateChanged(authApi.auth,function(u){user=u;authReady=true;if(!u)showGate();
+      if(u){if(authDlg.open)authDlg.close();if(onb.open)finishOnb();loadLocal();getFS().then(pull).catch(function(){});loadPosts()}
+      else{ST={saved:[],read:[],prog:{}};try{localStorage.removeItem('lm:posts')}catch(e){}}
       renderAccount();renderFeed()});
   }).catch(function(){acctEl.innerHTML='<div class="glass acc"><p class="psub" style="margin:0">Could not connect. Check your internet and try again.</p></div>'+setHtml()});
 }
 function fail(e){say(ERR[e&&e.code]||'Something went wrong. Please try again.')}
 document.addEventListener('click',function(e){
-  var t=e.target.closest('[data-auth]');if(t){if(onb.open)finishOnb();if(authApi)showAuth(t.dataset.auth);return}
+  var t=e.target.closest('[data-auth]');if(t){if(authApi)showAuth(t.dataset.auth);return}
   if(e.target.closest('[data-aclose]')){e.target.closest('dialog').close();return}
   t=e.target.closest('button');if(!t)return;
   if(t.id==='logout'){authApi.a.signOut(authApi.auth)}
@@ -1176,8 +1176,9 @@ function startOnb(){odots();clearInterval(onbT);onbT=setInterval(function(){if(!
 osl.addEventListener('scroll',function(){requestAnimationFrame(odots)},{passive:true});
 ['touchstart','pointerdown'].forEach(function(ev){osl.addEventListener(ev,function(){clearInterval(onbT)},{passive:true})});
 $('#oskip').addEventListener('click',finishOnb);
-onb.addEventListener('cancel',function(){try{localStorage.setItem('lm:onb','1')}catch(e){}});
-setTimeout(function(){var seen;try{seen=localStorage.getItem('lm:onb')}catch(e){}if(!seen&&!user){onb.showModal();startOnb()}},1700);
+onb.addEventListener('cancel',function(e){e.preventDefault()});
+function showGate(){if(!onb.open){onb.showModal();startOnb()}}
+onb.addEventListener('close',function(){if(authReady&&!user)setTimeout(showGate,0)});
 
 /* ---- theme, reader size, privacy ---- */
 document.addEventListener('click',function(e){
