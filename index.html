@@ -486,6 +486,46 @@ dialog.reader.out{animation:rOut .21s ease forwards}
 #tour p{font-size:.8rem;line-height:1.5;margin:0 0 9px}
 #tour .td{margin-bottom:9px}
 #tour .tb .btn{flex:0 0 auto;min-width:74px;padding:7px 12px;font-size:.8rem}
+
+/* ---- compact, premium polish ---- */
+.svl{display:grid;gap:8px;margin:0 0 6px}
+.svi{display:flex;align-items:center;gap:12px;width:100%;padding:8px 12px 8px 8px;border-radius:16px;background:linear-gradient(160deg,var(--s1),var(--bg));border:1px solid var(--line);text-align:left;color:inherit;transition:border-color .2s,transform .15s}
+.svi:hover{border-color:var(--acc)}.svi:active{transform:scale(.985)}
+.svt{flex:0 0 58px;width:58px;height:58px;border-radius:13px;overflow:hidden;background:#0d0d0e;display:grid;place-items:center}
+.svt img{width:100%;height:100%;object-fit:contain;display:block}
+.svb{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.svb small{font-size:.58rem;letter-spacing:.14em;text-transform:uppercase;color:var(--acc-tx);font-weight:600}
+.svb b{font-family:var(--serif);font-weight:600;font-size:.92rem;line-height:1.25;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.svb em{font-style:normal;font-size:.72rem;color:var(--grey)}
+.svi .chev{color:var(--grey);font-size:1.3rem;line-height:1;padding-right:2px}
+/* about card: smaller */
+.about .aboutcard{display:grid;grid-template-columns:62px 1fr;column-gap:14px;row-gap:9px;align-items:center;text-align:left;padding:14px 14px 14px}
+.about .aboutcard .avatar{grid-row:1/3;width:62px;height:62px;margin:0;padding:2px;border-width:1.5px}
+.about .aboutcard h1{grid-column:2;font-size:1.25rem;margin:0;align-self:end}
+.about .aboutcard .handle{grid-column:2;margin:0;font-size:.8rem;align-self:start}
+.about .aboutcard .chips,.about .aboutcard .bio,.about .aboutcard .stats,.about .aboutcard .actions{grid-column:1/-1}
+.about .aboutcard .chips{justify-content:flex-start;gap:6px;margin:2px 0 0}.about .aboutcard .chips span{font-size:.68rem;padding:4px 11px}
+.about .aboutcard .bio{margin:0;font-size:.92rem;line-height:1.45;max-width:none;text-align:left}
+.about .aboutcard .stats{max-width:none;padding:7px 4px;margin:0}.about .aboutcard .stats b{font-size:1rem}.about .aboutcard .stats small{font-size:.58rem}
+.about .aboutcard .actions{flex-wrap:nowrap;gap:8px}.about .aboutcard .actions .btn{flex:1;min-width:0;padding:10px 12px;font-size:.84rem;white-space:nowrap}
+/* reader ending: author line, meta, buttons, comments */
+#rBody>p.n{margin:10px 0 0;font-size:.9rem}
+.sgn{display:flex;align-items:center;gap:9px;margin:24px 0 0;padding-top:16px;position:relative}
+.sgn .sgl{position:absolute;top:0;left:0;width:34px;height:2px;border-radius:2px;background:var(--acc)}
+.sgn .sga{width:24px;height:24px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:var(--acc);color:var(--on-acc);font-family:var(--disp);font-style:italic;font-size:.8rem;flex:0 0 24px}
+.sgn .sga img{width:100%;height:100%;object-fit:cover;display:block}
+.sgn b{font-family:var(--sans);font-size:.7rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:var(--dim)}
+.xm{margin:8px 0 0;padding:0 0 12px;border:0;border-bottom:1px solid var(--line);font-size:.78rem}
+.ract{margin-top:12px;gap:8px}.ract .rd{padding:7px 14px;font-size:.78rem}.ract .rd.la{padding:7px 12px}
+.cm{margin-top:16px;padding-top:14px;border-top:0}.cm h3{font-size:.98rem;margin-bottom:10px}
+.cm .c{margin-bottom:10px;gap:9px}.cm .c .cav{flex:0 0 30px;width:30px;height:30px;font-size:.76rem}
+.cm .c p.ct{font-size:.9rem;line-height:1.45;margin:1px 0 0}
+.cm .c .acts{margin-top:1px;gap:14px}.cm .c .acts .lnk{padding:0}
+.cm .c.re{margin-left:8px;padding-left:10px}
+.cm textarea,#cmText{padding:10px 12px;border-radius:14px;margin-bottom:8px;min-height:0;height:56px;font-size:.9rem;line-height:1.4}
+.cm form>.btn{padding:9px 20px;font-size:.84rem;margin:0}
+.cm .rf{margin:6px 0 2px}.cm .rf textarea{min-height:0;height:48px;margin-bottom:6px}
+.cm .rf .btn{padding:7px 16px;font-size:.8rem}
 </style>
 </head>
 <body>
@@ -728,6 +768,8 @@ function flush(){if(!fs||!user)return;while(evq.length){var ev=evq.shift();fs.m.
 function logEvent(ev){if(user&&ADMIN_UID&&user.uid===ADMIN_UID)return;evq.push(ev);flush()}
 function tapAnon(t){try{fetch('https://firestore.googleapis.com/v1/projects/'+FIREBASE.projectId+'/databases/(default)/documents/events?key='+FIREBASE.apiKey,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{type:{stringValue:'contact'},target:{stringValue:t},ts:{integerValue:String(Date.now())}}})}).catch(function(){})}catch(e){}}
 document.addEventListener('click',function(e){var a=e.target.closest('[data-t]');if(!a||!FIREBASE.apiKey)return;if(fs&&user)logEvent({type:'contact',target:a.dataset.t});else tapAnon(a.dataset.t)});
+function savedList(list){return '<div class="svl">'+list.map(function(x){var n=1+(x.title||'').length%5;
+  return '<button class="svi" type="button" data-read="'+x.id+'"><span class="svt">'+(x.cover?'<img src="'+esc(x.cover)+'" alt="" decoding="async">':'<div class="gi t'+n+'" style="width:34px;height:34px;border-radius:11px"><svg viewBox="0 0 24 24">'+(ICONS[x.cat]||ICONS.Life)+'</svg></div>')+'</span><span class="svb"><small>'+esc(x.cat||'')+'</small><b>'+esc(x.title)+'</b><em>'+esc(stat(x))+'</em></span><span class="chev" aria-hidden="true">›</span></button>'}).join('')+'</div>'}
 function rail(list){return '<div class="rail">'+list.map(function(x){return '<button class="mini" data-read="'+x.id+'">'+(x.cover?'<img src="'+esc(x.cover)+'" alt="" decoding="async">':phHtml(x))+(fresh(x)?'<i class="mnew">New</i>':'')+'<small>'+esc(stat(x))+'</small><span>'+esc(x.title)+'</span></button>'}).join('')+'</div>'}
 function setHtml(){var sz=SET.size,md=SET.mode,pp=SET.paper;
   function seg(key,cur,opts){return '<div class="seg">'+opts.map(function(o){return '<button type="button" data-set="'+key+':'+o[0]+'" class="'+(cur===o[0]?'on':'')+'">'+o[1]+'</button>'}).join('')+'</div>'}
@@ -753,8 +795,8 @@ function renderAccount(){
       '<div class="pb2">'+(isAdmin?'<button class="btn primary" id="newPostQuick" type="button">New post</button><button class="btn" id="openAdmin" type="button">Admin dashboard</button>':'')+
       '<button class="btn" id="editProf" type="button">Edit profile</button><button class="btn" id="logout" type="button">Log out</button></div>'+
       (!ADMIN_UID?'<div class="idb">Setup: your user ID is<br><b>'+esc(user.uid)+'</b></div>':'')+'</div>'+
-      (cont.length?'<h2 class="rt">Continue reading <small>'+cont.length+'</small></h2>'+rail(cont):'')+
-      '<h2 class="rt">Saved pieces <small>'+sv.length+'</small></h2>'+(sv.length?rail(sv):'<p class="psub">Nothing saved yet. Open a piece and tap “Save for later”.</p>')}
+      (cont.length?'<h2 class="rt">Continue reading <small>'+cont.length+'</small></h2>'+savedList(cont):'')+
+      '<h2 class="rt">Saved pieces <small>'+sv.length+'</small></h2>'+(sv.length?savedList(sv):'<p class="psub">Nothing saved yet. Open a piece and tap “Save for later”.</p>')}
   else{top='<div class="glass acc"><h3>Join the reading room</h3><p class="psub" style="margin:8px 0 0">Save your reading progress, comment on pieces, and pick up where you left off on any phone.</p><div class="cta"><button class="btn primary block" type="button" data-auth="signup">Create an account</button><button class="btn block" type="button" data-auth="login">Log in</button></div></div>'}
   acctEl.innerHTML=top+setHtml();renderHome()}
 function showAuth(m){mode=m;amsg='';var su=m==='signup';
@@ -859,7 +901,7 @@ document.addEventListener('click',function(e){
 });
 /* comments with replies */
 var cmCache=[];
-function cmBox(s){if(!s.body.length)return '';return '<div class="cm"><h3>Comments</h3><div id="cmList"><p class="n">Loading…</p></div>'+(user?'<form id="cmForm"><textarea id="cmText" maxlength="500" rows="3" placeholder="Share a thought…"></textarea><button class="btn primary" type="submit">Post comment</button></form>':'<p class="n hint"><button class="lnk" data-auth="login" type="button">Log in</button> to join the conversation.</p>')+'</div>'}
+function cmBox(s){if(!s.body.length)return '';return '<div class="cm"><h3>Comments</h3><div id="cmList"><p class="n">Loading…</p></div>'+(user?'<form id="cmForm"><textarea id="cmText" maxlength="500" rows="2" placeholder="Share a thought…"></textarea><button class="btn primary" type="submit">Post comment</button></form>':'<p class="n hint"><button class="lnk" data-auth="login" type="button">Log in</button> to join the conversation.</p>')+'</div>'}
 function cItem(c,isRe){var own=user&&(c.uid===user.uid||user.uid===ADMIN_UID),root=isRe?c.rid:c.id;
   return '<div class="c'+(isRe?' re':'')+'" id="c-'+c.id+'"><span class="cav">'+cmAv(c)+'</span><div class="cb2"><div class="chd"><b>'+esc(c.name||'Reader')+'</b>'+(c.uid===ADMIN_UID?'<em>Author</em>':'')+'<small>'+ago(c.ts)+'</small></div>'+(c.rname?'<p class="to">replying to '+esc(c.rname)+'</p>':'')+'<p class="ct">'+esc(c.text)+'</p><div class="acts">'+(user?'<button class="lnk" type="button" data-creply="'+root+'" data-cto="'+esc(c.uid)+'" data-cname="'+esc(c.name||'Reader')+'">Reply</button>':'<button class="lnk" type="button" data-auth="login">Reply</button>')+(own?'<button class="lnk" type="button" data-cdel="'+c.id+'">Delete</button>':'')+'</div><div class="rslot" data-slot="'+c.id+'"></div></div></div>'}
 function renderComments(){var b=$('#cmList');if(!b)return;var ids={},kids={};cmCache.forEach(function(c){ids[c.id]=1});
@@ -943,7 +985,8 @@ function mergePosts(list,imp){var old={};REMOTE.forEach(function(o){old[o.id]=o}
   REMOTE=list.slice().sort(function(a,b){return (a.ts||0)-(b.ts||0)});
   var ids={};list.forEach(function(p){ids[p.id]=1});
   var base=imp?[]:BUILTIN.filter(function(b){return !ids[b.id]});
-  STORIES.length=0;Array.prototype.push.apply(STORIES,base.concat(REMOTE));refreshAll()}
+  var HIDE={burden:1,becoming:1,control:1};
+  STORIES.length=0;Array.prototype.push.apply(STORIES,base.concat(REMOTE).filter(function(x){return !HIDE[x.id]}));refreshAll()}
 function loadPosts(){
   try{var c=JSON.parse(localStorage.getItem('lm:posts')||'null');if(c&&c.l&&c.l.length){SITETS=c.st||0;IMPD=!!c.imp;mergePosts(c.l,c.imp)}}catch(e){}
   return getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'posts'),f.m.where('published','==',true)))}).then(function(r){
@@ -1196,7 +1239,7 @@ function countView(id){if(isAdm())return;var k='lm:v:'+id;try{if(localStorage.ge
 function paintViews(){var e=$('#xmv');if(e&&openId){e.textContent=fmtN(VW[openId]||0);var l=$('#xml');if(l)l.textContent=(VW[openId]===1?' View':' Views')}renderXFeed()}
 function metaLine(s){var d=(s.ts>SITETS&&s.ts>1e12)?new Date(s.ts):null,t='';if(d)t=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false})+' · '+d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'})+' · ';return '<div class="xm">'+t+'<b id="xmv">'+fmtN(VW[s.id]||0)+'</b><span id="xml">'+(VW[s.id]===1?' View':' Views')+'</span></div>'}
 function readerHtml(s,mins){var has=s.body.length,body=s.body.map(function(t){return '<p>'+esc(t)+'</p>'}).join(''),c=s.cover?cov(s):(has?'':cov(s));
-  return '<span class="eyebrow">'+esc(s.tag)+'</span><h2>'+esc(s.title)+'</h2>'+(has?'<div class="by"><span class="lmk">'+authorAv()+'</span><span><b>Lament Mulundu</b>'+esc(s.cat)+' · '+mins+' min read</span></div>':'')+c+body+'<p class="n">— Lament Mulundu</p><span id="rend"></span>'+(has?metaLine(s):'')+actBtns(s)+cmBox(s)}
+  return '<span class="eyebrow">'+esc(s.tag)+'</span><h2>'+esc(s.title)+'</h2>'+(has?'<div class="by"><span class="lmk">'+authorAv()+'</span><span><b>Lament Mulundu</b>'+esc(s.cat)+' · '+mins+' min read</span></div>':'')+c+body+(has?'<div class="sgn"><span class="sgl"></span><span class="sga">'+authorAv()+'</span><b>Lament Mulundu</b></div>':'<p class="n">— Lament Mulundu</p>')+'<span id="rend"></span>'+(has?metaLine(s):'')+actBtns(s)+cmBox(s)}
 /* reading settings: text size and page colour live on the reader only */
 function paintPop(){[].forEach.call(document.querySelectorAll('[data-rsz]'),function(b){b.classList.toggle('on',b.dataset.rsz===SET.size)});var eff=SET.paper==='normal'?resolved():SET.paper;[].forEach.call(document.querySelectorAll('[data-rpg]'),function(b){b.classList.toggle('on',b.dataset.rpg===eff)})}
 function togglePop(){var p=$('#rPop'),o=p.hidden;p.hidden=!o;$('#rSize').setAttribute('aria-expanded',o);if(o)paintPop()}
