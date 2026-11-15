@@ -1199,6 +1199,7 @@ function loadPosts(){
   return getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'posts'),f.m.where('published','==',true)))}).then(function(r){
     if(my!==LPID)return;
     var imp=false,l=[];r.docs.forEach(function(d){if(d.id==='_site'){imp=true;SITETS=(d.data()||{}).ts||0;return}if(d.id==='_author'){AUTHOR.photo=(d.data()||{}).photo||'';try{localStorage.setItem('lm:author',AUTHOR.photo)}catch(e){}return}l.push(toStory(Object.assign({id:d.id},d.data())))});
+    if(!l.length&&REMOTE.length)return;
     if(!l.length&&EMPTYN<3){EMPTYN++;setTimeout(loadPosts,1500*EMPTYN);return}
     NETDONE=true;POSTS_DONE=true;IMPD=imp;mergePosts(l,imp);
     try{localStorage.setItem('lm:posts',JSON.stringify({imp:imp,st:SITETS,l:l.map(function(x){return Object.assign({},x,{cover:'',thumb:''})})}))}catch(e){}
