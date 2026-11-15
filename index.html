@@ -720,13 +720,13 @@ dialog.chat{max-width:100%;max-height:100%;inset:0}
 .card .cb .newp{align-self:flex-start;margin:2px 0 4px}
 .about .aboutcard .actions{flex-wrap:wrap}.about .aboutcard .actions .btn{flex:1 1 auto;min-width:max-content;white-space:nowrap;padding:10px 16px}
 
-/* pieces as tiles */
-.ptl{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:6px}
-.tg:not(.open) .pti.x{display:none}
-.pti{padding:12px 12px 10px;border-radius:16px;background:var(--s1);border:1px solid var(--line);min-width:0;text-align:left}
-.pti b{display:block;font-size:1.5rem;font-weight:600;line-height:1.1;color:var(--acc-tx,#d9b35a)}
-.pti span{display:block;font-size:.8rem;font-weight:500;line-height:1.3;margin-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.6em}
-.pti small{display:block;font-size:.62rem;color:var(--dim);margin-top:5px;letter-spacing:.02em}
+/* bar tiles, 4 per card */
+.bars.b4{grid-template-columns:repeat(4,1fr);height:124px;margin:0 0 10px}
+.adm .bars.b4{height:124px;margin:0 0 10px;padding:12px 8px 8px;gap:8px}
+.bars.b4 i{max-width:none;width:70%}
+.bars.b4 b{font-size:.82rem}
+.bars.b4 small{max-width:100%;text-align:center;line-height:1.15;font-size:.58rem;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;min-height:2.3em;word-break:break-word}
+.tg:not(.open) .bars.x{display:none}
 </style>
 </head>
 <body>
@@ -1431,10 +1431,12 @@ function loadAdmin(){loadMyPosts();
     var AS=function(t){if(!t)return '–';var d=(Date.now()-t)/1000;return d<60?'now':d<3600?Math.floor(d/60)+'m':d<86400?Math.floor(d/3600)+'h':Math.floor(d/86400)+'d'};
     var VB={signup:'joined',login:'logged in',open:'opened',finish:'finished',unread:'unmarked',save:'saved',unsave:'unsaved',contact:'tapped',comment:'comment'};
     var tk=Object.keys(tap);
-    var H='<div class="ag" style="margin-top:16px">'+[[us.length,'Readers'],[wk(0),'New (7d)'],[c.open||0,'Opens'],[days[6],'Today'],[c.finish||0,'Finished'],[lk.filter(function(x){return x.r!=='laugh'}).length,'Likes'],[lk.filter(function(x){return x.r==='laugh'}).length,'Laughs'],[cm.length,'Comments'],[saves,'Saved'],[emails.length,'Updates'],[rows.length,'Pieces'],[c.contact||0,'Contacts']].map(function(t){return '<div><b>'+t[0]+'</b><small>'+t[1]+'</small></div>'}).join('')+'</div>'+
+    var BR=function(items,per,lim){var out='';for(var g=0;g<items.length;g+=per){var ch=items.slice(g,g+per),mx2=Math.max.apply(null,ch.map(function(t){return t[0]}).concat([1]));
+      out+='<div class="bars b4'+(lim&&g>=lim?' x':'')+'">'+ch.map(function(t){return '<div><b>'+t[0]+'</b><i style="height:'+Math.max(4,Math.round(t[0]/mx2*70))+'%"></i><small>'+esc(t[1])+'</small></div>'}).join('')+'</div>'}return out};
+    var H='<div style="margin-top:16px">'+BR([[us.length,'Readers'],[wk(0),'New (7d)'],[c.open||0,'Opens'],[days[6],'Today'],[c.finish||0,'Finished'],[lk.filter(function(x){return x.r!=='laugh'}).length,'Likes'],[lk.filter(function(x){return x.r==='laugh'}).length,'Laughs'],[cm.length,'Comments'],[saves,'Saved'],[emails.length,'Updates'],[rows.length,'Pieces'],[c.contact||0,'Contacts']],4)+'</div>'+
       '<h2>Opens, last 7 days</h2><div class="bars">'+days.map(function(n,i){return '<div><b>'+n+'</b><i style="height:'+Math.round(n/mx*80)+'%"></i><small>'+dn[new Date(t0-(6-i)*DAY).getDay()]+'</small></div>'}).join('')+'</div>'+
-      '<h2>Pieces</h2><div class="tg"><div class="ptl">'+(rows.length?rows.map(function(p,i){return '<div class="pti'+(i>=10?' x':'')+'"><b>'+p.o+'</b><span>'+esc(p.t)+'</span><small>'+p.f+' done · '+p.l+' react · '+p.c+' notes</small></div>'}).join(''):'<p class="psub">No pieces yet</p>')+'</div>'+(rows.length>10?'<button class="tgb" type="button" data-all="Show all ('+rows.length+')" data-less="Show less">Show all ('+rows.length+')</button>':'')+'</div>'+
-      '<h2>New readers</h2><div class="ag ag4">'+[['This week',0],['Last week',1],['2 wks ago',2],['3 wks ago',3]].map(function(p){return '<div><b>'+wk(p[1])+'</b><small>'+p[0]+'</small></div>'}).join('')+'</div>'+
+      '<h2>Pieces <small style="font-weight:400;opacity:.7">(opens)</small></h2><div class="tg">'+(rows.length?BR(rows.map(function(p){return [p.o,p.t]}),4,12):'<p class="psub">No pieces yet</p>')+(rows.length>12?'<button class="tgb" type="button" data-all="Show all ('+rows.length+')" data-less="Show less">Show all ('+rows.length+')</button>':'')+'</div>'+
+      '<h2>New readers</h2>'+BR([[wk(0),'This week'],[wk(1),'Last week'],[wk(2),'2 wks ago'],[wk(3),'3 wks ago']],4)+
       '<h2>Readers</h2>'+T('rdrs',['Reader','Read','Saved','Joined','Seen'],['','36px','40px','46px','44px'],us.length?us.map(function(u){return '<td class="rdr"><b>'+esc(u.name||'No name')+(u.notify?' ✉':'')+'</b><small>'+esc(u.email||'')+'</small></td><td>'+(u.read||[]).length+'</td><td>'+(u.saved||[]).length+'</td><td>'+AS(u.joined)+'</td><td>'+AS(u.lastSeen)+'</td>'}):['<td>No readers yet</td><td></td><td></td><td></td><td></td>'],10,'Show all ('+us.length+')')+
       '<h2>Contact taps</h2>'+T('ct',['Button','Taps'],['','70px'],tk.length?tk.map(function(k){return '<td>'+esc(k)+'</td><td>'+tap[k]+'</td>'}):['<td>None yet</td><td></td>'],9,'')+
       '<h2>Email your readers</h2><p class="psub">'+emails.length+' reader'+(emails.length===1?'':'s')+' chose to get updates. Opens your email app with them in BCC.</p><div class="row2"><a class="btn primary sm" href="'+mail+'">Write to them</a><button class="btn sm" type="button" id="copyEm">Copy emails</button></div>'+
