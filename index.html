@@ -717,6 +717,8 @@ dialog.chat[open]{display:flex;flex-direction:column}dialog.chat::backdrop{backg
 .chl{grid-template-columns:minmax(0,1fr)}.chr{min-width:0;box-sizing:border-box}.chb{min-width:0}.crm{flex:0 0 auto}
 dialog.chat{max-width:100%;max-height:100%;inset:0}
 .chm.me small{color:#1a1405;opacity:.6}
+.card .cb .newp{align-self:flex-start;margin:2px 0 4px}
+.about .aboutcard .actions{flex-wrap:wrap}.about .aboutcard .actions .btn{flex:1 1 auto;min-width:max-content;white-space:nowrap;padding:10px 16px}
 </style>
 </head>
 <body>
@@ -892,14 +894,14 @@ function renderHL(){
   $('#hl').innerHTML=CATS.map(function(c,i){var on=homeCat===c;return '<button class="hl'+(on?' on':'')+'" type="button" data-hl="'+c+'" aria-pressed="'+on+'" aria-label="'+c+' writings"><div class="gi t'+(i+1)+'"><svg viewBox="0 0 24 24">'+ICONS[c]+'</svg></div><span>'+c+'</span></button>'}).join('');
   var l=readable.slice().reverse().filter(function(s){return !homeCat||s.cat===homeCat});
   $('#latestT').textContent=homeCat?homeCat+' pieces':'Latest pieces';
-  var r=$('#latest');r.innerHTML=l.length?l.map(miniHtml).join(''):(!POSTS_DONE&&!homeCat?'<div class="sk mini"></div><div class="sk mini"></div><div class="sk mini"></div>':'<p class="emp">Nothing to read in '+(homeCat||'this topic')+' yet. <button class="lnk" type="button" data-seeall>See all writings</button></p>');r.scrollLeft=0}
+  var r=$('#latest');r.innerHTML=l.length?l.map(miniHtml).join(''):(!NETDONE?skHtml('mini',3):'<p class="emp">Nothing to read in '+(homeCat||'this topic')+' yet. <button class="lnk" type="button" data-seeall>See all writings</button></p>');r.scrollLeft=0}
 renderHL();
 
 /* writings */
 var current='All',tabsEl=$('#tabs'),feed=$('#feed');
 function renderTabs(){tabsEl.innerHTML=TABS.map(function(t){return '<button class="tab" role="tab" type="button" aria-selected="'+(t===current)+'" data-tab="'+t+'">'+t+'</button>'}).join('')}
 function renderFeed(){var l=STORIES.filter(function(s){return current==='All'||s.cat===current}).sort(function(a,b){return (b.ts||0)-(a.ts||0)});
-  feed.innerHTML=l.length?l.map(function(s){var r=s.body.length;return '<article class="card glass"'+(r?' data-read="'+s.id+'" role="button" tabindex="0"':'')+'><div class="cb"><span class="tag">'+esc(s.tag)+'</span><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><span class="st">'+esc(stat(s))+(r?'<b>Read →</b>':'')+'</span></div>'+cov(s)+'</article>'}).join(''):(POSTS_DONE?'<p class="empty">Nothing here yet. New pieces are on the way.</p>':'<div class="sk card"></div><div class="sk card"></div><div class="sk card"></div>')}
+  feed.innerHTML=l.length?l.map(function(s){var r=s.body.length;return '<article class="card glass"'+(r?' data-read="'+s.id+'" role="button" tabindex="0"':'')+'><div class="cb"><span class="tag">'+esc(s.tag)+'</span><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><span class="st">'+esc(stat(s))+(r?'<b>Read →</b>':'')+'</span></div>'+cov(s)+'</article>'}).join(''):(NETDONE?'<p class="empty">Nothing here yet. New pieces are on the way.</p>':skHtml('card',3))}
 function setTab(t){current=t;renderTabs();renderFeed()}
 tabsEl.addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(b)setTab(b.dataset.tab)});
 document.addEventListener('click',function(e){var h=e.target.closest('[data-hl]');if(h){homeCat=homeCat===h.dataset.hl?'':h.dataset.hl;renderHL();return}
@@ -1065,7 +1067,7 @@ if(mq&&mq.addEventListener)mq.addEventListener('change',function(){if(SET.mode==
 function saveSet(){try{localStorage.setItem('lm:set',JSON.stringify(SET))}catch(x){}}
 function endM(){var e=$('#rend');if(!e)return Math.max(1,reader.scrollHeight-reader.clientHeight);var t=e.getBoundingClientRect().top+reader.scrollTop-reader.getBoundingClientRect().top;return Math.max(1,t-reader.clientHeight*.75)}
 function smsg(t){var e=$('#smsg');if(e)e.textContent=t}
-function getFS(){if(fs)return Promise.resolve(fs);if(!fsP)fsP=appReady.then(function(){return import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')}).then(function(f){fs={m:f,db:f.getFirestore(fbApp)};flush();return fs});return fsP}
+function getFS(){if(fs)return Promise.resolve(fs);if(!fsP)fsP=appReady.then(function(){return import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')}).then(function(f){fs={m:f,db:f.getFirestore(fbApp)};flush();return fs}).catch(function(e){fsP=null;throw e});return fsP}
 function renderHome(){var h=new Date().getHours(),g=h<12?'Good morning':h<18?'Good afternoon':'Good evening',n=user?(user.displayName||'').split(' ')[0]:(!authReady&&WAS?WAS.n:'');$('#hello').textContent=g+(n?', '+n:'');
   var R=STORIES.filter(function(x){return x.body.length&&ST.read.indexOf(x.id)<0&&ST.prog[x.id]>.03}),c=user?(R.filter(function(x){return x.id===ST.last})[0]||R[0]):null;
   $('#cont').innerHTML=c?'<button class="cc" type="button" data-read="'+c.id+'">'+(c.cover?'<img src="'+esc(c.cover)+'" alt="">':'')+'<div><small>Continue reading</small><b>'+esc(c.title)+'</b><div class="prog" style="margin:0"><i style="width:'+Math.round(ST.prog[c.id]*100)+'%"></i></div></div></button>':''}
@@ -1181,7 +1183,8 @@ function mergePosts(list,imp){var old={};REMOTE.forEach(function(o){old[o.id]=o}
   var base=imp?[]:BUILTIN.filter(function(b){return !ids[b.id]});
   var HIDE={burden:1,becoming:1,control:1};
   STORIES.length=0;Array.prototype.push.apply(STORIES,base.concat(REMOTE).filter(function(x){return !HIDE[x.id]}));refreshAll()}
-var POSTS_DONE=false,NETDONE=false;
+var POSTS_DONE=false,NETDONE=false,POSTFAIL=0;
+function skHtml(c,n){return POSTFAIL>1?'<p class="emp">Couldn\u2019t load the writings. <button class="lnk" type="button" data-retry>Try again</button></p>':new Array(n+1).join('<div class="sk '+c+'"></div>')}
 function idb(){return new Promise(function(res,rej){try{var r=indexedDB.open('lm',1);r.onupgradeneeded=function(){r.result.createObjectStore('kv')};r.onsuccess=function(){res(r.result)};r.onerror=function(){rej()}}catch(e){rej(e)}})}
 function idbGet(k){return idb().then(function(d){return new Promise(function(res){var q=d.transaction('kv').objectStore('kv').get(k);q.onsuccess=function(){res(q.result)};q.onerror=function(){res(null)}})}).catch(function(){return null})}
 function idbSet(k,v){return idb().then(function(d){return new Promise(function(res){var t=d.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=function(){res()};t.onerror=function(){res()}})}).catch(function(){})}
@@ -1194,7 +1197,9 @@ function loadPosts(){
     var imp=false,l=[];r.docs.forEach(function(d){if(d.id==='_site'){imp=true;SITETS=(d.data()||{}).ts||0;return}if(d.id==='_author'){AUTHOR.photo=(d.data()||{}).photo||'';try{localStorage.setItem('lm:author',AUTHOR.photo)}catch(e){}return}l.push(toStory(Object.assign({id:d.id},d.data())))});
     NETDONE=true;POSTS_DONE=true;IMPD=imp;mergePosts(l,imp);
     try{localStorage.setItem('lm:posts',JSON.stringify({imp:imp,st:SITETS,l:l.map(function(x){return Object.assign({},x,{cover:'',thumb:''})})}))}catch(e){}
-    idbSet('posts',{imp:imp,l:l,st:SITETS})}).catch(function(){POSTS_DONE=true;refreshAll()})}
+    idbSet('posts',{imp:imp,l:l,st:SITETS})}).catch(function(){POSTS_DONE=true;POSTFAIL++;refreshAll();if(POSTFAIL<=8)setTimeout(loadPosts,Math.min(1500*POSTFAIL,8000))})}
+window.addEventListener('online',function(){if(!NETDONE){POSTFAIL=0;loadPosts()}});
+document.addEventListener('click',function(e){if(e.target.closest('[data-retry]')){POSTFAIL=0;refreshAll();loadPosts()}});
 function loadFullCover(s){getFS().then(function(f){return f.m.getDoc(f.m.doc(f.db,'postmedia',s.id))}).then(function(d){var x=d.exists()&&d.data().full;if(!x)return;s.cover=x;s.fullDone=true;
   if(openId===s.id){var im=rBody.querySelector('.cover img');if(im)im.src=x}}).catch(function(){})}
 function readFile(f){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result)};r.onerror=rej;r.readAsDataURL(f)})}
