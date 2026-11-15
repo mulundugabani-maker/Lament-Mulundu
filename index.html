@@ -1189,12 +1189,17 @@ function idb(){return new Promise(function(res,rej){try{var r=indexedDB.open('lm
 function idbGet(k){return idb().then(function(d){return new Promise(function(res){var q=d.transaction('kv').objectStore('kv').get(k);q.onsuccess=function(){res(q.result)};q.onerror=function(){res(null)}})}).catch(function(){return null})}
 function idbSet(k,v){return idb().then(function(d){return new Promise(function(res){var t=d.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=function(){res()};t.onerror=function(){res()}})}).catch(function(){})}
 function useCache(c){if(c&&c.l&&c.l.length&&!NETDONE){SITETS=c.st||0;IMPD=!!c.imp;mergePosts(c.l,c.imp)}}
+var LPID=0,EMPTYN=0;
 function loadPosts(){
+  if(!authReady||!user)return Promise.resolve();
+  var my=++LPID;
   if(!REMOTE.length){
     try{useCache(JSON.parse(localStorage.getItem('lm:posts')||'null'))}catch(e){}
     idbGet('posts').then(useCache)}
   return getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'posts'),f.m.where('published','==',true)))}).then(function(r){
+    if(my!==LPID)return;
     var imp=false,l=[];r.docs.forEach(function(d){if(d.id==='_site'){imp=true;SITETS=(d.data()||{}).ts||0;return}if(d.id==='_author'){AUTHOR.photo=(d.data()||{}).photo||'';try{localStorage.setItem('lm:author',AUTHOR.photo)}catch(e){}return}l.push(toStory(Object.assign({id:d.id},d.data())))});
+    if(!l.length&&EMPTYN<3){EMPTYN++;setTimeout(loadPosts,1500*EMPTYN);return}
     NETDONE=true;POSTS_DONE=true;IMPD=imp;mergePosts(l,imp);
     try{localStorage.setItem('lm:posts',JSON.stringify({imp:imp,st:SITETS,l:l.map(function(x){return Object.assign({},x,{cover:'',thumb:''})})}))}catch(e){}
     idbSet('posts',{imp:imp,l:l,st:SITETS})}).catch(function(){POSTS_DONE=true;POSTFAIL++;refreshAll();if(POSTFAIL<=8)setTimeout(loadPosts,Math.min(1500*POSTFAIL,8000))})}
