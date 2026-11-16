@@ -1414,6 +1414,26 @@ function osInit(){if(!ONESIGNAL_APP_ID||window._osI)return;window._osI=1;window.
 function osLink(){if(!ONESIGNAL_APP_ID||!window._osR)return;(window.OneSignalDeferred=window.OneSignalDeferred||[]).push(function(OS){try{if(user)OS.login(user.uid);else if(authReady)OS.logout()}catch(e){}})}
 function osAsk(){osInit();(window.OneSignalDeferred=window.OneSignalDeferred||[]).push(function(OS){OS.Notifications.requestPermission()})}
 if(ONESIGNAL_APP_ID)osInit();
+/* ---- ask every signed-in reader for phone alerts automatically (they still tap Allow) ---- */
+function osAuto(){
+  if(!ONESIGNAL_APP_ID||!('Notification' in window))return;
+  try{
+    var p=Notification.permission;
+    if(p==='granted'){(window.OneSignalDeferred=window.OneSignalDeferred||[]).push(function(OS){try{OS.User.PushSubscription.optIn()}catch(e){}});return}
+    if(p==='denied'||!user||document.getElementById('pushAsk'))return;
+    var t=0;try{t=+localStorage.getItem('lm:pushAsk')||0}catch(e){}
+    if(Date.now()-t<3*864e5)return;
+    var d=document.createElement('div');d.id='pushAsk';d.setAttribute('role','dialog');
+    d.style.cssText='position:fixed;left:12px;right:12px;bottom:92px;z-index:9999;background:#1b1b22;color:#fff;border:1px solid #c9a24b;border-radius:18px;padding:14px 16px;box-shadow:0 8px 30px rgba(0,0,0,.55);font:15px/1.4 system-ui,sans-serif';
+    var b='border:0;border-radius:999px;padding:10px 16px;font:600 14px system-ui,sans-serif;cursor:pointer;';
+    d.innerHTML='<b style="display:block;margin-bottom:4px;font-size:16px">Never miss a new piece</b><span style="opacity:.85">Get a phone alert when something new is posted.</span><div style="display:flex;gap:10px;margin-top:12px"><button type="button" data-y style="'+b+'background:#c9a24b;color:#111">Turn on alerts</button><button type="button" data-n style="'+b+'background:#2c2c36;color:#fff">Not now</button></div>';
+    function mark(){try{localStorage.setItem('lm:pushAsk',String(Date.now()))}catch(e){}}
+    d.querySelector('[data-y]').onclick=function(){mark();d.remove();osAsk()};
+    d.querySelector('[data-n]').onclick=function(){mark();d.remove()};
+    document.body.appendChild(d);
+  }catch(e){}
+}
+[3000,8000,15000,30000,60000].forEach(function(ms){setTimeout(osAuto,ms)});
 
 /* ---- admin dashboard with analytics ---- */
 function loadAdmin(){loadMyPosts();
