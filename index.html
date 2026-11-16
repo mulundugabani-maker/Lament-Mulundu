@@ -1019,7 +1019,7 @@ function initAuth(){
   var v='https://www.gstatic.com/firebasejs/10.12.2/';
   Promise.all([import(v+'firebase-app.js'),import(v+'firebase-auth.js')]).then(function(m){
     var a=m[1],app=m[0].initializeApp(FIREBASE);authApi={a:a,auth:a.getAuth(app)};fbApp=app;appRes();
-    a.onAuthStateChanged(authApi.auth,function(u){user=u;authReady=true;if(!u){WAS=null;try{localStorage.removeItem('lm:was')}catch(e){}showGate()}
+    a.onAuthStateChanged(authApi.auth,function(u){user=u;authReady=true;try{osLink()}catch(e){}if(!u){WAS=null;try{localStorage.removeItem('lm:was')}catch(e){}showGate()}
       if(u){if(authDlg.open)authDlg.close();if(onb.open)finishOnb();loadLocal();getFS().then(pull).catch(function(){});loadPosts();setTimeout(maybeTour,2500)}
       else{ST={saved:[],read:[],prog:{}};try{localStorage.removeItem('lm:posts');localStorage.removeItem('lm:adm2')}catch(e){}}
       renderAccount();renderFeed()});
@@ -1183,7 +1183,9 @@ ped.addEventListener('submit',function(e){e.preventDefault();var pm=$('#pMsg'),n
 var IMPD=false,BUILTIN=STORIES.slice(),REMOTE=[],MY={},ED={},ed=$('#editor'),POS={top:'50% 20%',mid:'50% 50%',bot:'50% 80%'};
 function isAdm(){return !!(user&&ADMIN_UID&&user.uid===ADMIN_UID)}
 function toStory(p){var b=p.body||[];return {id:p.id,cat:p.cat||'Life',tag:p.tag||p.cat||'',title:p.title||'Untitled',cover:p.thumb||'',thumb:p.thumb||'',pos:p.pos||'50% 50%',status:p.status||(b.length?'Read now':'Coming soon'),body:b,desc:p.desc||'',ts:p.ts||0,remote:true,hasFull:!!p.hasFull}}
-function refreshAll(){readable=STORIES.filter(function(s){return s.body.length});$('#stPieces').textContent=readable.length;renderHL();renderFeed();doSearch();renderAccount()}
+var DEEP=(function(){try{return new URLSearchParams(location.search).get('p')||''}catch(e){return ''}})();
+function deepOpen(){if(!DEEP||!user||!authReady)return;var id=DEEP;if(!STORIES.some(function(x){return x.id===id&&x.body.length}))return;DEEP='';try{history.replaceState(null,'',location.pathname)}catch(e){}var b=document.createElement('button');b.hidden=true;b.dataset.read=id;document.body.appendChild(b);b.click();b.remove()}
+function refreshAll(){readable=STORIES.filter(function(s){return s.body.length});$('#stPieces').textContent=readable.length;renderHL();renderFeed();doSearch();renderAccount();try{deepOpen()}catch(e){}}
 function mergePosts(list,imp){var old={};REMOTE.forEach(function(o){old[o.id]=o});
   list.forEach(function(n){var o=old[n.id];if(o&&o.fullDone&&o.thumb===n.thumb){n.cover=o.cover;n.fullDone=true}});
   REMOTE=list.slice().sort(function(a,b){return (a.ts||0)-(b.ts||0)});
@@ -1408,7 +1410,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pn=$('#
 var _ra=renderAccount;renderAccount=function(){_ra.apply(this,arguments);paintTop();if(user)loadNotes();paintAlerts();if(window.msgWatch)msgWatch()};
 /* optional phone push through OneSignal (needs your OneSignal App ID; set PUSH=true in sw.js too) */
 function osInit(){if(!ONESIGNAL_APP_ID||window._osI)return;window._osI=1;window.OneSignalDeferred=window.OneSignalDeferred||[];var s=document.createElement('script');s.src='https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';s.defer=true;document.head.appendChild(s);
-  OneSignalDeferred.push(function(OS){OS.init({appId:ONESIGNAL_APP_ID,serviceWorkerPath:location.pathname.replace(/^\/|[^/]*$/g,'')+'sw.js',serviceWorkerParam:{scope:location.pathname.replace(/[^/]*$/,'')},safari_web_id:'web.onesignal.auto.54cd441e-7f12-4aed-9845-f98eb5c10ecb',notifyButton:{enable:false}}).then(function(){if(user)OS.login(user.uid)})})}
+  OneSignalDeferred.push(function(OS){OS.init({appId:ONESIGNAL_APP_ID,serviceWorkerPath:location.pathname.replace(/^\/|[^/]*$/g,'')+'sw.js',serviceWorkerParam:{scope:location.pathname.replace(/[^/]*$/,'')},safari_web_id:'web.onesignal.auto.54cd441e-7f12-4aed-9845-f98eb5c10ecb',notifyButton:{enable:false}}).then(function(){window._osR=1;osLink()})})}
+function osLink(){if(!ONESIGNAL_APP_ID||!window._osR)return;(window.OneSignalDeferred=window.OneSignalDeferred||[]).push(function(OS){try{if(user)OS.login(user.uid);else if(authReady)OS.logout()}catch(e){}})}
 function osAsk(){osInit();(window.OneSignalDeferred=window.OneSignalDeferred||[]).push(function(OS){OS.Notifications.requestPermission()})}
 if(ONESIGNAL_APP_ID)osInit();
 
