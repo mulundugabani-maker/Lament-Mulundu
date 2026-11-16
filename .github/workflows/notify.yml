@@ -1,0 +1,44 @@
+name: Phone alerts
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      test:
+        description: 'Send a test alert to everyone? (yes or no)'
+        default: 'no'
+permissions:
+  contents: write
+concurrency:
+  group: alerts
+  cancel-in-progress: false
+jobs:
+  go:
+    runs-on: ubuntu-latest
+    env:
+      OS_APP_ID: e1632d3c-5343-41ab-b0df-0e7a1143cbf5
+      OS_API_KEY: ${{ secrets.ONESIGNAL_API_KEY }}
+      FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      SITE: https://mulundugabani-maker.github.io/Lament-Mulundu
+      TEST: ${{ github.event.inputs.test }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install
+        run: cd notify && npm install --no-audit --no-fund
+      - name: Prepare pictures
+        run: node notify/send.mjs prepare
+      - name: Save pictures
+        run: |
+          git config user.name "alerts-bot"
+          git config user.email "alerts-bot@users.noreply.github.com"
+          git add push
+          if ! git diff --cached --quiet; then
+            git commit -m "Update alert pictures"
+            git pull --rebase
+            git push
+          fi
+      - name: Send alerts
+        run: node notify/send.mjs send
