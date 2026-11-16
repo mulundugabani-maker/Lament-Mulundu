@@ -6,7 +6,7 @@ on:
     inputs:
       test:
         description: 'Send a test alert to everyone? (yes or no)'
-        default: 'no'
+        default: 'yes'
 permissions:
   contents: write
 concurrency:
