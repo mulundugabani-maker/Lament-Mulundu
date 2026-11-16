@@ -1439,40 +1439,61 @@ var SHARE_SITE='https://mulundugabani-maker.github.io/Lament-Mulundu/';
 function shareBtn(id){return '<button class="rd" type="button" data-share="'+id+'">Share</button>'}
 function shareToast(m){var host=document.getElementById('reader');host=(host&&host.open)?host:document.body;var t=document.createElement('div');t.setAttribute('role','status');t.style.cssText='position:fixed;left:16px;right:16px;bottom:28px;z-index:99999;background:#1b1b22;color:#fff;border:1px solid #c9a24b;border-radius:14px;padding:12px 14px;font:14px/1.4 system-ui,sans-serif;text-align:center';t.textContent=m;host.appendChild(t);setTimeout(function(){t.remove()},4200)}
 function shareText(st){
-  var t=String(st.desc||'').replace(/\s+/g,' ').trim();
-  if(!t){var b=st.body||[];for(var i=0;i<b.length;i++){var v=String(typeof b[i]==='string'?b[i]:(b[i]&&b[i].t)||'').replace(/[*_#>`]/g,'').replace(/\s+/g,' ').trim();if(v.length>20){t=v;break}}}
-  if(t.length>330){t=t.slice(0,327).replace(/\s+\S*$/,'')+'…'}
+  var b=st.body||[],t=b.map(function(x){return String(typeof x==='string'?x:(x&&x.t)||'')}).join(' ').replace(/[*_#>`]/g,'').replace(/\s+/g,' ').trim();
+  if(!t)t=String(st.desc||'').replace(/\s+/g,' ').trim();
   return t;
 }
-function shareWrap(c,text,x,y,w,lh,maxLines){
+function shareLines(c,text,w,max){
   var words=text.split(' '),line='',lines=[];
   for(var i=0;i<words.length;i++){var test=line?line+' '+words[i]:words[i];if(c.measureText(test).width>w&&line){lines.push(line);line=words[i]}else line=test}
   if(line)lines.push(line);
-  if(lines.length>maxLines){lines=lines.slice(0,maxLines);lines[maxLines-1]=lines[maxLines-1].replace(/\s*\S*$/,'')+'…'}
-  lines.forEach(function(l,k){c.fillText(l,x,y+k*lh)});
-  return y+lines.length*lh;
+  if(lines.length>max){
+    lines=lines.slice(0,max);var l=lines[max-1];
+    while(l.indexOf(' ')>-1&&c.measureText(l+'…').width>w)l=l.replace(/\s+\S*$/,'');
+    lines[max-1]=l.replace(/[\s,.;:!?-]+$/,'')+'…';
+  }
+  return lines;
 }
+function shareRR(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.quadraticCurveTo(x+w,y,x+w,y+r);c.lineTo(x+w,y+h-r);c.quadraticCurveTo(x+w,y+h,x+w-r,y+h);c.lineTo(x+r,y+h);c.quadraticCurveTo(x,y+h,x,y+h-r);c.lineTo(x,y+r);c.quadraticCurveTo(x,y,x+r,y);c.closePath()}
 function shareCard(st){
-  var W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;var c=cv.getContext('2d');
-  var g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#2a1d08');g.addColorStop(.45,'#14121a');g.addColorStop(1,'#08080c');c.fillStyle=g;c.fillRect(0,0,W,H);
-  c.strokeStyle='#c9a24b';c.lineWidth=3;c.strokeRect(54,54,W-108,H-108);
-  c.textBaseline='alphabetic';c.fillStyle='#c9a24b';c.font='600 38px Georgia,serif';
-  try{c.letterSpacing='10px'}catch(e){}
-  c.fillText('LAMENT·MULUNDU',100,170);
-  try{c.letterSpacing='0px'}catch(e){}
-  var cat=(st.cat||st.tag||'').toUpperCase();if(cat){c.fillStyle='rgba(255,255,255,.55)';c.font='600 32px system-ui,sans-serif';c.fillText(cat,100,250)}
-  c.fillStyle='#fff';c.font='700 84px Georgia,serif';
-  var y=shareWrap(c,st.title||'',100,430,W-200,104,4);
-  c.fillStyle='#c9a24b';c.fillRect(100,y+10,140,6);
-  c.fillStyle='rgba(255,255,255,.9)';c.font='italic 50px Georgia,serif';
-  y=shareWrap(c,shareText(st),100,y+110,W-200,76,13);
-  c.fillStyle='rgba(255,255,255,.7)';c.font='600 40px system-ui,sans-serif';
-  c.fillText('Written by Lament Mulundu',100,H-430);
-  c.fillStyle='#c9a24b';c.font='700 46px system-ui,sans-serif';
-  c.fillText('Read the full piece in the app',100,H-340);
-  c.fillStyle='rgba(255,255,255,.8)';c.font='500 34px system-ui,sans-serif';
-  c.fillText(SHARE_SITE.replace('https://','').replace(/\/$/,''),100,H-280);
-  return new Promise(function(res){cv.toBlob(res,'image/png')});
+  var SER='"Source Serif 4",Georgia,serif',SAN='Inter,system-ui,sans-serif';
+  var load=(document.fonts&&document.fonts.load)?Promise.all([document.fonts.load('700 46px "Source Serif 4"'),document.fonts.load('400 37px "Source Serif 4"'),document.fonts.load('700 38px Inter'),document.fonts.load('500 32px Inter')]).catch(function(){}):Promise.resolve();
+  var pic=new Promise(function(res){if(!AUTHOR.photo)return res(null);var im=new Image();im.crossOrigin='anonymous';im.onload=function(){res(im)};im.onerror=function(){res(null)};im.src=AUTHOR.photo});
+  return Promise.all([load,pic]).then(function(r){
+    var av=r[1],W=1080,T=54,L=95,TW=890,cv=document.createElement('canvas'),c;
+    cv.width=W;cv.height=3000;c=cv.getContext('2d');
+    c.font='700 46px '+SER;var tl=shareLines(c,st.title||'',TW,2);
+    c.font='400 37px '+SER;var pl=shareLines(c,shareText(st),TW,3);
+    var titleBase=T+213,titleLast=titleBase+(tl.length-1)*56,prevBase=titleLast+65,prevLast=prevBase+(pl.length-1)*59;
+    var footBase=prevLast+76,cardBot=footBase+46,H=cardBot+54;
+    cv.height=H;c=cv.getContext('2d');c.textBaseline='alphabetic';
+    c.fillStyle='#0b0b10';c.fillRect(0,0,W,H);
+    var g1=c.createRadialGradient(0,H,0,0,H,820);g1.addColorStop(0,'rgba(95,45,120,.65)');g1.addColorStop(1,'rgba(95,45,120,0)');c.fillStyle=g1;c.fillRect(0,0,W,H);
+    var g2=c.createRadialGradient(W,0,0,W,0,700);g2.addColorStop(0,'rgba(40,55,110,.35)');g2.addColorStop(1,'rgba(40,55,110,0)');c.fillStyle=g2;c.fillRect(0,0,W,H);
+    var cg=c.createLinearGradient(0,T,0,cardBot);cg.addColorStop(0,'#3b3b41');cg.addColorStop(1,'#26262b');
+    shareRR(c,54,T,972,cardBot-T,46);c.fillStyle=cg;c.fill();c.strokeStyle='rgba(255,255,255,.28)';c.lineWidth=3;c.stroke();
+    /* author picture */
+    var cx=136,cy=T+93,rad=42;c.save();c.beginPath();c.arc(cx,cy,rad,0,Math.PI*2);c.closePath();c.clip();
+    if(av){var k=Math.max(rad*2/av.width,rad*2/av.height),dw=av.width*k,dh=av.height*k;c.drawImage(av,cx-dw/2,cy-dh/2,dw,dh)}
+    else{c.fillStyle='#c9a24b';c.fillRect(cx-rad,cy-rad,rad*2,rad*2);c.fillStyle='#14110a';c.font='700 44px '+SER;c.textAlign='center';c.fillText('L',cx,cy+15);c.textAlign='left'}
+    c.restore();
+    /* name, NEW tag, time */
+    c.fillStyle='#f1ece6';c.font='700 38px '+SAN;c.fillText('Lament Mulundu',203,T+68);
+    var tx=203,isNew=false;try{isNew=fresh(st)}catch(e){}
+    if(isNew){
+      shareRR(c,203,T+95,130,58,29);c.fillStyle='#d4a843';c.fill();
+      c.fillStyle='#1a1305';c.font='800 29px '+SAN;try{c.letterSpacing='4px'}catch(e){}c.textAlign='center';c.fillText('NEW',203+65+2,T+135);c.textAlign='left';try{c.letterSpacing='0px'}catch(e){}
+      tx=351;
+    }
+    if(st.ts){c.fillStyle='#8f8d93';c.font='500 32px '+SAN;c.fillText(ago(st.ts),tx,T+135)}
+    /* title and words */
+    c.fillStyle='#efeae4';c.font='700 46px '+SER;tl.forEach(function(l,i){c.fillText(l,L,titleBase+i*56)});
+    c.fillStyle='#b8b3ad';c.font='400 37px '+SER;pl.forEach(function(l,i){c.fillText(l,L,prevBase+i*59)});
+    /* views and category */
+    c.fillStyle='#8f8d93';c.font='400 33px '+SAN;c.fillText(fmtN(VW[st.id]||0)+' views',L,footBase);
+    c.textAlign='right';c.fillText(st.cat||'',985,footBase);c.textAlign='left';
+    return new Promise(function(res){cv.toBlob(res,'image/png')});
+  });
 }
 function shareStory(id){
   var st=STORIES.filter(function(x){return x.id===id})[0];if(!st)return;
