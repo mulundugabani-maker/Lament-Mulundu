@@ -66,7 +66,7 @@ async function push(target, p, heading, body) {
   console.log(r.status, heading, '->', j.slice(0, 160));
   return r.ok;
 }
-const everyone = { included_segments: ['Subscribed Users'] };
+const everyone = { included_segments: ['Total Subscriptions'] };
 
 if (TEST === 'yes') await push(everyone, posts[posts.length - 1], 'Test alert', 'If you can see this, phone alerts are working.');
 
