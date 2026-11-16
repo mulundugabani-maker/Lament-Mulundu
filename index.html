@@ -920,7 +920,7 @@ renderTabs();renderFeed();
 var reader=$('#reader'),rBody=$('#rBody'),rBar=$('#rbar'),openId=null,tmr=null;
 function actBtns(s){if(!s.body.length)return '';if(!user)return '<p class="n hint"><button class="lnk" type="button" data-auth="login">Log in</button> to save your reading progress.</p>';
   var r=ST.read.indexOf(s.id)>-1,v=ST.saved.indexOf(s.id)>-1;
-  return '<div class="ract"><button class="rd" type="button" data-toggle="read" data-id="'+s.id+'">'+(r?'Marked as read ✓':'Mark as read')+'</button><button class="rd" type="button" data-toggle="saved" data-id="'+s.id+'">'+(v?'Saved ✓':'Save for later')+'</button></div>'}
+  return '<div class="ract"><button class="rd" type="button" data-toggle="read" data-id="'+s.id+'">'+(r?'Marked as read ✓':'Mark as read')+'</button><button class="rd" type="button" data-toggle="saved" data-id="'+s.id+'">'+(v?'Saved ✓':'Save for later')+'</button>'+shareBtn(s.id)+'</div>'}
 document.addEventListener('click',function(e){var b=e.target.closest('[data-read]');if(!b)return;
   var s=STORIES.filter(function(x){return x.id===b.dataset.read})[0];openId=s.id;if(user)logEvent({type:'open',pid:s.id,title:s.title});
    var wc=s.body.join(' ').split(/\s+/).length,mins=Math.max(1,Math.round(wc/200));
@@ -1338,9 +1338,9 @@ function likeInner(id){var l=LK[id]||{n:0,mine:''};return heartSvg(l.mine==='lik
 function laughInner(id){var l=LK[id]||{nl:0,mine:''};return '<span class="em">😂</span><span>'+(l.nl?l.nl:'Haha')+'</span>'}
 function actBtns(s){if(!s.body.length)return '';var l=LK[s.id]||{n:0,nl:0,mine:''},
   lk=user?'<button class="rd lk'+(l.mine==='like'?' on':'')+'" type="button" data-like="'+s.id+'" aria-pressed="'+(l.mine==='like')+'">'+likeInner(s.id)+'</button><button class="rd lk la'+(l.mine==='laugh'?' on':'')+'" type="button" data-laugh="'+s.id+'" aria-pressed="'+(l.mine==='laugh')+'" aria-label="Laugh">'+laughInner(s.id)+'</button>':'<button class="rd lk" type="button" data-auth="login" data-like-anon="'+s.id+'">'+likeInner(s.id)+'</button><button class="rd lk la" type="button" data-auth="login" aria-label="Laugh">'+laughInner(s.id)+'</button>';
-  if(!user)return '<div class="ract">'+lk+'</div><p class="n hint"><button class="lnk" type="button" data-auth="login">Log in</button> to like, save your reading progress and comment.</p>';
+  if(!user)return '<div class="ract">'+lk+shareBtn(s.id)+'</div><p class="n hint"><button class="lnk" type="button" data-auth="login">Log in</button> to like, save your reading progress and comment.</p>';
   var r=ST.read.indexOf(s.id)>-1,v=ST.saved.indexOf(s.id)>-1;
-  return '<div class="ract">'+lk+'<button class="rd" type="button" data-toggle="read" data-id="'+s.id+'">'+(r?'Marked as read ✓':'Mark as read')+'</button><button class="rd" type="button" data-toggle="saved" data-id="'+s.id+'">'+(v?'Saved ✓':'Save for later')+'</button></div>'}
+  return '<div class="ract">'+lk+'<button class="rd" type="button" data-toggle="read" data-id="'+s.id+'">'+(r?'Marked as read ✓':'Mark as read')+'</button><button class="rd" type="button" data-toggle="saved" data-id="'+s.id+'">'+(v?'Saved ✓':'Save for later')+'</button>'+shareBtn(s.id)+'</div>'}
 function paintLike(id){var l=LK[id]||{},a=rBody.querySelector('[data-like="'+id+'"],[data-like-anon="'+id+'"]'),b=rBody.querySelector('[data-laugh="'+id+'"]');
   if(a){a.innerHTML=likeInner(id);a.classList.toggle('on',l.mine==='like');a.setAttribute('aria-pressed',l.mine==='like')}
   if(b){b.innerHTML=laughInner(id);b.classList.toggle('on',l.mine==='laugh');b.setAttribute('aria-pressed',l.mine==='laugh')}}
@@ -1434,6 +1434,60 @@ function osAuto(){
   }catch(e){}
 }
 [3000,8000,15000,30000,60000].forEach(function(ms){setTimeout(osAuto,ms)});
+/* ---- share a piece to WhatsApp status / Facebook as a words-only picture with the link ---- */
+var SHARE_SITE='https://mulundugabani-maker.github.io/Lament-Mulundu/';
+function shareBtn(id){return '<button class="rd" type="button" data-share="'+id+'">Share</button>'}
+function shareToast(m){var host=document.getElementById('reader');host=(host&&host.open)?host:document.body;var t=document.createElement('div');t.setAttribute('role','status');t.style.cssText='position:fixed;left:16px;right:16px;bottom:28px;z-index:99999;background:#1b1b22;color:#fff;border:1px solid #c9a24b;border-radius:14px;padding:12px 14px;font:14px/1.4 system-ui,sans-serif;text-align:center';t.textContent=m;host.appendChild(t);setTimeout(function(){t.remove()},4200)}
+function shareText(st){
+  var t=String(st.desc||'').replace(/\s+/g,' ').trim();
+  if(!t){var b=st.body||[];for(var i=0;i<b.length;i++){var v=String(typeof b[i]==='string'?b[i]:(b[i]&&b[i].t)||'').replace(/[*_#>`]/g,'').replace(/\s+/g,' ').trim();if(v.length>20){t=v;break}}}
+  if(t.length>330){t=t.slice(0,327).replace(/\s+\S*$/,'')+'…'}
+  return t;
+}
+function shareWrap(c,text,x,y,w,lh,maxLines){
+  var words=text.split(' '),line='',lines=[];
+  for(var i=0;i<words.length;i++){var test=line?line+' '+words[i]:words[i];if(c.measureText(test).width>w&&line){lines.push(line);line=words[i]}else line=test}
+  if(line)lines.push(line);
+  if(lines.length>maxLines){lines=lines.slice(0,maxLines);lines[maxLines-1]=lines[maxLines-1].replace(/\s*\S*$/,'')+'…'}
+  lines.forEach(function(l,k){c.fillText(l,x,y+k*lh)});
+  return y+lines.length*lh;
+}
+function shareCard(st){
+  var W=1080,H=1920,cv=document.createElement('canvas');cv.width=W;cv.height=H;var c=cv.getContext('2d');
+  var g=c.createLinearGradient(0,0,0,H);g.addColorStop(0,'#2a1d08');g.addColorStop(.45,'#14121a');g.addColorStop(1,'#08080c');c.fillStyle=g;c.fillRect(0,0,W,H);
+  c.strokeStyle='#c9a24b';c.lineWidth=3;c.strokeRect(54,54,W-108,H-108);
+  c.textBaseline='alphabetic';c.fillStyle='#c9a24b';c.font='600 38px Georgia,serif';
+  try{c.letterSpacing='10px'}catch(e){}
+  c.fillText('LAMENT·MULUNDU',100,170);
+  try{c.letterSpacing='0px'}catch(e){}
+  var cat=(st.cat||st.tag||'').toUpperCase();if(cat){c.fillStyle='rgba(255,255,255,.55)';c.font='600 32px system-ui,sans-serif';c.fillText(cat,100,250)}
+  c.fillStyle='#fff';c.font='700 84px Georgia,serif';
+  var y=shareWrap(c,st.title||'',100,430,W-200,104,4);
+  c.fillStyle='#c9a24b';c.fillRect(100,y+10,140,6);
+  c.fillStyle='rgba(255,255,255,.9)';c.font='italic 50px Georgia,serif';
+  y=shareWrap(c,shareText(st),100,y+110,W-200,76,13);
+  c.fillStyle='rgba(255,255,255,.7)';c.font='600 40px system-ui,sans-serif';
+  c.fillText('Written by Lament Mulundu',100,H-430);
+  c.fillStyle='#c9a24b';c.font='700 46px system-ui,sans-serif';
+  c.fillText('Read the full piece in the app',100,H-340);
+  c.fillStyle='rgba(255,255,255,.8)';c.font='500 34px system-ui,sans-serif';
+  c.fillText(SHARE_SITE.replace('https://','').replace(/\/$/,''),100,H-280);
+  return new Promise(function(res){cv.toBlob(res,'image/png')});
+}
+function shareStory(id){
+  var st=STORIES.filter(function(x){return x.id===id})[0];if(!st)return;
+  var link=SHARE_SITE+'?p='+encodeURIComponent(id),cap='“'+st.title+'” by Lament Mulundu\nRead it here: '+link;
+  shareCard(st).then(function(blob){
+    var file=null;try{file=new File([blob],'lament-mulundu-'+id+'.png',{type:'image/png'})}catch(e){}
+    if(file&&navigator.canShare&&navigator.canShare({files:[file]})){
+      return navigator.share({files:[file],title:st.title,text:cap}).catch(function(e){if(e&&e.name==='AbortError')return;throw e});
+    }
+    var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='lament-mulundu-'+id+'.png';document.body.appendChild(a);a.click();a.remove();
+    try{navigator.clipboard.writeText(cap)}catch(e){}
+    shareToast('Picture saved to your phone and link copied. Post the picture to your status and paste the link.');
+  }).catch(function(){shareToast('Could not share. Please try again.')});
+}
+document.addEventListener('click',function(e){var b=e.target.closest('[data-share]');if(b){e.preventDefault();shareStory(b.dataset.share)}});
 
 /* ---- admin dashboard with analytics ---- */
 function loadAdmin(){loadMyPosts();
