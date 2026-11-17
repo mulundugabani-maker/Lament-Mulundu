@@ -733,15 +733,17 @@ dialog.chat{max-width:100%;max-height:100%;inset:0}
 /* no copying / saving pictures; text can still be selected inside a piece, to quote it */
 html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,[contenteditable]{-webkit-user-select:text;user-select:text}
-#rBody>p{-webkit-user-select:text;user-select:text}
+::highlight(qsel){background:rgba(214,170,70,.5);color:inherit}
 img{-webkit-user-drag:none;-webkit-touch-callout:none;pointer-events:none}
 #qBtn{position:fixed;z-index:40;border:0;border-radius:99px;padding:9px 15px;font:600 .82rem var(--sans);background:var(--acc);color:var(--on-acc);box-shadow:0 8px 22px rgba(0,0,0,.4)}#qBtn[hidden]{display:none}
 .cmq{display:flex;align-items:flex-start;gap:8px;margin:2px 0 8px;padding:8px 8px 8px 12px;border-left:3px solid var(--acc);border-radius:10px;background:rgba(214,170,70,.12);font:italic .86rem/1.4 var(--serif,Georgia,serif)}.cmq[hidden]{display:none}.cmq span{flex:1;min-width:0}.cmq button{border:0;background:rgba(120,120,128,.25);color:inherit;border-radius:50%;width:24px;height:24px;font-size:.7rem}
 .cb2 .cq{margin:4px 0 6px;padding:6px 10px;border-left:3px solid var(--acc);border-radius:8px;background:rgba(214,170,70,.12);font:italic .86rem/1.4 var(--serif,Georgia,serif);opacity:.92}
-/* dashboard: solid gold tiles instead of boxes */
-.adm .ag>div,.ptile{background:linear-gradient(160deg,var(--acc),var(--acc))!important;border:0!important;box-shadow:0 6px 16px rgba(0,0,0,.22)!important;color:var(--on-acc,#1a1405)}
-.adm .ag b,.ptile h4,.pst4 b{color:var(--on-acc,#1a1405)!important}.adm .ag small,.pst4 small{color:var(--on-acc,#1a1405)!important;opacity:.7!important}
+/* dashboard: tiles styled like the 7-day bars (dark panel, soft gold tiles) */
+.adm .ag,.ptiles{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:10px;gap:8px}
+.adm .ag>div,.ptile{background:var(--acc)!important;opacity:.85;border:0!important;box-shadow:none!important;border-radius:12px 12px 5px 5px!important;color:#1a1405}
+.adm .ag b,.ptile h4,.pst4 b{color:#1a1405!important}.adm .ag small,.pst4 small{color:#1a1405!important;opacity:.7!important}
 .pst4 small{font-size:.5rem;letter-spacing:.02em}
+dialog.cfm h3{margin:2px 6px 8px;text-align:center;font-size:1.1rem}dialog.cfm .cfa .btn{width:100%}dialog.cfm .cfa .lnk{align-self:center;padding:6px}
 </style>
 </head>
 <body>
@@ -829,6 +831,7 @@ img{-webkit-user-drag:none;-webkit-touch-callout:none;pointer-events:none}
 <path transform="translate(140 92)" d="M12 21s-7-4.5-7-10a4.2 4.2 0 0 1 7-3 4.2 4.2 0 0 1 7 3c0 5.5-7 10-7 10z" stroke="var(--acc)"/></svg><h1>Join the <em>conversation</em></h1><p>A free account lets you comment on pieces and mark what you have read.</p></section></div><div class="odots" id="od"></div><div class="ob-cta"><button class="btn primary" type="button" data-auth="signup">Sign up free</button><button class="btn" type="button" id="obGoogle"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.5 12.2c0-.8-.1-1.5-.2-2.2H12v4.2h5.9a5 5 0 0 1-2.2 3.3v2.7h3.5c2.1-1.9 3.3-4.7 3.3-8z"/><path fill="#34A853" d="M12 23c3 0 5.5-1 7.3-2.7l-3.5-2.7c-1 .7-2.2 1.1-3.8 1.1-2.9 0-5.4-2-6.3-4.6H2.1v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M5.7 14.1a6.6 6.6 0 0 1 0-4.2V7.1H2.1a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3.1.6 4.2 1.7l3.1-3.1A11 11 0 0 0 2.1 7.1l3.6 2.8C6.6 7.4 9.1 5.4 12 5.4z"/></svg>Continue with Google</button><button class="btn" type="button" data-auth="login">Continue with email</button><p class="msg" id="obMsg" role="status" style="text-align:center;margin:0"></p><button class="lnk" id="oskip" type="button" hidden style="display:none">Just browse for now</button><p class="legal">By signing up, you agree that your name and email are used to run your account. <button class="lnk" type="button" data-privacy>Privacy</button></p></div></dialog>
 <dialog class="auth" id="auth" aria-label="Log in or sign up"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw" id="authBody"></div></dialog>
 <dialog class="chat" id="chat" aria-label="Messages"><div class="chh"><button class="ib" type="button" id="chBack" aria-label="Back" hidden><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><span class="cha" id="chAv"></span><span class="cht"><b id="chT">Messages</b><small id="chS"></small></span><button class="ib" type="button" id="chX" aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div class="chb" id="chBody"></div><form class="chf" id="chForm" hidden><textarea id="chText" rows="1" maxlength="1000" placeholder="Message…" aria-label="Message"></textarea><button class="btn primary" type="submit" aria-label="Send"></button></form></dialog>
+<dialog class="cfm" id="thx" aria-label="Thank you"><form method="dialog"><h3 id="thxH"></h3><p id="thxT"></p><div class="cfa" style="flex-direction:column"><button class="btn primary" type="button" id="thxBell">Open the bell \ud83d\udd14</button><button class="btn" type="button" id="thxApp">Get the app</button><button class="lnk" value="x" style="margin-top:2px">Maybe later</button></div></form></dialog>
 <dialog class="cfm" id="cfm" aria-label="Confirm"><form method="dialog"><p id="cfmT"></p><div class="cfa"><button class="btn" value="cancel">Cancel</button><button class="btn primary" value="ok" id="cfmOk">OK</button></div></form></dialog>
 <dialog class="auth" id="admin" aria-label="Admin dashboard"><div class="ahd"><button class="xb" type="button" data-aclose aria-label="Close">✕</button><b tabindex="-1" autofocus style="outline:none">Admin dashboard</b><button class="btn sm" id="adminRefresh" type="button">Refresh</button></div><div class="aw wide adm"><div id="adminPosts"></div><div id="adminBody"></div></div></dialog>
 <dialog class="auth" id="pedit" aria-label="Edit profile"><button class="aclose" type="button" data-aclose aria-label="Close">✕</button><div class="aw left"><h1>Edit profile</h1>
@@ -985,7 +988,7 @@ function pull(){fs.m.getDoc(fs.m.doc(fs.db,'users',user.uid)).then(function(d){i
 function mergeProf(l,r){l=l||{};var rt=r.profTs||0,lt=l.ts||0;if(lt>rt)return l;return {bio:r.bio||'',place:r.place||'',photo:r.photo||'',topics:r.interests||[],ts:rt}}
 function persistProf(){if(!fs||!user)return;var p=ST.prof||{};fs.m.setDoc(fs.m.doc(fs.db,'users',user.uid),{bio:p.bio||'',place:p.place||'',photo:p.photo||'',interests:p.topics||[],profTs:p.ts||Date.now()},{merge:true}).catch(function(){})}
 function flush(){if(!fs||!user)return;while(evq.length){var ev=evq.shift();fs.m.addDoc(fs.m.collection(fs.db,'events'),Object.assign({uid:user.uid,name:user.displayName||'',ts:Date.now()},ev)).catch(function(){})}}
-function logEvent(ev){if(user&&ADMIN_UID&&user.uid===ADMIN_UID)return;evq.push(ev);flush()}
+function logEvent(ev){if((ev.type==='signup'||ev.type==='login')&&user&&!(ADMIN_UID&&user.uid===ADMIN_UID))setTimeout(function(){try{showThanks(ev.type==='signup')}catch(e){}},900);if(user&&ADMIN_UID&&user.uid===ADMIN_UID)return;evq.push(ev);flush()}
 function tapAnon(t){try{fetch('https://firestore.googleapis.com/v1/projects/'+FIREBASE.projectId+'/databases/(default)/documents/events?key='+FIREBASE.apiKey,{method:'POST',keepalive:true,headers:{'Content-Type':'application/json'},body:JSON.stringify({fields:{type:{stringValue:'contact'},target:{stringValue:t},ts:{integerValue:String(Date.now())}}})}).catch(function(){})}catch(e){}}
 document.addEventListener('click',function(e){var a=e.target.closest('[data-t]');if(!a||!FIREBASE.apiKey)return;if(fs&&user)logEvent({type:'contact',target:a.dataset.t});else tapAnon(a.dataset.t)});
 function savedList(list){return '<div class="svl">'+list.map(function(x){var n=1+(x.title||'').length%5;
@@ -1132,20 +1135,40 @@ function renderComments(){var b=$('#cmList');if(!b)return;var ids={},kids={};cmC
 function loadComments(pid){cmCache=[];loadLikes(pid);getFS().then(function(f){return f.m.getDocs(f.m.query(f.m.collection(f.db,'comments'),f.m.where('pid','==',pid)))}).then(function(r){if(openId!==pid)return;cmCache=r.docs.map(function(d){return Object.assign({id:d.id},d.data())}).sort(function(a,b){return b.ts-a.ts});renderComments()}).catch(function(){var b=$('#cmList');if(b)b.innerHTML='<p class="n">Comments are unavailable right now.</p>'})}
 function postComment(doc,after){myAv().then(function(a){if(a)doc.av=a;return getFS()}).then(function(f){return f.m.addDoc(f.m.collection(f.db,'comments'),doc)}).then(function(ref){cmCache.unshift(Object.assign({id:ref.id},doc));renderComments();if(after)after();logEvent({type:'comment',pid:doc.pid,title:storyTitle(doc.pid)})}).catch(function(){var b=$('#cmList');if(b)b.insertAdjacentHTML('beforeend','<p class="n">Could not post. Try again.</p>')})}
 function myName(){return user.displayName||user.email.split('@')[0]}
+/* thank-you message after someone signs in. Change the words here. */
+var THANKS={head:'Thank you for joining, {name} \ud83d\ude4f\ud83c\udffe',text:'I\u2019m so glad you\u2019re here. Please tap the bell at the top and turn on notifications, so you never miss a new piece. And please download the app. It\u2019s the best way to read.'};
+function showThanks(isNew){var d=$('#thx');if(!d||!user||d.open)return;var k='lm:thx:'+user.uid;try{if(localStorage.getItem(k)&&!isNew)return;localStorage.setItem(k,'1')}catch(e){}
+  var nm=(user.displayName||'').split(' ')[0]||'friend';$('#thxH').textContent=THANKS.head.replace('{name}',nm);$('#thxT').textContent=THANKS.text;
+  var ga=$('#getApp'),ab=$('#thxApp');ab.hidden=!ga||ga.hidden;if(!authDlgClose())return;d.showModal()}
+function authDlgClose(){var a=$('#auth');try{if(a&&a.open)a.close()}catch(e){}return true}
+document.addEventListener('click',function(e){var d=$('#thx');if(!d)return;
+  if(e.target.closest('#thxBell')){d.close();var b=$('#hBell');if(b)b.click();return}
+  if(e.target.closest('#thxApp')){d.close();var ab=$('#getAppBtn');if(ab&&!ab.hidden&&ab.href){ab.click()}else{var g=$('#getApp');if(g)g.scrollIntoView({behavior:'smooth'})}return}
+  if(e.target===d)d.close()});
 var CMQ='',QSEL='';
 function setQuote(t){CMQ=t||'';var q=$('#cmQ');if(!q)return;if(CMQ){q.hidden=false;q.innerHTML='<span>\u275d '+esc(CMQ)+'</span><button type="button" data-qx aria-label="Remove quote">\u2715</button>'}else{q.hidden=true;q.innerHTML=''}}
 function qBtn(){var b=$('#qBtn');if(!b){b=document.createElement('button');b.id='qBtn';b.type='button';b.hidden=true;b.textContent='\u275d Reply';reader.appendChild(b)}return b}
-document.addEventListener('selectionchange',function(){if(!reader.open)return;var b=qBtn(),sel=window.getSelection();
-  if(!sel||sel.isCollapsed||!sel.rangeCount){b.hidden=true;return}
-  var r=sel.getRangeAt(0),n=r.commonAncestorContainer;n=n.nodeType===1?n:n.parentNode;
-  if(!n||!rBody.contains(n)||n.closest('.cm,.ract,.sgn,.by,.meta')||!n.closest('#rBody>p,#rBody')){b.hidden=true;return}
-  var t=String(sel.toString()).replace(/\s+/g,' ').trim();if(t.length<3){b.hidden=true;return}
-  QSEL=t.slice(0,140);var rc=r.getBoundingClientRect();b.hidden=false;
-  var top=Math.min(window.innerHeight-60,rc.bottom+14),left=Math.max(12,Math.min(window.innerWidth-110,rc.left+rc.width/2-47));b.style.top=top+'px';b.style.left=left+'px'});
+var LP={t:0,x:0,y:0,p:null,at:0};
+function qHide(){var b=qBtn();b.hidden=true;try{if(window.CSS&&CSS.highlights)CSS.highlights.delete('qsel')}catch(e){}}
+function qSentence(p,x,y){var node=p.firstChild;if(!node||node.nodeType!==3)return null;var r=null;
+  if(document.caretRangeFromPoint)r=document.caretRangeFromPoint(x,y);else if(document.caretPositionFromPoint){var cp=document.caretPositionFromPoint(x,y);if(cp)r={startContainer:cp.offsetNode,startOffset:cp.offset}}
+  if(!r||r.startContainer!==node)return null;var t=node.nodeValue,a=r.startOffset,b=a;
+  while(a>0&&!/[.!?\u2026]/.test(t.charAt(a-1)))a--;
+  while(b<t.length&&!/[.!?\u2026]/.test(t.charAt(b)))b++;if(b<t.length)b++;
+  while(a<b&&/\s/.test(t.charAt(a)))a++;
+  var rg=document.createRange();rg.setStart(node,a);rg.setEnd(node,b);return rg}
+rBody.addEventListener('pointerdown',function(e){var p=e.target.closest&&e.target.closest('#rBody>p');if(!p)return;clearTimeout(LP.t);qHide();LP.x=e.clientX;LP.y=e.clientY;LP.p=p;
+  LP.t=setTimeout(function(){var rg=qSentence(LP.p,LP.x,LP.y);if(!rg)return;var t=rg.toString().replace(/\s+/g,' ').trim();if(t.length<3)return;QSEL=t.slice(0,140);LP.at=Date.now();
+    try{if(window.CSS&&CSS.highlights&&window.Highlight)CSS.highlights.set('qsel',new Highlight(rg))}catch(x){}
+    var rc=rg.getBoundingClientRect(),b=qBtn();b.hidden=false;b.style.top=Math.min(window.innerHeight-60,rc.bottom+14)+'px';b.style.left=Math.max(12,Math.min(window.innerWidth-110,rc.left+rc.width/2-47))+'px';try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}},450)});
+['pointerup','pointercancel','pointerleave'].forEach(function(ev){rBody.addEventListener(ev,function(){clearTimeout(LP.t)})});
+rBody.addEventListener('pointermove',function(e){if(Math.abs(e.clientX-LP.x)>10||Math.abs(e.clientY-LP.y)>10)clearTimeout(LP.t)});
+reader.addEventListener('scroll',function(){clearTimeout(LP.t);if(Date.now()-LP.at>700)qHide()},{passive:true});
+document.addEventListener('click',function(e){if(Date.now()-LP.at<700)return;if(!e.target.closest('#qBtn'))qHide()},true);
 document.addEventListener('pointerdown',function(e){if(e.target.closest&&e.target.closest('#qBtn'))e.preventDefault()},true);
 document.addEventListener('click',function(e){
   if(e.target.closest('[data-qx]')){setQuote('');return}
-  if(e.target.closest('#qBtn')){var t=QSEL;try{window.getSelection().removeAllRanges()}catch(x){}qBtn().hidden=true;if(!t)return;
+  if(e.target.closest('#qBtn')){var t=QSEL;qHide();if(!t)return;
     if(!user){var lg=reader.querySelector('[data-auth="login"]');if(lg)lg.click();return}
     setQuote(t);var f=$('#cmForm');if(f){f.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(function(){var x=$('#cmText');if(x)x.focus({preventScroll:true})},350)}}});
 /* no copying, no saving pictures */
