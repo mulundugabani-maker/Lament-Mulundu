@@ -22,6 +22,11 @@
 <meta name="apple-mobile-web-app-title" content="Lament">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111'/%3E%3Ctext x='32' y='43' font-size='34' text-anchor='middle' font-family='Georgia,serif' fill='%23d4af37'%3EL%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js">
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&family=Inter:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap" rel="stylesheet">
@@ -272,7 +277,7 @@ dialog.auth::backdrop{background:var(--bg)}
 .aw h2{font-size:1.05rem;margin:6px 0 12px}.idb{margin-top:16px;padding:12px;border-radius:12px;background:var(--s2);font-size:.78rem;color:var(--dim);word-break:break-all}
 
 /* splash */
-#splash{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:var(--bg);animation:spl .5s 1.3s forwards}
+#splash{position:fixed;inset:0;z-index:999;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;background:var(--bg);animation:spl .3s .55s forwards}
 @keyframes spl{to{opacity:0;visibility:hidden}}
 @keyframes lmin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:none}}
 .lm{width:80px;height:80px;border-radius:24px;display:grid;place-items:center;font-family:var(--disp);font-style:italic;font-size:2.3rem;color:var(--on-acc);background:var(--acc);animation:lmin .7s cubic-bezier(.22,1,.36,1) both}
@@ -411,7 +416,7 @@ dialog.reader.out{animation:rOut .21s ease forwards}
 @keyframes rIn{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
 @keyframes rOut{to{opacity:0;transform:translateY(18px)}}
 @keyframes rFade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-#rBody>*{animation:rFade .55s cubic-bezier(.22,1,.36,1) both}
+#rBody>*:nth-child(-n+7){animation:rFade .45s cubic-bezier(.22,1,.36,1) both}
 #rBody>:nth-child(2){animation-delay:.04s}#rBody>:nth-child(3){animation-delay:.08s}#rBody>:nth-child(4){animation-delay:.12s}#rBody>:nth-child(n+5){animation-delay:.16s}
 #rBody>p{text-align:justify;hyphens:auto;-webkit-hyphens:auto}#rBody>p.n{text-align:left}
 .reader .cover{margin:0 -22px 26px;border-radius:0;background:var(--s2)}
@@ -536,7 +541,7 @@ dialog.reader.out{animation:rOut .21s ease forwards}
 --sans:-apple-system,BlinkMacSystemFont,'SF Pro Text','Inter',system-ui,'Segoe UI',Roboto,sans-serif;--spring:cubic-bezier(.34,1.56,.64,1)}
 :root[data-theme=light]{--gl:rgba(255,255,255,.62);--gl2:rgba(255,255,255,.5);--glb:rgba(255,255,255,.9);--hl:inset 0 1px 0 rgba(255,255,255,.95),inset 0 0 0 .5px rgba(255,255,255,.6);--gsh:0 10px 30px rgba(60,50,20,.14);--fill:rgba(120,120,128,.16);--hdr:rgba(247,245,240,.55)}
 html,body{background:var(--bg)}
-body::before{content:'';position:fixed;inset:-10%;z-index:0;pointer-events:none;
+body::before{content:'';position:fixed;inset:-10%;transform:translateZ(0);will-change:transform;z-index:0;pointer-events:none;
  background:radial-gradient(42% 32% at 12% 8%,rgba(210,170,74,.30),transparent 70%),radial-gradient(40% 30% at 92% 30%,rgba(90,110,230,.22),transparent 70%),radial-gradient(46% 34% at 20% 72%,rgba(160,80,200,.18),transparent 70%),radial-gradient(40% 30% at 85% 95%,rgba(40,160,150,.18),transparent 70%)}
 :root[data-theme=light] body::before{opacity:.55}
 .gz{-webkit-backdrop-filter:blur(26px) saturate(1.8);backdrop-filter:blur(26px) saturate(1.8)}
@@ -602,7 +607,7 @@ h1,h2,h3,.ptitle{letter-spacing:-.02em}
 .tab[aria-selected=true]{background:linear-gradient(180deg,#e8c56b,#cfa23d);color:#1a1405;border-color:transparent;box-shadow:0 4px 14px rgba(210,170,74,.35)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 /* ===== stronger glass + premium reading side ===== */
-:root{--gl:rgba(38,38,46,.40);--gl2:rgba(255,255,255,.12);--glb:rgba(255,255,255,.24);--hl:inset 0 1.5px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(255,255,255,.06),inset 0 0 0 .5px rgba(255,255,255,.16);--gsh:0 14px 40px rgba(0,0,0,.45);--hdr:rgba(14,14,18,.38);--blur:blur(42px) saturate(2.3)}
+:root{--gl:rgba(38,38,46,.40);--gl2:rgba(255,255,255,.12);--glb:rgba(255,255,255,.24);--hl:inset 0 1.5px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(255,255,255,.06),inset 0 0 0 .5px rgba(255,255,255,.16);--gsh:0 14px 40px rgba(0,0,0,.45);--hdr:rgba(14,14,18,.38);--blur:blur(22px) saturate(2)}
 :root[data-theme=light]{--gl:rgba(255,255,255,.5);--gl2:rgba(255,255,255,.55);--glb:rgba(255,255,255,.95);--hl:inset 0 1.5px 0 rgba(255,255,255,1),inset 0 0 0 .5px rgba(255,255,255,.8);--gsh:0 14px 40px rgba(70,55,20,.18);--hdr:rgba(247,245,240,.42)}
 body::before{background:radial-gradient(48% 36% at 10% 6%,rgba(214,170,70,.48),transparent 70%),radial-gradient(44% 34% at 95% 28%,rgba(80,110,255,.38),transparent 70%),radial-gradient(52% 38% at 15% 70%,rgba(170,70,220,.32),transparent 70%),radial-gradient(44% 34% at 88% 96%,rgba(30,190,170,.30),transparent 70%)}
 .top,.dock,.ib,.glass,.sbar,.mini,.svi,.sr,.xp,.cc,.btn,.rd,.rc,#bellPanel,#rPop{-webkit-backdrop-filter:var(--blur);backdrop-filter:var(--blur)}
@@ -653,7 +658,7 @@ dialog.reader{background-color:var(--bg);background-image:radial-gradient(60% 30
 /* ===== v8: speed, clear reading modes, inbox ===== */
 /* only the big bars blur; everything else is a light glass fill (much faster) */
 .glass,.sbar,.mini,.svi,.sr,.xp,.cc,.btn,.rd,.ib,.by,.xm,.reader .eyebrow,.ract,.cm,.seg,.tabs .tab,.chips span,.tags span,input,textarea,.msgc,.chm,.chr{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
-:root{--gl:rgba(40,40,48,.62);--pop:rgba(26,26,32,.9);--blur:blur(26px) saturate(2);--sh2:0 10px 26px rgba(0,0,0,.3)}
+:root{--gl:rgba(40,40,48,.62);--pop:rgba(26,26,32,.9);--blur:blur(20px) saturate(2);--sh2:0 10px 26px rgba(0,0,0,.3)}
 :root[data-theme=light]{--gl:rgba(255,255,255,.78);--pop:rgba(252,250,245,.92);--sh2:0 10px 26px rgba(70,55,20,.14)}
 .top,#bellPanel,#rPop{transform:translateZ(0)}.dock{transform:translate3d(-50%,0,0)}
 .rc{-webkit-backdrop-filter:blur(16px) saturate(1.6);backdrop-filter:blur(16px) saturate(1.6);background:color-mix(in srgb,var(--bg) 78%,transparent);margin:0 -22px;padding-left:22px;padding-right:22px}
@@ -738,6 +743,8 @@ img{-webkit-user-drag:none;-webkit-touch-callout:none;pointer-events:none}
 #qBtn{position:fixed;z-index:40;border:0;border-radius:99px;padding:9px 15px;font:600 .82rem var(--sans);background:var(--acc);color:var(--on-acc);box-shadow:0 8px 22px rgba(0,0,0,.4)}#qBtn[hidden]{display:none}
 .cmq{display:flex;align-items:flex-start;gap:8px;margin:2px 0 8px;padding:8px 8px 8px 12px;border-left:3px solid var(--acc);border-radius:10px;background:rgba(214,170,70,.12);font:italic .86rem/1.4 var(--serif,Georgia,serif)}.cmq[hidden]{display:none}.cmq span{flex:1;min-width:0}.cmq button{border:0;background:rgba(120,120,128,.25);color:inherit;border-radius:50%;width:24px;height:24px;font-size:.7rem}
 .cb2 .cq{margin:4px 0 6px;padding:6px 10px;border-left:3px solid var(--acc);border-radius:8px;background:rgba(214,170,70,.12);font:italic .86rem/1.4 var(--serif,Georgia,serif);opacity:.92}
+/* new-readers chart: 4 bars */
+.bars.b4{grid-template-columns:repeat(4,1fr)}.bars.b4 small{font-size:.58rem;white-space:nowrap}
 /* dashboard: stat tiles look like the 7-day bars panel (dark panel, white numbers, grey labels, no yellow) */
 .adm .ag{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:12px 6px;gap:12px 2px}
 .adm .ag>div{background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:2px!important}
@@ -928,8 +935,10 @@ renderHL();
 /* writings */
 var current='All',tabsEl=$('#tabs'),feed=$('#feed');
 function renderTabs(){tabsEl.innerHTML=TABS.map(function(t){return '<button class="tab" role="tab" type="button" aria-selected="'+(t===current)+'" data-tab="'+t+'">'+t+'</button>'}).join('')}
+var _feedH='';
 function renderFeed(){var l=STORIES.filter(function(s){return current==='All'||s.cat===current}).sort(function(a,b){return isDone(a)-isDone(b)||(b.ts||0)-(a.ts||0)});
-  feed.innerHTML=l.length?l.map(function(s){var r=s.body.length;return '<article class="card glass"'+(r?' data-read="'+s.id+'" role="button" tabindex="0"':'')+'><div class="cb"><span class="tag">'+esc(s.tag)+'</span><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><span class="st">'+esc(stat(s))+(r?'<b>Read →</b>':'')+'</span></div>'+cov(s)+'</article>'}).join(''):(NETDONE?'<p class="empty">Nothing here yet. New pieces are on the way.</p>':skHtml('card',3))}
+  var _h=l.length?l.map(function(s){var r=s.body.length;return '<article class="card glass"'+(r?' data-read="'+s.id+'" role="button" tabindex="0"':'')+'><div class="cb"><span class="tag">'+esc(s.tag)+'</span><h3>'+esc(s.title)+'</h3><p>'+esc(s.desc)+'</p><span class="st">'+esc(stat(s))+(r?'<b>Read →</b>':'')+'</span></div>'+cov(s)+'</article>'}).join(''):(NETDONE?'<p class="empty">Nothing here yet. New pieces are on the way.</p>':skHtml('card',3));
+  if(_h!==_feedH){_feedH=_h;feed.innerHTML=_h}}
 function setTab(t){current=t;renderTabs();renderFeed()}
 tabsEl.addEventListener('click',function(e){var b=e.target.closest('[data-tab]');if(b)setTab(b.dataset.tab)});
 document.addEventListener('click',function(e){var h=e.target.closest('[data-hl]');if(h){homeCat=homeCat===h.dataset.hl?'':h.dataset.hl;renderHL();return}
@@ -1037,6 +1046,7 @@ function initAuth(){
   renderAccount();
   if(!FIREBASE.apiKey)return;
   var v='https://www.gstatic.com/firebasejs/10.12.2/';
+  window._fsMod=import(v+'firebase-firestore.js');window._fsMod.catch(function(){window._fsMod=null});
   Promise.all([import(v+'firebase-app.js'),import(v+'firebase-auth.js')]).then(function(m){
     var a=m[1],app=m[0].initializeApp(FIREBASE);authApi={a:a,auth:a.getAuth(app)};fbApp=app;appRes();
     a.onAuthStateChanged(authApi.auth,function(u){user=u;authReady=true;if(!u){WAS=null;try{localStorage.removeItem('lm:was')}catch(e){}showGate()}
@@ -1095,7 +1105,7 @@ if(mq&&mq.addEventListener)mq.addEventListener('change',function(){if(SET.mode==
 function saveSet(){try{localStorage.setItem('lm:set',JSON.stringify(SET))}catch(x){}}
 function endM(){var e=$('#rend');if(!e)return Math.max(1,reader.scrollHeight-reader.clientHeight);var t=e.getBoundingClientRect().top+reader.scrollTop-reader.getBoundingClientRect().top;return Math.max(1,t-reader.clientHeight*.75)}
 function smsg(t){var e=$('#smsg');if(e)e.textContent=t}
-function getFS(){if(fs)return Promise.resolve(fs);if(!fsP)fsP=appReady.then(function(){return import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')}).then(function(f){fs={m:f,db:f.getFirestore(fbApp)};flush();return fs}).catch(function(e){fsP=null;throw e});return fsP}
+function getFS(){if(fs)return Promise.resolve(fs);if(!fsP)fsP=appReady.then(function(){return window._fsMod||import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')}).then(function(f){fs={m:f,db:f.getFirestore(fbApp)};flush();setTimeout(function(){try{loadViews()}catch(e){}},0);return fs}).catch(function(e){fsP=null;throw e});return fsP}
 function renderHome(){var h=new Date().getHours(),g=h<12?'Good morning':h<18?'Good afternoon':'Good evening',n=user?(user.displayName||'').split(' ')[0]:(!authReady&&WAS?WAS.n:'');$('#hello').textContent=g+(n?', '+n:'');
   var R=STORIES.filter(function(x){return x.body.length&&ST.read.indexOf(x.id)<0&&ST.prog[x.id]>.03}),c=user?(R.filter(function(x){return x.id===ST.last})[0]||R[0]):null;
   $('#cont').innerHTML=c?'<button class="cc" type="button" data-read="'+c.id+'">'+(c.cover?'<img src="'+esc(c.cover)+'" alt="">':'')+'<div><small>Continue reading</small><b>'+esc(c.title)+'</b><div class="prog" style="margin:0"><i style="width:'+Math.round(ST.prog[c.id]*100)+'%"></i></div></div></button>':''}
@@ -1463,11 +1473,12 @@ function paintTop(){var av=$('#hAv'),lg=$('#hLogin');if(!av||!lg)return;
     WAS={n:(user.displayName||'').split(' ')[0],c:nm.charAt(0).toUpperCase(),p:p.photo||''};try{localStorage.setItem('lm:was',JSON.stringify(WAS))}catch(e){}}
   else{av.hidden=true;lg.hidden=false}}
 function loadNotes(){if(!user||RN.uid===user.uid)return;var uid=user.uid;RN.uid=uid;
+  try{var _c=JSON.parse(localStorage.getItem('lm:rn:'+uid)||'null');if(_c){RN.list=_c.l||[];RN.adm=_c.a||[];paintAlerts()}}catch(e){}
   getFS().then(function(f){var C=f.m.collection(f.db,'comments'),q=[f.m.getDocs(f.m.query(C,f.m.where('rto','==',uid)))];
     if(isAdm())q.push(f.m.getDocs(f.m.query(C,f.m.where('ts','>',Date.now()-30*864e5),f.m.orderBy('ts','desc'),f.m.limit(40))));return Promise.all(q)}).then(function(r){
     var m=function(x){return x.docs.map(function(d){return Object.assign({id:d.id},d.data())})};
     RN.list=m(r[0]).filter(function(c){return c.uid!==uid}).sort(function(a,b){return b.ts-a.ts});
-    RN.adm=r[1]?m(r[1]).filter(function(c){return c.uid!==uid&&c.rto!==uid}):[];paintAlerts()}).catch(function(){})}
+    RN.adm=r[1]?m(r[1]).filter(function(c){return c.uid!==uid&&c.rto!==uid}):[];try{localStorage.setItem('lm:rn:'+uid,JSON.stringify({l:RN.list.slice(0,30),a:RN.adm.slice(0,30)}))}catch(e){}paintAlerts()}).catch(function(){})}
 function refreshNotes(){RN.uid=null;loadNotes()}
 document.addEventListener('click',function(e){
   var bell=e.target.closest('#hBell');
@@ -1497,7 +1508,7 @@ function loadAdmin(){loadMyPosts();
     lk.forEach(function(x){pl[x.pid]=(pl[x.pid]||0)+1});cm.forEach(function(x){pc[x.pid]=(pc[x.pid]||0)+1});
     var saves=0;us.forEach(function(u){saves+=(u.saved||[]).length});var now=Date.now(),wk=function(n){return us.filter(function(u){return u.joined>now-(n+1)*7*DAY&&u.joined<=now-n*7*DAY}).length};
     var rows=STORIES.filter(function(s){return s.body.length}).map(function(s){return {t:s.title,o:po[s.id]||0,f:pf[s.id]||0,l:pl[s.id]||0,c:pc[s.id]||0}}).sort(function(a,b){return (b.o+b.l*3+b.c*2)-(a.o+a.l*3+a.c*2)});
-    var mx=Math.max.apply(null,days.concat([1])),dn=['Su','Mo','Tu','We','Th','Fr','Sa'];
+    var mw=Math.max.apply(null,[0,1,2,3].map(wk).concat([1])),mx=Math.max.apply(null,days.concat([1])),dn=['Su','Mo','Tu','We','Th','Fr','Sa'];
     var emails=us.filter(function(u){return u.notify&&u.email}).map(function(u){return u.email}),latest=STORIES.filter(function(s){return s.body.length}).sort(function(a,b){return (b.ts||0)-(a.ts||0)})[0];
     var mail='mailto:?bcc='+encodeURIComponent(emails.join(','))+'&subject='+encodeURIComponent(latest?'New on Lament Mulundu: '+latest.title:'New on Lament Mulundu')+'&body='+encodeURIComponent((latest?'A new piece is up: '+latest.title+'\n\n':'')+location.origin+location.pathname);
     us.sort(function(a,b){return (b.joined||0)-(a.joined||0)});
@@ -1505,10 +1516,9 @@ function loadAdmin(){loadMyPosts();
     var AS=function(t){if(!t)return '–';var d=(Date.now()-t)/1000;return d<60?'now':d<3600?Math.floor(d/60)+'m':d<86400?Math.floor(d/3600)+'h':Math.floor(d/86400)+'d'};
     var VB={signup:'joined',login:'logged in',open:'opened',finish:'finished',unread:'unmarked',save:'saved',unsave:'unsaved',contact:'tapped',comment:'comment'};
     var tk=Object.keys(tap);
-    var H='<div class="ag" style="margin-top:16px">'+[[us.length,'Readers'],[wk(0),'New (7d)'],[c.open||0,'Opens'],[days[6],'Today'],[c.finish||0,'Finished'],[lk.filter(function(x){return x.r!=='laugh'}).length,'Likes'],[lk.filter(function(x){return x.r==='laugh'}).length,'Laughs'],[cm.length,'Comments'],[saves,'Saved'],[emails.length,'Updates'],[rows.length,'Pieces'],[c.contact||0,'Contacts']].map(function(t){return '<div><b>'+t[0]+'</b><small>'+t[1]+'</small></div>'}).join('')+'</div>'+
+    var H='<div style="height:16px"></div>'+
       '<h2>Opens, last 7 days</h2><div class="bars">'+days.map(function(n,i){return '<div><b>'+n+'</b><i style="height:'+Math.round(n/mx*80)+'%"></i><small>'+dn[new Date(t0-(6-i)*DAY).getDay()]+'</small></div>'}).join('')+'</div>'+
-      '<h2>Pieces</h2>'+'<div class="tg"><div class="ptiles">'+(rows.length?rows.map(function(p,i){return '<div class="ptile'+(i>=6?' x':'')+'"><h4>'+esc(p.t)+'</h4><div class="pst4"><span><b>'+p.o+'</b><small>Opens</small></span><span><b>'+p.f+'</b><small>Done</small></span><span><b>'+p.l+'</b><small>React</small></span><span><b>'+p.c+'</b><small>Notes</small></span></div></div>'}).join(''):'<p class="psub">No pieces yet</p>')+'</div>'+(rows.length>6?'<button class="tgb" type="button" data-all="Show all ('+rows.length+')" data-less="Show less">Show all ('+rows.length+')</button>':'')+'</div>'+
-      '<h2>New readers</h2><div class="ag ag4">'+[['This week',0],['Last week',1],['2 wks ago',2],['3 wks ago',3]].map(function(p){return '<div><b>'+wk(p[1])+'</b><small>'+p[0]+'</small></div>'}).join('')+'</div>'+
+      '<h2>New readers, last 4 weeks</h2><div class="bars b4">'+[['3 wks ago',3],['2 wks ago',2],['Last week',1],['This week',0]].map(function(p){var n=wk(p[1]);return '<div><b>'+n+'</b><i style="height:'+Math.round(n/mw*80)+'%"></i><small>'+p[0]+'</small></div>'}).join('')+'</div>'+
       '<h2>Readers</h2>'+T('rdrs',['Reader','Read','Saved','Joined','Seen'],['','36px','40px','46px','44px'],us.length?us.map(function(u){return '<td class="rdr"><b>'+esc(u.name||'No name')+(u.notify?' ✉':'')+'</b><small>'+esc(u.email||'')+'</small></td><td>'+(u.read||[]).length+'</td><td>'+(u.saved||[]).length+'</td><td>'+AS(u.joined)+'</td><td>'+AS(u.lastSeen)+'</td>'}):['<td>No readers yet</td><td></td><td></td><td></td><td></td>'],10,'Show all ('+us.length+')')+
       '<h2>Contact taps</h2>'+T('ct',['Button','Taps'],['','70px'],tk.length?tk.map(function(k){return '<td>'+esc(k)+'</td><td>'+tap[k]+'</td>'}):['<td>None yet</td><td></td>'],9,'')+
       '<h2>Email your readers</h2><p class="psub">'+emails.length+' reader'+(emails.length===1?'':'s')+' chose to get updates. Opens your email app with them in BCC.</p><div class="row2"><a class="btn primary sm" href="'+mail+'">Write to them</a><button class="btn sm" type="button" id="copyEm">Copy emails</button></div>'+
@@ -1607,6 +1617,7 @@ document.addEventListener('click',function(e){if(e.target.closest('[data-moff]')
 var _oo=onOpened;onOpened=function(s){_oo.apply(this,arguments);try{muAuto()}catch(e){}};
 reader.addEventListener('close',function(){var h=$('#mAuto');if(h)h.hidden=true;try{renderFeed();renderHL();doSearch()}catch(e){}});
 var _tp=togglePop;togglePop=function(){hideTip();_tp();var p=$('#rPop');if(p&&!p.hidden)paintMusic()};
+if(WAS){try{useCache(JSON.parse(localStorage.getItem('lm:posts')||'null'))}catch(e){}idbGet('posts').then(useCache)}
 initAuth();
 /* ---- keep the app fresh: new version and new pieces load on their own ---- */
 (function(){
