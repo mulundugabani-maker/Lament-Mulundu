@@ -738,10 +738,11 @@ img{-webkit-user-drag:none;-webkit-touch-callout:none;pointer-events:none}
 #qBtn{position:fixed;z-index:40;border:0;border-radius:99px;padding:9px 15px;font:600 .82rem var(--sans);background:var(--acc);color:var(--on-acc);box-shadow:0 8px 22px rgba(0,0,0,.4)}#qBtn[hidden]{display:none}
 .cmq{display:flex;align-items:flex-start;gap:8px;margin:2px 0 8px;padding:8px 8px 8px 12px;border-left:3px solid var(--acc);border-radius:10px;background:rgba(214,170,70,.12);font:italic .86rem/1.4 var(--serif,Georgia,serif)}.cmq[hidden]{display:none}.cmq span{flex:1;min-width:0}.cmq button{border:0;background:rgba(120,120,128,.25);color:inherit;border-radius:50%;width:24px;height:24px;font-size:.7rem}
 .cb2 .cq{margin:4px 0 6px;padding:6px 10px;border-left:3px solid var(--acc);border-radius:8px;background:rgba(214,170,70,.12);font:italic .86rem/1.4 var(--serif,Georgia,serif);opacity:.92}
-/* dashboard: tiles styled like the 7-day bars (dark panel, soft gold tiles) */
-.adm .ag,.ptiles{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:10px;gap:8px}
-.adm .ag>div,.ptile{background:var(--acc)!important;opacity:.85;border:0!important;box-shadow:none!important;border-radius:12px 12px 5px 5px!important;color:#1a1405}
-.adm .ag b,.ptile h4,.pst4 b{color:#1a1405!important}.adm .ag small,.pst4 small{color:#1a1405!important;opacity:.7!important}
+/* dashboard: stat tiles look like the 7-day bars panel (dark panel, white numbers, grey labels, no yellow) */
+.adm .ag{background:var(--s1);border:1px solid var(--line);border-radius:16px;padding:12px 6px;gap:12px 2px}
+.adm .ag>div{background:none!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:2px!important}
+.adm .ag b{color:var(--tx)!important;font-weight:600}.adm .ag small{color:var(--grey)!important;opacity:1!important}
+#rBody,#rBody *{-webkit-user-select:none!important;user-select:none!important;-webkit-touch-callout:none!important}
 .pst4 small{font-size:.5rem;letter-spacing:.02em}
 dialog.cfm h3{margin:2px 6px 8px;text-align:center;font-size:1.1rem}dialog.cfm .cfa .btn{width:100%}dialog.cfm .cfa .lnk{align-self:center;padding:6px}
 </style>
@@ -1150,13 +1151,15 @@ function setQuote(t){CMQ=t||'';var q=$('#cmQ');if(!q)return;if(CMQ){q.hidden=fal
 function qBtn(){var b=$('#qBtn');if(!b){b=document.createElement('button');b.id='qBtn';b.type='button';b.hidden=true;b.textContent='\u275d Reply';reader.appendChild(b)}return b}
 var LP={t:0,x:0,y:0,p:null,at:0};
 function qHide(){var b=qBtn();b.hidden=true;try{if(window.CSS&&CSS.highlights)CSS.highlights.delete('qsel')}catch(e){}}
-function qSentence(p,x,y){var node=p.firstChild;if(!node||node.nodeType!==3)return null;var r=null;
+function qSentence(p,x,y){var r=null;
   if(document.caretRangeFromPoint)r=document.caretRangeFromPoint(x,y);else if(document.caretPositionFromPoint){var cp=document.caretPositionFromPoint(x,y);if(cp)r={startContainer:cp.offsetNode,startOffset:cp.offset}}
-  if(!r||r.startContainer!==node)return null;var t=node.nodeValue,a=r.startOffset,b=a;
+  if(!r)return null;var node=r.startContainer;if(node.nodeType!==3||!p.contains(node))return null;var t=node.nodeValue,a=r.startOffset,b=a;
   while(a>0&&!/[.!?\u2026]/.test(t.charAt(a-1)))a--;
   while(b<t.length&&!/[.!?\u2026]/.test(t.charAt(b)))b++;if(b<t.length)b++;
   while(a<b&&/\s/.test(t.charAt(a)))a++;
   var rg=document.createRange();rg.setStart(node,a);rg.setEnd(node,b);return rg}
+/* safety net: never keep a native text selection in the reader, so Google's search panel can't pop up */
+document.addEventListener('selectionchange',function(){if(!reader.open)return;var ae=document.activeElement;if(ae&&/^(INPUT|TEXTAREA)$/.test(ae.tagName))return;var sel=window.getSelection();if(sel&&!sel.isCollapsed){try{sel.removeAllRanges()}catch(e){}}});
 rBody.addEventListener('pointerdown',function(e){var p=e.target.closest&&e.target.closest('#rBody>p');if(!p)return;clearTimeout(LP.t);qHide();LP.x=e.clientX;LP.y=e.clientY;LP.p=p;
   LP.t=setTimeout(function(){var rg=qSentence(LP.p,LP.x,LP.y);if(!rg)return;var t=rg.toString().replace(/\s+/g,' ').trim();if(t.length<3)return;QSEL=t.slice(0,140);LP.at=Date.now();
     try{if(window.CSS&&CSS.highlights&&window.Highlight)CSS.highlights.set('qsel',new Highlight(rg))}catch(x){}
