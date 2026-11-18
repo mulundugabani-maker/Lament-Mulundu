@@ -1,8 +1,8 @@
 /* Lemba service worker
    - the page itself is always fetched fresh from the network first (so updates and new work show up on their own)
-   - the saved copy is only used when the phone is offline
+   - the saved copy is used when the phone is offline or the connection is too slow (4 seconds)
    - bump V when you want to force every phone to refresh its saved files */
-const V = 'lm-2026-11-18a';
+const V = 'lm-2026-11-18d';
 const PUSH = true; // set to true after you create a OneSignal app (phone push alerts)
 const CORE = ['./', 'index.html', 'manifest.webmanifest'];
 
@@ -25,12 +25,23 @@ self.addEventListener('fetch', e => {
   if (u.pathname.indexOf('/audio/') > -1) return;        // music files: let the browser stream and cache them
   if (u.pathname.indexOf('/downloads/') > -1) return;    // the app file: never saved by the service worker
   const isPage = r.mode === 'navigate' || (r.headers.get('accept') || '').includes('text/html');
-  if (isPage) {                                          // network first, saved copy only when offline
-    e.respondWith(
-      fetch(r, { cache: 'no-cache' })
-        .then(res => { if (res.ok && /(\/|index\.html)$/.test(u.pathname)) { const cp = res.clone(); caches.open(V).then(c => c.put('index.html', cp)); } return res; })
-        .catch(() => caches.match('index.html').then(m => m || caches.match('./')))
-    );
+  if (isPage) {                                          // network first, but never wait more than 4 seconds
+    e.respondWith((async () => {
+      const cache = await caches.open(V);
+      const net = fetch(r, { cache: 'no-cache' }).then(res => {
+        if (res.ok && /(\/|index\.html)$/.test(u.pathname)) cache.put('index.html', res.clone());
+        return res;
+      });
+      e.waitUntil(net.catch(() => {}));                  // keep refreshing the saved copy quietly
+      try {
+        const first = await Promise.race([net, new Promise(ok => setTimeout(() => ok(null), 4000))]);
+        if (first) return first;
+        const saved = (await cache.match('index.html')) || (await caches.match('./'));
+        return saved || await net;                       // slow phone: show the saved copy straight away
+      } catch (err) {
+        return (await cache.match('index.html')) || (await caches.match('./')) || Response.error();
+      }
+    })());
     return;
   }
   e.respondWith(                                         // icons, manifest: instant from the saved copy, refreshed quietly
