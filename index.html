@@ -1040,7 +1040,7 @@ function setHtml(){var sz=SET.size,md=SET.mode,pp=SET.paper;
 function renderAccount(){
   var top='';
   if(!FIREBASE.apiKey){top='<div class="glass acc"><h3>Accounts are coming soon</h3></div>'}
-  else if(!authApi||!authReady){top='<div class="glass acc"><p class="psub" style="margin:0">'+(WAS?'Loading your profile…':'Connecting…')+'</p></div>'}
+  else if(!authApi||!authReady){top='<div class="glass acc"><p class="psub" style="margin:0">'+(WAS?'Loading your profile…':'Connecting…')+'</p>'+(window.LMSLOW?'<p class="psub" style="margin:10px 0 0">Your connection looks slow.</p><button class="btn primary" id="retryConn" type="button" style="margin-top:12px">Tap to retry</button>':'')+'</div>'}
   else if(user){
     var nm=user.displayName||user.email.split('@')[0],R=STORIES.filter(function(x){return x.body.length}),
       done=R.filter(function(x){return ST.read.indexOf(x.id)>-1}).length,
@@ -1069,6 +1069,8 @@ function showAuth(m){mode=m;amsg='';var su=m==='signup';
   if(!authDlg.open)authDlg.showModal();authDlg.scrollTop=0}
 function initAuth(){
   renderAccount();
+  setTimeout(function(){if(!authReady){window.LMSLOW=true;try{renderAccount()}catch(e){}}},9000);
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#retryConn'))location.reload()});
   if(!FIREBASE.apiKey)return;
   var v='https://www.gstatic.com/firebasejs/10.12.2/';
   window._fsMod=import(v+'firebase-firestore.js');window._fsMod.catch(function(){window._fsMod=null});
@@ -1463,7 +1465,7 @@ function isNew(s){return eligible(s)&&!isRead('p:'+s.id)&&!(user&&ST.read.indexO
 function dockDot(i,on){var b=document.querySelector('#dock button[data-i="'+i+'"]');if(!b)return;var d=b.querySelector('.dot');if(on&&!d)b.insertAdjacentHTML('beforeend','<i class="dot"></i>');if(!on&&d)d.remove()}
 function decorateNew(){
   [].forEach.call(document.querySelectorAll('#feed article[data-read]'),function(a){var s=STORIES.filter(function(x){return x.id===a.dataset.read})[0],p=a.querySelector('.newp');if(s&&fresh(s)){if(!p){var t=a.querySelector('.tag');if(t)t.insertAdjacentHTML('afterend','<span class="newp">New</span>')}}else if(p)p.remove()});
-  dockDot(2,STORIES.some(isNew))}
+  dockDot(2,!!authReady&&STORIES.some(isNew))}
 var _rf=renderFeed;renderFeed=function(){_rf.apply(this,arguments);decorateNew()};
 var EVL=[],EVW={uid:null,init:false},EVT={signup:1,open:1,finish:1,like:1,contact:1};
 function evT(d){return d.title||(d.pid?storyTitle(d.pid):'')}
