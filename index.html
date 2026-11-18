@@ -787,7 +787,7 @@ try{var _n=localStorage.getItem('lm:nm');if(_n){var _s=document.getElementById('
   <div class="rise"><h2 class="rt" style="margin-top:20px">Browse by topic</h2><div class="tgrid" id="hl"></div></div>
   <div class="rise"><h2 class="rt" style="margin-top:14px"><span id="latestT">Latest pieces</span><button class="lnk" type="button" data-seeall>See all →</button></h2><div class="rail" id="latest"></div></div>
   <div class="rise" id="xfeedW" hidden><h2 class="rt" style="margin-top:14px">Latest post</h2><div id="xfeed"></div></div>
-  <div class="rise getapp" id="getApp" hidden><div class="glass acc gacard"><div class="gat"><b id="getAppT">Get the Android app</b><small>Open Lemba straight from your home screen.</small></div><a class="btn primary" id="getAppBtn" href="downloads/Lament.apk" download>Download the app</a><button class="lnk" id="getAppPwa" type="button" hidden>Or add it to your Home Screen</button><small class="gahint" id="getAppHint"></small></div></div>
+  <div class="rise getapp" id="getApp" hidden><div class="glass acc gacard"><div class="gat"><b id="getAppT">Get the Android app</b><small>Open Lemba straight from your home screen.</small></div><a class="btn primary" id="getAppBtn" href="downloads/Lemba.apk" download>Download the app</a><button class="lnk" id="getAppPwa" type="button" hidden>Or add it to your Home Screen</button><small class="gahint" id="getAppHint"></small></div></div>
   <div class="rise"><h2 class="rt">Quick links</h2><div class="ql">
     <button class="btn" type="button" data-go="p-about">About the writer</button>
     <button class="btn" type="button" data-chat>Message me</button>
@@ -1669,7 +1669,7 @@ initAuth();
 <script>
 /* app download card on Home. APK = file in the downloads folder. When the app is on Google Play, put its link in PLAY. */
 (function(){
-  var APK='downloads/Lament.apk',PLAY='';
+  var APK='downloads/Lemba.apk',PLAY='';
   var box=document.getElementById('getApp');if(!box)return;
   var btn=document.getElementById('getAppBtn'),hint=document.getElementById('getAppHint'),pwa=document.getElementById('getAppPwa'),ttl=document.getElementById('getAppT'),dp=null;
   var ua=navigator.userAgent||'',android=/Android/i.test(ua),ios=/iPhone|iPad|iPod/i.test(ua),inApp=false;
