@@ -883,6 +883,122 @@ dialog.auth:not(.onb),dialog.auth,dialog.onb,dialog.chat,#splash{background:radi
 :root[data-theme=light] .dock,:root[data-theme=dark] .dock{border:0;border-top:1px solid rgba(255,255,255,.06);background:#0a0a0a}
 :root[data-theme=light] .dock{border-top:1px solid rgba(0,0,0,.07);background:#f4f4f1}
 .sbar input,.sbar input:focus,.sbar input:focus-visible{background:transparent;border:0;box-shadow:none;outline:none}
+/* ===== v11 LIQUID GLASS: floating glass bar, glass surfaces, gold accent, clearer icons =====
+   Light on the phone: real blur is used only on the bar, header sheet and pop-ups.
+   Cards use translucent fills, a bright rim and soft shadow, which looks like glass and scrolls smoothly. */
+:root[data-theme=dark],dialog.reader[data-paper=dark]{
+--acc:#e3bd62;--on-acc:#1a1405;--acc-tx:#e8c674;
+--lg-fill:linear-gradient(150deg,rgba(255,255,255,.115),rgba(255,255,255,.032) 48%,rgba(255,255,255,.065));
+--lg-fill2:linear-gradient(180deg,rgba(255,255,255,.17),rgba(255,255,255,.06));
+--lg-edge:rgba(255,255,255,.17);
+--lg-hi:inset 0 1px 0 rgba(255,255,255,.26),inset 0 -1px 0 rgba(255,255,255,.04);
+--lg-sh:0 10px 30px rgba(0,0,0,.34);
+--lg-ico:rgba(246,243,236,.76);--lg-ico-on:#f0d07e;
+--lg-dock:linear-gradient(160deg,rgba(255,255,255,.17),rgba(255,255,255,.05) 42%,rgba(255,255,255,.10)),rgba(22,22,28,.34);
+--lg-dock-sh:0 18px 42px rgba(0,0,0,.42),0 2px 8px rgba(0,0,0,.25);
+--lg-lens:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.07));
+--lg-lens-sh:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -10px 16px rgba(255,255,255,.04),0 6px 16px rgba(0,0,0,.28),0 0 28px rgba(227,189,98,.17);
+--lg-pop:linear-gradient(160deg,rgba(255,255,255,.14),rgba(255,255,255,.05)),rgba(24,24,30,.74);
+--lg-circ:rgba(255,255,255,.10);
+}
+:root[data-theme=light],dialog.reader[data-paper=light],dialog.reader[data-paper=sepia]{
+--acc:#d6ab43;--on-acc:#1a1405;--acc-tx:#85600f;
+--lg-fill:linear-gradient(150deg,rgba(255,255,255,.90),rgba(255,255,255,.54) 50%,rgba(255,255,255,.74));
+--lg-fill2:linear-gradient(180deg,rgba(255,255,255,.96),rgba(255,255,255,.62));
+--lg-edge:rgba(255,255,255,.96);
+--lg-hi:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(120,100,50,.05);
+--lg-sh:0 8px 26px rgba(80,62,20,.12),0 0 0 .5px rgba(80,62,20,.08);
+--lg-ico:#4a453b;--lg-ico-on:#76500a;
+--lg-dock:linear-gradient(160deg,rgba(255,255,255,.80),rgba(255,255,255,.44) 45%,rgba(255,255,255,.62)),rgba(255,255,255,.10);
+--lg-dock-sh:0 16px 38px rgba(80,62,20,.20),0 0 0 .5px rgba(80,62,20,.10);
+--lg-lens:linear-gradient(180deg,#ffffff,rgba(255,255,255,.64));
+--lg-lens-sh:inset 0 1px 0 #fff,0 6px 16px rgba(80,62,20,.17),0 0 0 .5px rgba(80,62,20,.07);
+--lg-pop:linear-gradient(160deg,rgba(255,255,255,.94),rgba(255,255,255,.78)),rgba(255,255,255,.4);
+--lg-circ:rgba(255,255,255,.72);
+}
+dialog.reader[data-paper=sepia]{--lg-fill:linear-gradient(150deg,rgba(255,251,240,.92),rgba(255,248,232,.56) 50%,rgba(255,250,238,.76));--lg-fill2:linear-gradient(180deg,rgba(255,252,243,.97),rgba(250,242,222,.66));--lg-edge:rgba(255,253,246,.95);--lg-circ:rgba(255,250,236,.75)}
+::selection{background:var(--acc);color:var(--on-acc)}
+:focus-visible{outline-color:var(--acc)}
+
+/* soft light behind everything, now top AND bottom, so the glass has colour to pick up */
+:root[data-theme=dark] body::before{inset:0;height:auto;background:
+ radial-gradient(90% 40% at 6% 0,rgba(62,136,96,.58),transparent 68%),
+ radial-gradient(80% 36% at 100% 4%,rgba(8,96,94,.50),transparent 70%),
+ linear-gradient(180deg,rgba(8,62,58,.26),transparent 46%),
+ radial-gradient(70% 28% at 94% 100%,rgba(214,170,74,.20),transparent 72%),
+ radial-gradient(64% 26% at 2% 96%,rgba(40,150,110,.22),transparent 72%)}
+:root[data-theme=light] body::before{inset:0;height:auto;opacity:1;background:
+ radial-gradient(90% 36% at 8% 0,rgba(110,200,155,.45),transparent 70%),
+ radial-gradient(80% 32% at 100% 3%,rgba(120,190,200,.35),transparent 70%),
+ radial-gradient(70% 26% at 94% 100%,rgba(236,198,112,.34),transparent 72%),
+ radial-gradient(62% 24% at 2% 96%,rgba(120,205,170,.30),transparent 72%)}
+
+/* ---------- FLOATING LIQUID-GLASS BAR ---------- */
+:root[data-theme] .dock{left:50%;right:auto;width:min(calc(100% - 28px),430px);max-width:none;
+ bottom:calc(14px + env(safe-area-inset-bottom));transform:translate3d(-50%,0,0);
+ padding:6px;border:0;border-radius:36px;background:var(--lg-dock);
+ -webkit-backdrop-filter:blur(22px) saturate(1.8)!important;backdrop-filter:blur(22px) saturate(1.8)!important;
+ box-shadow:var(--lg-hi),var(--lg-dock-sh)}
+.dock::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;
+ background:linear-gradient(155deg,rgba(255,255,255,.78),rgba(255,255,255,.08) 32%,rgba(255,255,255,.04) 62%,rgba(255,255,255,.42));
+ -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)}
+.dock::after{content:'';position:absolute;left:8%;right:8%;top:1px;height:40%;border-radius:36px 36px 50% 50%/30px 30px 16px 16px;pointer-events:none;
+ background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,0))}
+:root[data-theme=light] .dock::after{background:linear-gradient(180deg,rgba(255,255,255,.5),rgba(255,255,255,0))}
+/* the liquid lens: slides under the chosen page with a little spring */
+.dock .lq{position:absolute;z-index:0;top:6px;bottom:6px;left:6px;width:calc((100% - 12px)/5);border-radius:30px;pointer-events:none;
+ background:var(--lg-lens);box-shadow:var(--lg-lens-sh);transition:transform .62s cubic-bezier(.3,1.42,.5,1);will-change:transform}
+.dock:has(button[data-i="1"].on) .lq{transform:translateX(100%)}
+.dock:has(button[data-i="2"].on) .lq{transform:translateX(200%)}
+.dock:has(button[data-i="3"].on) .lq{transform:translateX(300%)}
+.dock:has(button[data-i="4"].on) .lq{transform:translateX(400%)}
+@supports not selector(:has(*)){.dock .lq{display:none}
+ :root[data-theme] .dock button.on{background:var(--lg-lens)!important;box-shadow:var(--lg-lens-sh)!important}}
+:root[data-theme] .dock button{position:relative;z-index:1;padding:7px 0 5px;gap:3px;border-radius:28px;background:none;color:var(--lg-ico)}
+:root[data-theme] .dock button.on{color:var(--lg-ico-on);background:none}
+.dock span{font-size:.66rem;font-weight:500;letter-spacing:.015em}
+.dock button.on span{font-weight:650}
+.dock .gi svg{width:25px;height:25px;stroke-width:1.6}
+.dock button.on .gi svg{fill:currentColor;fill-opacity:.18;stroke-width:1.8}
+.dock button[data-i="0"].on .gi svg{fill-opacity:.85}
+.dock .dot{top:3px;left:calc(50% + 7px);background:#ff453a;box-shadow:0 0 0 1.5px rgba(255,255,255,.55)}
+.page{padding-bottom:calc(118px + env(safe-area-inset-bottom))}
+.utoast{bottom:calc(108px + env(safe-area-inset-bottom));background:var(--lg-pop);color:var(--tx);border:.5px solid var(--lg-edge);box-shadow:var(--lg-hi),0 12px 30px rgba(0,0,0,.30);-webkit-backdrop-filter:blur(18px) saturate(1.6);backdrop-filter:blur(18px) saturate(1.6)}
+
+/* ---------- GLASS SURFACES ---------- */
+.glass,.sbar,.card,.xp,.cc,.sr,.svi,.acc,.fld,.jn,.quote,.pillar{background:var(--lg-fill);border:.5px solid var(--lg-edge);box-shadow:var(--lg-hi),var(--lg-sh)}
+.mini{border:.5px solid rgba(255,255,255,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 12px 26px rgba(0,0,0,.30)}
+.mini small{background:rgba(16,16,20,.46);border:.5px solid rgba(255,255,255,.26);box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
+:root[data-theme] .ib{background:var(--lg-fill2);border:.5px solid var(--lg-edge);box-shadow:var(--lg-hi),0 4px 14px rgba(0,0,0,.16);color:var(--tx)}
+:root[data-theme] .tabs .tab,:root[data-theme] .chips span,:root[data-theme] .tags span,:root[data-theme] .seg{background:var(--lg-fill2);border:.5px solid var(--lg-edge);box-shadow:var(--lg-hi);color:var(--lg-ico)}
+:root[data-theme] .tabs .tab[aria-selected=true],:root[data-theme] .seg button.on{background:linear-gradient(180deg,#f2d890,#d4a840)!important;color:#1a1405!important;border-color:rgba(255,255,255,.5)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 6px 16px rgba(190,145,35,.30)!important;font-weight:600}
+.seg button{color:var(--lg-ico)}
+:root[data-theme] .btn{background:var(--lg-fill2);border:.5px solid var(--lg-edge);box-shadow:var(--lg-hi),0 6px 18px rgba(0,0,0,.14);color:var(--tx)}
+:root[data-theme] .btn.primary{background:linear-gradient(180deg,#f2d890,#d4a840);color:#1a1405;border:.5px solid rgba(255,255,255,.5);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 24px rgba(190,145,35,.30)}
+.gi,.gi.t1,.gi.t2,.gi.t3,.gi.t4,.gi.t5,.gi.t6{background:var(--lg-fill2);box-shadow:var(--lg-hi)}
+.gi svg{stroke:var(--tx)}
+.hl.on .gi{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--acc)}
+.fld:focus-within,:root[data-theme=light] .fld:focus-within{border-color:var(--acc)}
+
+/* pop-ups and sheets */
+#bellPanel,#rPop,.pop{background:var(--lg-pop)!important;background-image:none!important;border:.5px solid var(--lg-edge)!important;box-shadow:var(--lg-hi),0 22px 56px rgba(0,0,0,.40)!important;-webkit-backdrop-filter:blur(24px) saturate(1.7)!important;backdrop-filter:blur(24px) saturate(1.7)!important}
+
+/* ---------- READER ---------- */
+dialog.reader .rc{background:color-mix(in srgb,var(--bg) 58%,transparent);-webkit-backdrop-filter:blur(16px) saturate(1.5);backdrop-filter:blur(16px) saturate(1.5)}
+.reader .ract,.reader .cm,.reader .xm,.reader .by,.reader .eyebrow{background:var(--lg-fill);border:.5px solid var(--lg-edge);box-shadow:var(--lg-hi),var(--lg-sh)}
+.reader .ract .rd{color:var(--tx)}
+.ract .rd:active{background:rgba(127,127,127,.2)}
+.reader[data-paper=dark] .ib{--lg-fill2:linear-gradient(180deg,rgba(255,255,255,.17),rgba(255,255,255,.06))}
+dialog.reader .rc .ib{color:var(--tx)}
+dialog.reader .rc .ib:focus:not(:focus-visible){outline:none}
+.rd.sh svg{flex:0 0 auto}
+.rd.sh{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+
+/* no blur ... fall back to firmer glass */
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
+ :root[data-theme=dark] .dock{background:rgba(26,26,32,.92)}:root[data-theme=light] .dock{background:rgba(255,255,255,.94)}
+ #bellPanel,#rPop,.pop{background:var(--s1)!important}}
+@media (prefers-reduced-motion:reduce){.dock .lq{transition-duration:.01ms}}
 </style>
 </head>
 <body>
@@ -965,6 +1081,7 @@ try{var _n=localStorage.getItem('lm:nm');if(_n){var _s=document.getElementById('
 </main>
 
 <nav class="dock" id="dock" aria-label="Pages">
+  <i class="lq" aria-hidden="true"></i>
   <button data-i="0" class="on" aria-label="Home"><div class="gi t2"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg></div><span>Home</span></button>
   <button data-i="1" aria-label="Search"><div class="gi t4"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></div><span>Search</span></button>
   <button data-i="2" aria-label="Writings"><div class="gi t1"><i class="wm"></i></div><span>Writings</span></button>
@@ -1017,7 +1134,7 @@ try{var _n=localStorage.getItem('lm:nm');if(_n){var _s=document.getElementById('
 <div class="cta2"><button class="btn" type="button" id="ePrev">Preview</button><button class="btn" type="button" id="eDraft">Save as draft</button><button class="btn primary" type="submit" id="ePub">Publish</button></div>
 <button class="lnk dng" type="button" id="eDel" hidden>Delete this post</button>
 </form><div class="reader" id="ePv" hidden></div></div></dialog>
-<dialog class="reader" id="reader" aria-label="Reader"><div class="rbar" id="rbar"></div><div class="mauto" id="mAuto" hidden></div><div class="ri"><div class="rc"><button class="ib" type="button" id="rClose" aria-label="Close">✕</button><div class="rg"><button class="ib" type="button" id="rSize" aria-label="Reading settings" aria-expanded="false">Aa</button></div><div class="rpop" id="rPop" hidden><h4>Text size</h4><div class="rw"><button type="button" data-rsz="s" style="font-size:.78rem">A</button><button type="button" data-rsz="m" style="font-size:.95rem">A</button><button type="button" data-rsz="l" style="font-size:1.12rem">A</button><button type="button" data-rsz="xl" style="font-size:1.3rem">A</button></div><h4>Page</h4><div class="rw"><button type="button" class="pgd" data-rpg="dark">Dark</button><button type="button" class="pgs" data-rpg="sepia">Sepia</button><button type="button" class="pgl" data-rpg="light">Light</button></div><div id="rMusic"></div></div><div class="mtip" id="mTip" hidden>Tip: tap <b>Aa</b> for calm music while you read.</div></div><div id="rBody"></div></div></dialog>
+<dialog class="reader" id="reader" aria-label="Reader"><div class="rbar" id="rbar"></div><div class="mauto" id="mAuto" hidden></div><div class="ri"><div class="rc"><button class="ib" type="button" id="rClose" aria-label="Close">✕</button><div class="rg"><button class="ib" type="button" id="rShare" aria-label="Share this piece"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg></button><button class="ib" type="button" id="rSize" aria-label="Reading settings" aria-expanded="false">Aa</button></div><div class="rpop" id="rPop" hidden><h4>Text size</h4><div class="rw"><button type="button" data-rsz="s" style="font-size:.78rem">A</button><button type="button" data-rsz="m" style="font-size:.95rem">A</button><button type="button" data-rsz="l" style="font-size:1.12rem">A</button><button type="button" data-rsz="xl" style="font-size:1.3rem">A</button></div><h4>Page</h4><div class="rw"><button type="button" class="pgd" data-rpg="dark">Dark</button><button type="button" class="pgs" data-rpg="sepia">Sepia</button><button type="button" class="pgl" data-rpg="light">Light</button></div><div id="rMusic"></div></div><div class="mtip" id="mTip" hidden>Tip: tap <b>Aa</b> for calm music while you read.</div></div><div id="rBody"></div></div></dialog>
 
 <script>
 var IMG = {};
@@ -1562,9 +1679,9 @@ function likeInner(id){var l=LK[id]||{n:0,mine:''};return heartSvg(l.mine==='lik
 function laughInner(id){var l=LK[id]||{nl:0,mine:''};return '<span class="em">😂</span><span>'+(l.nl?l.nl:'Haha')+'</span>'}
 function actBtns(s){if(!s.body.length)return '';var l=LK[s.id]||{n:0,nl:0,mine:''},
   lk=user?'<button class="rd lk'+(l.mine==='like'?' on':'')+'" type="button" data-like="'+s.id+'" aria-pressed="'+(l.mine==='like')+'">'+likeInner(s.id)+'</button><button class="rd lk la'+(l.mine==='laugh'?' on':'')+'" type="button" data-laugh="'+s.id+'" aria-pressed="'+(l.mine==='laugh')+'" aria-label="Laugh">'+laughInner(s.id)+'</button>':'<button class="rd lk" type="button" data-auth="login" data-like-anon="'+s.id+'">'+likeInner(s.id)+'</button><button class="rd lk la" type="button" data-auth="login" aria-label="Laugh">'+laughInner(s.id)+'</button>';
-  if(!user)return '<div class="ract">'+lk+'</div><p class="n hint"><button class="lnk" type="button" data-auth="login">Log in</button> to like, save your reading progress and comment.</p>';
+  if(!user)return '<div class="ract">'+lk+SHB(s)+'</div><p class="n hint"><button class="lnk" type="button" data-auth="login">Log in</button> to like, save your reading progress and comment.</p>';
   var r=ST.read.indexOf(s.id)>-1,v=ST.saved.indexOf(s.id)>-1;
-  return '<div class="ract">'+lk+'<button class="rd" type="button" data-toggle="read" data-id="'+s.id+'">'+(r?'Marked as read ✓':'Mark as read')+'</button><button class="rd" type="button" data-toggle="saved" data-id="'+s.id+'">'+(v?'Saved ✓':'Save for later')+'</button></div>'}
+  return '<div class="ract">'+lk+'<button class="rd" type="button" data-toggle="read" data-id="'+s.id+'">'+(r?'Marked as read ✓':'Mark as read')+'</button><button class="rd" type="button" data-toggle="saved" data-id="'+s.id+'">'+(v?'Saved ✓':'Save for later')+'</button>'+SHB(s)+'</div>'}
 function paintLike(id){var l=LK[id]||{},a=rBody.querySelector('[data-like="'+id+'"],[data-like-anon="'+id+'"]'),b=rBody.querySelector('[data-laugh="'+id+'"]');
   if(a){a.innerHTML=likeInner(id);a.classList.toggle('on',l.mine==='like');a.setAttribute('aria-pressed',l.mine==='like')}
   if(b){b.innerHTML=laughInner(id);b.classList.toggle('on',l.mine==='laugh');b.setAttribute('aria-pressed',l.mine==='laugh')}}
@@ -1874,6 +1991,36 @@ function setMsgN(n){if(n===CHM.n)return;CHM.n=n;var dk=document.querySelector('#
 (function(){
 var FACE='<svg class="lfs" viewBox="0 0 24 24" aria-hidden="true"><defs><radialGradient id="lfg" cx="50%" cy="35%" r="70%"><stop offset="0" stop-color="#ffe98a"/><stop offset="1" stop-color="#ffb52e"/></radialGradient></defs><circle cx="12" cy="12" r="10.5" fill="url(#lfg)"/><path d="M6.4 9.6c.7-1.2 2.2-1.2 2.9 0M14.7 9.6c.7-1.2 2.2-1.2 2.9 0" fill="none" stroke="#5a3a0a" stroke-width="1.5" stroke-linecap="round"/><path d="M6.8 12.8h10.4c0 3.2-2.3 5.4-5.2 5.4s-5.2-2.2-5.2-5.4z" fill="#5a3a0a"/><path d="M9.2 16.4c.7-.9 1.7-1.3 2.8-1.3s2.1.4 2.8 1.3c-.8.9-1.7 1.3-2.8 1.3s-2-.4-2.8-1.3z" fill="#ff7a8a"/></svg>';
 window.laughInner=function(id){var l=(window.LK&&LK[id])||{nl:0};return FACE+'<span>'+(l.nl?l.nl:'Haha')+'</span>'};
+})();
+</script>
+<script>
+/* Share a piece: opens the phone's share sheet (WhatsApp, Facebook, etc.), or copies the link if the phone has none.
+   The link opens the exact piece, after the reader is signed in. */
+(function(){
+var SH_SVG='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
+window.SHB=function(s){return '<button class="rd sh" type="button" data-share="'+s.id+'" aria-label="Share this piece">'+SH_SVG+'<span>Share</span></button>'};
+function link(id){return location.origin+location.pathname+'?p='+encodeURIComponent(id)}
+function note(t){var h=document.querySelector('dialog[open]')||document.body,d=document.createElement('div');d.className='utoast';d.textContent=t;h.appendChild(d);setTimeout(function(){d.remove()},2600)}
+function copy(u){
+  function old(){try{var a=document.createElement('textarea');a.value=u;a.setAttribute('readonly','');a.style.cssText='position:fixed;opacity:0;top:0';(document.querySelector('dialog[open]')||document.body).appendChild(a);a.select();var ok=document.execCommand('copy');a.remove();note(ok?'Link copied':'Could not copy the link')}catch(e){note('Could not copy the link')}}
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){note('Link copied')},old)}else old()}
+function share(id){
+  var s=STORIES.filter(function(x){return x.id===id})[0];if(!s)return;
+  var d={title:s.title+' · Lemba',text:'“'+s.title+'” by Lament Mulundu, on Lemba',url:link(id)};
+  if(navigator.share){navigator.share(d).catch(function(e){if(e&&e.name!=='AbortError')copy(d.url)})}else copy(d.url)}
+document.addEventListener('click',function(e){
+  var b=e.target.closest&&e.target.closest('[data-share]');if(b){e.preventDefault();share(b.dataset.share);return}
+  if(e.target.closest&&e.target.closest('#rShare')){e.preventDefault();if(typeof openId!=='undefined'&&openId)share(openId)}});
+/* open a shared piece */
+var id=null;try{id=new URLSearchParams(location.search).get('p')}catch(e){}
+if(id){var n=0,t=setInterval(function(){
+  if(++n>200){clearInterval(t);return}
+  var s=STORIES.filter(function(x){return x.id===id&&x.body.length})[0];if(!s)return;
+  try{if((typeof onb!=='undefined'&&onb.open)||(typeof authDlg!=='undefined'&&authDlg.open))return}catch(e){}
+  clearInterval(t);
+  var b=document.createElement('button');b.hidden=true;b.dataset.read=id;document.body.appendChild(b);b.click();b.remove();
+  try{history.replaceState(null,'',location.pathname)}catch(e){}
+},600)}
 })();
 </script>
 </body>
