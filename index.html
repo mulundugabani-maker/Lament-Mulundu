@@ -1199,6 +1199,19 @@ dialog.reader[data-paper=dark],dialog.reader[data-paper=light],dialog.reader[dat
 #bellPanel,#rPop,.pop{background:var(--lg-pop)!important;border:.5px solid var(--gedge)!important;box-shadow:0 16px 36px rgba(0,0,0,.45)!important}
 #tour.tour{background:var(--lg-pop);border:.5px solid var(--gedge)}
 
+/* ===== v14: top buttons stay readable when you scroll (soft blur only on the thin header strip), clearer view counts ===== */
+.top::before{-webkit-backdrop-filter:blur(18px) saturate(1.3)!important;backdrop-filter:blur(18px) saturate(1.3)!important;background:linear-gradient(180deg,rgba(5,8,7,.78),rgba(5,8,7,.42) 62%,transparent)}
+:root[data-theme=light] .top::before{background:linear-gradient(180deg,rgba(241,246,243,.86),rgba(241,246,243,.5) 62%,transparent)}
+dialog.reader .rc{-webkit-backdrop-filter:blur(14px) saturate(1.3)!important;backdrop-filter:blur(14px) saturate(1.3)!important}
+.xs{color:var(--dim)}
+/* sepia reader page: warm light glass (it was borrowing the dark green glass, which hid the top buttons) */
+dialog.reader[data-paper=sepia]{--gg:linear-gradient(155deg,rgba(255,252,243,.92),rgba(249,240,218,.74));--gg2:linear-gradient(180deg,rgba(255,253,246,.97),rgba(249,240,218,.74));
+ --gedge:rgba(110,80,35,.2);--ghi:inset 0 1px 0 #fff;--lg-fill:var(--gg);--lg-fill2:var(--gg2);--lg-edge:var(--gedge);--lg-hi:var(--ghi);--lg-sh:0 6px 16px rgba(90,65,25,.1);
+ --lg-ico:#6b5a3e;--lg-pop:linear-gradient(160deg,#fffaf0,#f6ecd6);--fill:#efe4cc;--line:rgba(90,65,25,.16)}
+
+.bpf .pnote{display:block;margin-top:6px;color:var(--grey);font-size:.72rem}
+.btn.pon{color:var(--acc-tx)}
+.btn.pon span{margin-right:4px;font-weight:700}
 </style>
 </head>
 <body>
@@ -1934,7 +1947,7 @@ function bellHtml(){var it=alertItems().filter(function(x){return x.un}),un=it.l
   (it.length?'<ul>'+it.map(function(x){var ic=x.type==='e'?({signup:'\u2728',open:'\ud83d\udc41',finish:'\u2713',like:'\u2665',contact:'\u260e'}[x.d.type]||'\u2022'):x.type==='p'?(x.cover?'<img alt="" src="'+esc(x.cover)+'">':'✦'):(x.av?'<img alt="" src="'+esc(x.av)+'">':esc((x.name||'?').charAt(0).toUpperCase())),
     tx=x.type==='e'?evHtml(x.d):x.type==='p'?'<b>New piece</b> “'+esc(x.title)+'”':x.type==='r'?'<b>'+esc(x.name||'Someone')+'</b> replied to your comment: “'+clip(x.text,80)+'”':'<b>'+esc(x.name||'Someone')+'</b> commented on “'+esc(storyTitle(x.pid))+'”: “'+clip(x.text,70)+'”';
     return '<li><button class="bi'+(x.un?' un':'')+'" type="button" '+(x.pid?'data-read="'+esc(x.pid)+'" ':'')+(x.type==='p'?'':'data-nk="'+esc(x.k)+'"')+'><span class="ic">'+ic+'</span><span class="tx">'+tx+'<small>'+ago(x.t)+'</small></span></button></li>'}).join('')+'</ul>':'<p class="n">You are all caught up.</p>')+(user?msgRow():'')+
-  (ONESIGNAL_APP_ID?'<div class="bpf"><button class="btn sm" type="button" data-pushon>Turn on phone alerts</button></div>':'')}
+  (ONESIGNAL_APP_ID&&window.pushRow?pushRow():'')}
 function paintAlerts(){var un=alertItems().filter(function(x){return x.un}).length+(window.CHM?CHM.n:0),bd=document.querySelector('#hBell .bdg');
   if(bd){bd.hidden=!un||!authReady;bd.textContent=un>9?'9+':un}var p=$('#bellPanel');if(p&&!p.hidden)p.innerHTML=bellHtml();decorateNew()}
 function paintTop(){var av=$('#hAv'),lg=$('#hLogin');if(!av||!lg)return;
@@ -1964,7 +1977,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var pn=$('#
 var _ra=renderAccount;renderAccount=function(){_ra.apply(this,arguments);paintTop();if(user)loadNotes();paintAlerts();if(window.msgWatch)msgWatch()};
 /* optional phone push through OneSignal (needs your OneSignal App ID; set PUSH=true in sw.js too) */
 function osInit(){if(!ONESIGNAL_APP_ID||window._osI)return;window._osI=1;window.OneSignalDeferred=window.OneSignalDeferred||[];var s=document.createElement('script');s.src='https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js';s.defer=true;document.head.appendChild(s);
-  OneSignalDeferred.push(function(OS){OS.init({appId:ONESIGNAL_APP_ID,serviceWorkerPath:location.pathname.replace(/^\/|[^/]*$/g,'')+'sw.js',serviceWorkerParam:{scope:location.pathname.replace(/[^/]*$/,'')},safari_web_id:'web.onesignal.auto.54cd441e-7f12-4aed-9845-f98eb5c10ecb',notifyButton:{enable:false}}).then(function(){if(user)OS.login(user.uid)})})}
+  OneSignalDeferred.push(function(OS){window._osReady=OS.init({appId:ONESIGNAL_APP_ID,serviceWorkerPath:location.pathname.replace(/^\/|[^/]*$/g,'')+'sw.js',serviceWorkerParam:{scope:location.pathname.replace(/[^/]*$/,'')},safari_web_id:'web.onesignal.auto.54cd441e-7f12-4aed-9845-f98eb5c10ecb',notifyButton:{enable:false}}).then(function(){if(user)OS.login(user.uid);if(window.osSync)osSync(OS)}).catch(function(){})})}
 function osAsk(){osInit();(window.OneSignalDeferred=window.OneSignalDeferred||[]).push(function(OS){OS.Notifications.requestPermission()})}
 if(ONESIGNAL_APP_ID)osInit();
 
@@ -2013,11 +2026,12 @@ function syncAuthor(){if(!isAdm()||!ST.prof||!ST.prof.photo||!fs)return;var k=ST
 var _ra2=renderAccount;renderAccount=function(){_ra2.apply(this,arguments);syncAuthor()};
 /* views, like the count under a post on X */
 var _vwBusy=false;
-function loadViews(force){if(!user||_vwBusy||(!force&&Date.now()-vwT<600000))return;_vwBusy=true;getFS().then(function(f){return f.m.getDocs(f.m.collection(f.db,'views'))}).then(function(r){var m={};r.docs.forEach(function(d){m[d.id]=(d.data()||{}).n||0});VW=m;vwT=Date.now();_vwBusy=false;try{localStorage.setItem('lm:vw',JSON.stringify({t:vwT,m:m}))}catch(e){}paintViews()}).catch(function(){_vwBusy=false;window._vwTry=(window._vwTry||0)+1;if(window._vwTry<4)setTimeout(function(){loadViews(true)},15000*window._vwTry)})}
+function loadViews(force){if(!isAdm()||_vwBusy||(!force&&Date.now()-vwT<600000))return;_vwBusy=true;getFS().then(function(f){return f.m.getDocs(f.m.collection(f.db,'views'))}).then(function(r){var m={};r.docs.forEach(function(d){m[d.id]=(d.data()||{}).n||0});VW=m;vwT=Date.now();_vwBusy=false;try{localStorage.setItem('lm:vw',JSON.stringify({t:vwT,m:m}))}catch(e){}paintViews()}).catch(function(){_vwBusy=false;window._vwTry=(window._vwTry||0)+1;if(window._vwTry<4)setTimeout(function(){loadViews(true)},15000*window._vwTry)})}
 function countView(id){if(isAdm())return;var k='lm:v:'+id;try{if(localStorage.getItem(k))return;localStorage.setItem(k,'1')}catch(e){return}
   VW[id]=(VW[id]||0)+1;paintViews();getFS().then(function(f){return f.m.setDoc(f.m.doc(f.db,'views',id),{n:f.m.increment(1)},{merge:true})}).catch(function(){})}
 function paintViews(){var e=$('#xmv');if(e&&openId){e.textContent=fmtN(VW[openId]||0);var l=$('#xml');if(l)l.textContent=(VW[openId]===1?' View':' Views')}renderXFeed()}
-function metaLine(s){var d=(s.ts>SITETS&&s.ts>1e12)?new Date(s.ts):null,t='';if(d)t=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false})+' · '+d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'})+' · ';return '<div class="xm">'+t+'<b id="xmv">'+fmtN(VW[s.id]||0)+'</b><span id="xml">'+(VW[s.id]===1?' View':' Views')+'</span></div>'}
+function metaLine(s){var d=(s.ts>SITETS&&s.ts>1e12)?new Date(s.ts):null,t='';if(d)t=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false})+' · '+d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'})+' · ';if(!isAdm()){t=t.replace(/ \u00b7 $/,'');return t?'<div class="xm">'+t+'</div>':''}
+  return '<div class="xm">'+t+'<b id="xmv">'+fmtN(VW[s.id]||0)+'</b><span id="xml">'+(VW[s.id]===1?' View':' Views')+'</span></div>'}
 function readerHtml(s,mins){var has=s.body.length,body=s.body.map(function(t){return '<p>'+esc(t)+'</p>'}).join(''),c=s.cover?cov(s):(has?'':cov(s));
   return '<span class="eyebrow">'+esc(s.tag)+'</span><h2>'+esc(s.title)+'</h2>'+(has?'<div class="by"><span class="lmk">'+authorAv()+'</span><span><b>Lament Mulundu</b>'+esc(s.cat)+' · '+mins+' min read</span></div>':'')+c+body+(has?'<div class="sgn"><span class="sgl"></span><span class="sga">'+authorAv()+'</span><b>Lament Mulundu</b></div>':'<p class="n">— Lament Mulundu</p>')+'<span id="rend"></span>'+(has?metaLine(s):'')+actBtns(s)+cmBox(s)}
 /* reading settings: text size and page colour live on the reader only */
@@ -2039,7 +2053,7 @@ function onOpened(s){_openT=Date.now();closePop();setTimeout(showTip,1800);loadV
 function renderXFeed(){var w=$('#xfeedW'),b=$('#xfeed');if(!w||!b)return;
   var l=STORIES.filter(function(s){return s.remote&&s.body.length&&!s.cover&&s.ts>SITETS}).sort(function(a,b){return (b.ts||0)-(a.ts||0)}).slice(0,1);w.hidden=!l.length;if(!l.length)return;
   b.innerHTML=l.map(function(s){var t=(s.desc&&s.desc.trim())||s.body.join('\n\n'),sh=t.length>300,x=sh?t.slice(0,300).replace(/\s+\S*$/,'')+'…':t;
-    return '<article class="xp" data-read="'+esc(s.id)+'" role="button" tabindex="0"><div class="xh"><span class="lmk">'+authorAv()+'</span><span class="xn"><b>Lament Mulundu</b><small>'+(fresh(s)?'<span class="newp" style="margin:0 6px 0 0">New</span>':'')+ago(s.ts)+'</small></span></div><h3>'+esc(s.title)+'</h3><p>'+esc(x)+'</p>'+(sh?'<span class="more">Read more</span>':'')+'<div class="xs"><span>'+fmtN(VW[s.id]||0)+' views</span><span>'+esc(s.cat)+'</span></div></article>'}).join('')}
+    return '<article class="xp" data-read="'+esc(s.id)+'" role="button" tabindex="0"><div class="xh"><span class="lmk">'+authorAv()+'</span><span class="xn"><b>Lament Mulundu</b><small>'+(fresh(s)?'<span class="newp" style="margin:0 6px 0 0">New</span>':'')+ago(s.ts)+'</small></span></div><h3>'+esc(s.title)+'</h3><p>'+esc(x)+'</p>'+(sh?'<span class="more">Read more</span>':'')+'<div class="xs">'+(isAdm()?'<span>'+fmtN(VW[s.id]||0)+' views</span>':'')+'<span>'+esc(s.cat)+'</span></div></article>'}).join('')}
 var _rh=renderHL;renderHL=function(){_rh.apply(this,arguments);renderXFeed()};
 var _dn=decorateNew;decorateNew=function(){_dn.apply(this,arguments);renderXFeed()};
 
@@ -2244,44 +2258,48 @@ function wrap(c,text,maxW,maxL){var out=[],paras=String(text).split(/\n+/);
 function excerpt(s){var d=String(s.desc||'').trim();if(d)return d;var b=s.body||[];return b.slice(0,3).map(function(x){return String(typeof x==='string'?x:(x&&x.t)||'')}).join('\n')}
 function build(s){
   return (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){return Promise.all([loadImg(s.cover),loadImg(logoSrc())])}).then(function(im){
-    var cover=im[0],logo=im[1],W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;var c=cv.getContext('2d');
+    var cover=im[0],logo=im[1],W=1080,H=1080,cv=document.createElement('canvas');cv.width=W;cv.height=H;var c=cv.getContext('2d');
+    var SANS='-apple-system,"Inter",Helvetica,Arial,sans-serif',SERIF='"Source Serif 4","Source Serif Pro",Charter,Georgia,serif';
     c.fillStyle='#0a0a0a';c.fillRect(0,0,W,H);
     function glow(x,y,r,col){var g=c.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');c.fillStyle=g;c.fillRect(0,0,W,H)}
-    glow(120,60,760,'rgba(62,136,96,.75)');glow(1040,120,680,'rgba(8,96,94,.65)');glow(980,1300,640,'rgba(80,100,220,.30)');glow(60,1260,520,'rgba(40,150,110,.28)');
+    glow(110,50,700,'rgba(62,136,96,.75)');glow(1040,110,640,'rgba(8,96,94,.65)');glow(990,1040,600,'rgba(80,100,220,.30)');glow(50,1000,480,'rgba(40,150,110,.28)');
     /* glass panel */
-    rr(c,54,54,W-108,H-108,64);c.fillStyle='rgba(255,255,255,.07)';c.fill();c.lineWidth=2;c.strokeStyle='rgba(255,255,255,.22)';c.stroke();
-    var X=110,CW=W-220,y=120;
+    var M=40;rr(c,M,M,W-2*M,H-2*M,56);c.fillStyle='rgba(255,255,255,.07)';c.fill();c.lineWidth=2;c.strokeStyle='rgba(255,255,255,.22)';c.stroke();
+    var X=92,CW=W-2*X,y=88;
     /* header: logo + wordmark */
-    if(logo){c.save();rr(c,X,y,84,84,22);c.clip();c.drawImage(logo,X,y,84,84);c.restore()}
-    c.fillStyle='#f6f6f4';c.font='600 34px -apple-system,"Inter",Helvetica,Arial,sans-serif';c.textBaseline='middle';
-    if(c.letterSpacing!==undefined)c.letterSpacing='10px';c.fillText('LEMBA',X+(logo?108:0),y+42);if(c.letterSpacing!==undefined)c.letterSpacing='0px';
-    y+=84+44;
-    var avail=H-110-y-230;
-    /* cover */
-    if(cover){var ch=Math.min(470,avail*.46),sc=Math.max(CW/cover.width,ch/cover.height),sw=CW/sc,sh=ch/sc;
-      c.save();rr(c,X,y,CW,ch,40);c.clip();c.drawImage(cover,(cover.width-sw)/2,(cover.height-sh)/2,sw,sh,X,y,CW,ch);
-      var gg=c.createLinearGradient(0,y+ch*.55,0,y+ch);gg.addColorStop(0,'rgba(0,0,0,0)');gg.addColorStop(1,'rgba(0,0,0,.45)');c.fillStyle=gg;c.fillRect(X,y,CW,ch);c.restore();
-      rr(c,X,y,CW,ch,40);c.lineWidth=2;c.strokeStyle='rgba(255,255,255,.2)';c.stroke();y+=ch+46}
-    else y+=30;
-    /* category pill */
-    var tag=String(s.cat||s.tag||'').toUpperCase();c.font='600 26px -apple-system,"Inter",Helvetica,Arial,sans-serif';if(c.letterSpacing!==undefined)c.letterSpacing='5px';
-    var tw=c.measureText(tag).width+56;rr(c,X,y,tw,56,28);c.fillStyle='rgba(255,255,255,.12)';c.fill();c.lineWidth=1.5;c.strokeStyle='rgba(255,255,255,.28)';c.stroke();
-    c.fillStyle='#a6d8bc';c.textBaseline='middle';c.fillText(tag,X+28,y+29);if(c.letterSpacing!==undefined)c.letterSpacing='0px';y+=56+34;
-    /* title */
-    var serif='"Source Serif 4","Source Serif Pro",Charter,Georgia,serif',tsz=cover?66:84;
-    c.textBaseline='alphabetic';c.fillStyle='#f6f6f4';c.font='700 '+tsz+'px '+serif;
-    var tl=wrap(c,s.title,CW,cover?3:4);
-    tl.forEach(function(l,i){c.fillText(l,X,y+tsz*.86+i*tsz*1.14)});y+=tl.length*tsz*1.14+26;
-    /* excerpt */
-    var esz=36,left=H-110-230-y,ml=Math.max(2,Math.min(cover?4:9,Math.floor(left/(esz*1.5))));
-    c.font='italic 400 '+esz+'px '+serif;c.fillStyle='rgba(246,246,244,.72)';
-    wrap(c,excerpt(s),CW,ml).forEach(function(l,i){c.fillText(l,X,y+esz+i*esz*1.5)});
+    if(logo){c.save();rr(c,X,y,68,68,18);c.clip();c.drawImage(logo,X,y,68,68);c.restore()}
+    c.fillStyle='#f6f6f4';c.font='600 30px '+SANS;c.textBaseline='middle';
+    if(c.letterSpacing!==undefined)c.letterSpacing='9px';c.fillText('LEMBA',X+(logo?90:0),y+34);if(c.letterSpacing!==undefined)c.letterSpacing='0px';
+    y+=68+32;
     /* footer */
-    var fy=H-54-150;c.fillStyle='rgba(255,255,255,.16)';c.fillRect(X,fy,CW,2);
-    c.fillStyle='#f6f6f4';c.font='600 34px -apple-system,"Inter",Helvetica,Arial,sans-serif';c.textBaseline='alphabetic';c.fillText('Lament Mulundu',X,fy+70);
-    c.fillStyle='rgba(246,246,244,.6)';c.font='400 27px -apple-system,"Inter",Helvetica,Arial,sans-serif';c.fillText('Poet · Writer · Storyteller',X,fy+112);
-    var bt='Read on Lemba  →';c.font='600 30px -apple-system,"Inter",Helvetica,Arial,sans-serif';var bw=c.measureText(bt).width+64;
-    rr(c,X+CW-bw,fy+34,bw,76,38);c.fillStyle='#f6f6f4';c.fill();c.fillStyle='#0a0a0a';c.textBaseline='middle';c.fillText(bt,X+CW-bw+32,fy+73);
+    var fy=H-M-128,cb=fy-24;
+    c.fillStyle='rgba(255,255,255,.16)';c.fillRect(X,fy,CW,2);
+    c.fillStyle='#f6f6f4';c.font='600 31px '+SANS;c.textBaseline='alphabetic';c.fillText('Lament Mulundu',X,fy+62);
+    c.fillStyle='rgba(246,246,244,.6)';c.font='400 25px '+SANS;c.fillText('Poet · Writer · Storyteller',X,fy+100);
+    var bt='Read on Lemba  →';c.font='600 28px '+SANS;var bw=c.measureText(bt).width+56;
+    rr(c,X+CW-bw,fy+30,bw,68,34);c.fillStyle='#f6f6f4';c.fill();c.fillStyle='#0a0a0a';c.textBaseline='middle';c.fillText(bt,X+CW-bw+28,fy+65);
+    /* cover: the whole picture is shown, never cropped (soft blurred fill behind it) */
+    if(cover){var ch=Math.max(170,Math.min(290,(cb-y)*.4));
+      c.save();rr(c,X,y,CW,ch,34);c.clip();
+      var t=document.createElement('canvas');t.width=28;t.height=Math.max(2,Math.round(28*ch/CW));var tc=t.getContext('2d'),ks=Math.max(t.width/cover.width,t.height/cover.height);
+      tc.drawImage(cover,(t.width-cover.width*ks)/2,(t.height-cover.height*ks)/2,cover.width*ks,cover.height*ks);
+      c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.drawImage(t,X,y,CW,ch);c.fillStyle='rgba(0,0,0,.28)';c.fillRect(X,y,CW,ch);
+      var k=Math.min(CW/cover.width,ch/cover.height),dw=cover.width*k,dh=cover.height*k;c.drawImage(cover,X+(CW-dw)/2,y+(ch-dh)/2,dw,dh);c.restore();
+      rr(c,X,y,CW,ch,34);c.lineWidth=2;c.strokeStyle='rgba(255,255,255,.2)';c.stroke();y+=ch+34}
+    else y+=14;
+    /* category pill */
+    var tag=String(s.cat||s.tag||'').toUpperCase();c.font='600 24px '+SANS;if(c.letterSpacing!==undefined)c.letterSpacing='4px';
+    var tw=c.measureText(tag).width+52;rr(c,X,y,tw,50,25);c.fillStyle='rgba(255,255,255,.12)';c.fill();c.lineWidth=1.5;c.strokeStyle='rgba(255,255,255,.28)';c.stroke();
+    c.fillStyle='#a6d8bc';c.textBaseline='middle';c.fillText(tag,X+26,y+26);if(c.letterSpacing!==undefined)c.letterSpacing='0px';y+=50+26;
+    /* title */
+    var tsz=cover?56:74;
+    c.textBaseline='alphabetic';c.fillStyle='#f6f6f4';c.font='700 '+tsz+'px '+SERIF;
+    var tl=wrap(c,s.title,CW,cover?2:3);
+    tl.forEach(function(l,i){c.fillText(l,X,y+tsz*.86+i*tsz*1.14)});y+=tl.length*tsz*1.14+22;
+    /* excerpt */
+    var esz=32,left=cb-y,ml=Math.max(1,Math.min(cover?3:8,Math.floor(left/(esz*1.5))));
+    c.font='italic 400 '+esz+'px '+SERIF;c.fillStyle='rgba(246,246,244,.72)';
+    wrap(c,excerpt(s),CW,ml).forEach(function(l,i){c.fillText(l,X,y+esz+i*esz*1.5)});
     return new Promise(function(res){cv.toBlob(function(b){res(b)},'image/png')})})}
 function key(s){return s.id+':'+(s.cover||'').length+':'+(s.title||'')}
 function prep(s){if(!s)return Promise.resolve(null);var k=key(s);if(CACHE[k])return Promise.resolve(CACHE[k]);
@@ -2312,6 +2330,39 @@ var _rx=renderXFeed;renderXFeed=function(){_rx.apply(this,arguments);
     xs.insertAdjacentHTML('beforeend','<button class="xsh" type="button" data-share="'+a.dataset.read+'" aria-label="Share as picture">'+ICON+'<span>Share</span></button>');
     var s=story(a.dataset.read);if(s)setTimeout(function(){prep(s)},1200)})};
 try{renderXFeed()}catch(e){}
+})();
+</script>
+<script>
+/* Phone alerts: the button shows the real state (on / off / blocked), remembers it, and links the phone to the signed-in reader. */
+(function(){
+if(typeof ONESIGNAL_APP_ID==='undefined'||!ONESIGNAL_APP_ID)return;
+function perm(){try{return window.Notification?Notification.permission:'unsupported'}catch(e){return 'unsupported'}}
+function flag(){try{return localStorage.getItem('lm:push')}catch(e){return null}}
+function setFlag(v){try{localStorage.setItem('lm:push',v)}catch(e){}}
+function again(){try{paintAlerts()}catch(e){}}
+window.pushState=function(){var p=perm();if(p==='unsupported')return 'na';if(p==='denied')return 'blocked';return(p==='granted'&&flag()!=='0')?'on':'off'};
+window.pushRow=function(){var st=pushState();
+  if(st==='na')return '';
+  if(st==='blocked')return '<div class="bpf"><p class="n">Phone alerts are blocked. Allow notifications for this app in your phone settings.</p></div>';
+  if(st==='on')return '<div class="bpf"><button class="btn sm pon" type="button" data-pushoff aria-pressed="true"><span aria-hidden="true">✓</span> Phone alerts are on</button><small class="pnote">Tap to turn off</small></div>';
+  return '<div class="bpf"><button class="btn sm" type="button" data-pushon>Turn on phone alerts</button></div>'};
+function osDo(fn){osInit();(window.OneSignalDeferred=window.OneSignalDeferred||[]).push(function(OS){(window._osReady||Promise.resolve()).then(function(){try{fn(OS)}catch(e){}})})}
+/* read the real state once OneSignal is ready, and keep it in step */
+window.osSync=function(OS){try{var ps=OS.User&&OS.User.PushSubscription;if(!ps)return;
+  if(perm()==='granted'){if(ps.optedIn)setFlag('1');else if(flag()!=='0'){try{ps.optIn()}catch(e){}setFlag('1')}}
+  if(ps.addEventListener)ps.addEventListener('change',function(){if(perm()==='granted'){setFlag(ps.optedIn?'1':'0')}again()});
+  again()}catch(e){}};
+window.osAsk=function(){osDo(function(OS){
+  Promise.resolve(OS.Notifications.requestPermission()).then(function(){
+    if(perm()==='granted'){setFlag('1');try{OS.User.PushSubscription.optIn()}catch(e){}if(user)try{OS.login(user.uid)}catch(e){}}
+    again()}).catch(again)})};
+document.addEventListener('click',function(e){
+  if(e.target.closest&&e.target.closest('[data-pushoff]')){e.preventDefault();setFlag('0');again();
+    osDo(function(OS){try{OS.User.PushSubscription.optOut()}catch(x){}})}});
+/* every time a reader signs in, link this phone to them (it used to happen only once, at start-up) */
+var _ra2=renderAccount,_lu=null;
+renderAccount=function(){_ra2.apply(this,arguments);
+  if(user&&user.uid&&_lu!==user.uid){_lu=user.uid;var id=user.uid;osDo(function(OS){OS.login(id)})}};
 })();
 </script>
 </body>
