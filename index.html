@@ -1210,7 +1210,7 @@ dialog.reader[data-paper=sepia]{--gg:linear-gradient(155deg,rgba(255,252,243,.92
  --lg-ico:#6b5a3e;--lg-pop:linear-gradient(160deg,#fffaf0,#f6ecd6);--fill:#efe4cc;--line:rgba(90,65,25,.16)}
 
 .bpf .pnote{display:block;margin-top:6px;color:var(--grey);font-size:.72rem}
-.adb{width:.95em;height:.95em;margin-left:.3em;vertical-align:-.12em;color:var(--acc);flex:none}
+.adb{width:1.3em;height:1.3em;margin-left:.3em;vertical-align:-.25em;color:#1877f2!important;flex:none;filter:drop-shadow(0 1px 2px rgba(24,119,242,.35))}
 .xn b,.by b,.chd b,.sgn b{display:inline-flex;align-items:center}
 .by b{display:flex}
 .btn.pon{color:var(--acc-tx)}
@@ -1742,7 +1742,7 @@ ped.addEventListener('submit',function(e){e.preventDefault();var pm=$('#pMsg'),n
 
 /* ---- publishing: posts live in Firestore, covers split into a small thumb + a full image ---- */
 var IMPD=false,BUILTIN=STORIES.slice(),REMOTE=[],MY={},ED={},ed=$('#editor'),POS={top:'50% 20%',mid:'50% 50%',bot:'50% 80%'};
-var ADMBADGE='<svg class="adb" viewBox="0 0 24 24" role="img" aria-label="Admin"><title>Admin</title><path d="M12 1.8l2.5 1.9 3.1-.2 1 2.9 2.6 1.7-.9 3 .9 3-2.6 1.7-1 2.9-3.1-.2L12 22.2l-2.5-1.9-3.1.2-1-2.9-2.6-1.7.9-3-.9-3 2.6-1.7 1-2.9 3.1.2z" fill="currentColor"/><path d="M8 12.3l2.7 2.7 5.3-5.6" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+var ADMBADGE='<svg class="adb" viewBox="0 0 24 24" role="img" aria-label="Admin"><title>Admin</title><path d="M12 1.8l2.5 1.9 3.1-.2 1 2.9 2.6 1.7-.9 3 .9 3-2.6 1.7-1 2.9-3.1-.2L12 22.2l-2.5-1.9-3.1.2-1-2.9-2.6-1.7.9-3-.9-3 2.6-1.7 1-2.9 3.1.2z" fill="currentColor"/><path d="M8 12.3l2.7 2.7 5.3-5.6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 function cName(c){return c&&c.uid&&c.uid===ADMIN_UID?'Lemba':((c&&c.name)||'Reader')}
 function isAdm(){return !!(user&&ADMIN_UID&&user.uid===ADMIN_UID)}
 function toStory(p){var b=p.body||[];return {id:p.id,cat:p.cat||'Life',tag:p.tag||p.cat||'',title:p.title||'Untitled',cover:p.thumb||'',thumb:p.thumb||'',pos:p.pos||'50% 50%',status:p.status||(b.length?'Read now':'Coming soon'),body:b,desc:p.desc||'',ts:p.ts||0,remote:true,hasFull:!!p.hasFull}}
