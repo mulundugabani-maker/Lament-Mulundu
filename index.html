@@ -1210,6 +1210,9 @@ dialog.reader[data-paper=sepia]{--gg:linear-gradient(155deg,rgba(255,252,243,.92
  --lg-ico:#6b5a3e;--lg-pop:linear-gradient(160deg,#fffaf0,#f6ecd6);--fill:#efe4cc;--line:rgba(90,65,25,.16)}
 
 .bpf .pnote{display:block;margin-top:6px;color:var(--grey);font-size:.72rem}
+.adb{width:.95em;height:.95em;margin-left:.3em;vertical-align:-.12em;color:var(--acc);flex:none}
+.xn b,.by b,.chd b,.sgn b{display:inline-flex;align-items:center}
+.by b{display:flex}
 .btn.pon{color:var(--acc-tx)}
 .btn.pon span{margin-right:4px;font-weight:700}
 </style>
@@ -1622,7 +1625,7 @@ var cmCache=[];
 function cmBox(s){if(!s.body.length)return '';return '<div class="cm"><h3>Comments</h3><div id="cmList"><p class="n">Loading…</p></div>'+(user?'<div class="cmq" id="cmQ" hidden></div><form id="cmForm"><textarea id="cmText" maxlength="500" rows="2" placeholder="Share a thought…"></textarea><button class="btn primary" type="submit" aria-label="Post comment">Post comment</button></form>':'<p class="n hint"><button class="lnk" data-auth="login" type="button">Log in</button> to join the conversation.</p>')+'</div>'}
 function cQ(t){var m=QRE.exec(t||'');return m?'<blockquote class="cq">'+esc(m[1])+'</blockquote><p class="ct">'+esc(m[2])+'</p>':'<p class="ct">'+esc(t)+'</p>'}
 function cItem(c,isRe){var own=user&&(c.uid===user.uid||user.uid===ADMIN_UID),root=isRe?c.rid:c.id;
-  return '<div class="c'+(isRe?' re':'')+'" id="c-'+c.id+'"><span class="cav">'+cmAv(c)+'</span><div class="cb2"><div class="chd"><b>'+esc(c.name||'Reader')+'</b>'+(c.uid===ADMIN_UID?'<em>Author</em>':'')+'<small>'+ago(c.ts)+'</small></div>'+(c.rname?'<p class="to">replying to '+esc(c.rname)+'</p>':'')+cQ(c.text)+'<div class="acts">'+(user?'<button class="lnk" type="button" data-creply="'+root+'" data-cto="'+esc(c.uid)+'" data-cname="'+esc(c.name||'Reader')+'">Reply</button>':'<button class="lnk" type="button" data-auth="login">Reply</button>')+(own?'<button class="lnk" type="button" data-cdel="'+c.id+'">Delete</button>':'')+'</div><div class="rslot" data-slot="'+c.id+'"></div></div></div>'}
+  return '<div class="c'+(isRe?' re':'')+'" id="c-'+c.id+'"><span class="cav">'+cmAv(c)+'</span><div class="cb2"><div class="chd"><b>'+esc(cName(c))+(c.uid===ADMIN_UID?ADMBADGE:'')+'</b>'+'<small>'+ago(c.ts)+'</small></div>'+(c.rname?'<p class="to">replying to '+esc(c.rto===ADMIN_UID?'Lemba':c.rname)+'</p>':'')+cQ(c.text)+'<div class="acts">'+(user?'<button class="lnk" type="button" data-creply="'+root+'" data-cto="'+esc(c.uid)+'" data-cname="'+esc(cName(c))+'">Reply</button>':'<button class="lnk" type="button" data-auth="login">Reply</button>')+(own?'<button class="lnk" type="button" data-cdel="'+c.id+'">Delete</button>':'')+'</div><div class="rslot" data-slot="'+c.id+'"></div></div></div>'}
 function renderComments(){var b=$('#cmList');if(!b)return;var ids={},kids={};cmCache.forEach(function(c){ids[c.id]=1});
   var roots=cmCache.filter(function(c){return !c.rid||!ids[c.rid]});
   cmCache.forEach(function(c){if(c.rid&&ids[c.rid]){(kids[c.rid]=kids[c.rid]||[]).push(c)}});
@@ -1739,6 +1742,8 @@ ped.addEventListener('submit',function(e){e.preventDefault();var pm=$('#pMsg'),n
 
 /* ---- publishing: posts live in Firestore, covers split into a small thumb + a full image ---- */
 var IMPD=false,BUILTIN=STORIES.slice(),REMOTE=[],MY={},ED={},ed=$('#editor'),POS={top:'50% 20%',mid:'50% 50%',bot:'50% 80%'};
+var ADMBADGE='<svg class="adb" viewBox="0 0 24 24" role="img" aria-label="Admin"><title>Admin</title><path d="M12 1.8l2.5 1.9 3.1-.2 1 2.9 2.6 1.7-.9 3 .9 3-2.6 1.7-1 2.9-3.1-.2L12 22.2l-2.5-1.9-3.1.2-1-2.9-2.6-1.7.9-3-.9-3 2.6-1.7 1-2.9 3.1.2z" fill="currentColor"/><path d="M8 12.3l2.7 2.7 5.3-5.6" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function cName(c){return c&&c.uid&&c.uid===ADMIN_UID?'Lemba':((c&&c.name)||'Reader')}
 function isAdm(){return !!(user&&ADMIN_UID&&user.uid===ADMIN_UID)}
 function toStory(p){var b=p.body||[];return {id:p.id,cat:p.cat||'Life',tag:p.tag||p.cat||'',title:p.title||'Untitled',cover:p.thumb||'',thumb:p.thumb||'',pos:p.pos||'50% 50%',status:p.status||(b.length?'Read now':'Coming soon'),body:b,desc:p.desc||'',ts:p.ts||0,remote:true,hasFull:!!p.hasFull}}
 function refreshAll(){readable=STORIES.filter(function(s){return s.body.length});$('#stPieces').textContent=readable.length;renderHL();renderFeed();doSearch();renderAccount()}
@@ -1864,7 +1869,7 @@ function savePost(pub){var m=$('#eMsg');m.className='msg';var title=$('#eTitle')
   .then(function(){ED.id=id;ED.ts=ts;ED.dirty=false;m.textContent=pub?'Published ✓':'Draft saved ✓';loadPosts().then(function(){if($('#adminPosts'))loadMyPosts()});setTimeout(function(){if(ed.open)ed.close()},700)})
   .catch(function(er){m.className='msg';m.textContent=er&&er.code==='permission-denied'?'Not allowed yet. Add the posts rules in Firestore first.':'Could not save. Check your connection and try again.'})}
 function prevHtml(){var paras=getParas(),wc=paras.join(' ').split(/\s+/).filter(Boolean).length,cat=$('#eCat').value;
-  return '<span class="eyebrow">'+esc($('#eTag').value.trim()||cat)+'</span><h2>'+esc($('#eTitle').value.trim()||'Untitled')+'</h2><div class="by"><span class="lmk">L</span><span><b>Lament Mulundu</b>'+esc(cat)+' · '+Math.max(1,Math.round(wc/200))+' min read</span></div>'+
+  return '<span class="eyebrow">'+esc($('#eTag').value.trim()||cat)+'</span><h2>'+esc($('#eTitle').value.trim()||'Untitled')+'</h2><div class="by"><span class="lmk">L</span><span><b>Lemba'+ADMBADGE+'</b>'+esc(cat)+' · '+Math.max(1,Math.round(wc/200))+' min read</span></div>'+
     (ED.thumb?'<div class="cover"><img alt="" src="'+esc(ED.full||ED.thumb)+'"></div>':'')+paras.map(function(t){return '<p>'+esc(t)+'</p>'}).join('')}
 document.addEventListener('click',function(e){
   if(e.target.closest('#newPost,#newPostQuick')){openEditor();return}
@@ -2033,7 +2038,7 @@ function paintViews(){var e=$('#xmv');if(e&&openId){e.textContent=fmtN(VW[openId
 function metaLine(s){var d=(s.ts>SITETS&&s.ts>1e12)?new Date(s.ts):null,t='';if(d)t=d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',hour12:false})+' · '+d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'2-digit'})+' · ';if(!isAdm()){t=t.replace(/ \u00b7 $/,'');return t?'<div class="xm">'+t+'</div>':''}
   return '<div class="xm">'+t+'<b id="xmv">'+fmtN(VW[s.id]||0)+'</b><span id="xml">'+(VW[s.id]===1?' View':' Views')+'</span></div>'}
 function readerHtml(s,mins){var has=s.body.length,body=s.body.map(function(t){return '<p>'+esc(t)+'</p>'}).join(''),c=s.cover?cov(s):(has?'':cov(s));
-  return '<span class="eyebrow">'+esc(s.tag)+'</span><h2>'+esc(s.title)+'</h2>'+(has?'<div class="by"><span class="lmk">'+authorAv()+'</span><span><b>Lament Mulundu</b>'+esc(s.cat)+' · '+mins+' min read</span></div>':'')+c+body+(has?'<div class="sgn"><span class="sgl"></span><span class="sga">'+authorAv()+'</span><b>Lament Mulundu</b></div>':'<p class="n">— Lament Mulundu</p>')+'<span id="rend"></span>'+(has?metaLine(s):'')+actBtns(s)+cmBox(s)}
+  return '<span class="eyebrow">'+esc(s.tag)+'</span><h2>'+esc(s.title)+'</h2>'+(has?'<div class="by"><span class="lmk">'+authorAv()+'</span><span><b>Lemba'+ADMBADGE+'</b>'+esc(s.cat)+' · '+mins+' min read</span></div>':'')+c+body+(has?'<div class="sgn"><span class="sgl"></span><span class="sga">'+authorAv()+'</span><b>Lemba'+ADMBADGE+'</b></div>':'<p class="n">— Lemba</p>')+'<span id="rend"></span>'+(has?metaLine(s):'')+actBtns(s)+cmBox(s)}
 /* reading settings: text size and page colour live on the reader only */
 function paintPop(){[].forEach.call(document.querySelectorAll('[data-rsz]'),function(b){b.classList.toggle('on',b.dataset.rsz===SET.size)});var eff=SET.paper==='normal'?resolved():SET.paper;[].forEach.call(document.querySelectorAll('[data-rpg]'),function(b){b.classList.toggle('on',b.dataset.rpg===eff)})}
 function togglePop(){var p=$('#rPop'),o=p.hidden;p.hidden=!o;$('#rSize').setAttribute('aria-expanded',o);if(o)paintPop()}
@@ -2053,7 +2058,7 @@ function onOpened(s){_openT=Date.now();closePop();setTimeout(showTip,1800);loadV
 function renderXFeed(){var w=$('#xfeedW'),b=$('#xfeed');if(!w||!b)return;
   var l=STORIES.filter(function(s){return s.remote&&s.body.length&&!s.cover&&s.ts>SITETS}).sort(function(a,b){return (b.ts||0)-(a.ts||0)}).slice(0,1);w.hidden=!l.length;if(!l.length)return;
   b.innerHTML=l.map(function(s){var t=(s.desc&&s.desc.trim())||s.body.join('\n\n'),sh=t.length>300,x=sh?t.slice(0,300).replace(/\s+\S*$/,'')+'…':t;
-    return '<article class="xp" data-read="'+esc(s.id)+'" role="button" tabindex="0"><div class="xh"><span class="lmk">'+authorAv()+'</span><span class="xn"><b>Lament Mulundu</b><small>'+(fresh(s)?'<span class="newp" style="margin:0 6px 0 0">New</span>':'')+ago(s.ts)+'</small></span></div><h3>'+esc(s.title)+'</h3><p>'+esc(x)+'</p>'+(sh?'<span class="more">Read more</span>':'')+'<div class="xs">'+(isAdm()?'<span>'+fmtN(VW[s.id]||0)+' views</span>':'')+'<span>'+esc(s.cat)+'</span></div></article>'}).join('')}
+    return '<article class="xp" data-read="'+esc(s.id)+'" role="button" tabindex="0"><div class="xh"><span class="lmk">'+authorAv()+'</span><span class="xn"><b>Lemba'+ADMBADGE+'</b><small>'+(fresh(s)?'<span class="newp" style="margin:0 6px 0 0">New</span>':'')+ago(s.ts)+'</small></span></div><h3>'+esc(s.title)+'</h3><p>'+esc(x)+'</p>'+(sh?'<span class="more">Read more</span>':'')+'<div class="xs">'+(isAdm()?'<span>'+fmtN(VW[s.id]||0)+' views</span>':'')+'<span>'+esc(s.cat)+'</span></div></article>'}).join('')}
 var _rh=renderHL;renderHL=function(){_rh.apply(this,arguments);renderXFeed()};
 var _dn=decorateNew;decorateNew=function(){_dn.apply(this,arguments);renderXFeed()};
 
@@ -2220,7 +2225,7 @@ function copy(u){
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(function(){note('Link copied')},old)}else old()}
 function share(id){
   var s=STORIES.filter(function(x){return x.id===id})[0];if(!s)return;
-  var d={title:s.title+' · Lemba',text:'“'+s.title+'” by Lament Mulundu, on Lemba',url:link(id)};
+  var d={title:s.title+' · Lemba',text:'“'+s.title+'”\nRead more on Lemba',url:link(id)};
   if(navigator.share){navigator.share(d).catch(function(e){if(e&&e.name!=='AbortError')copy(d.url)})}else copy(d.url)}
 document.addEventListener('click',function(e){
   var b=e.target.closest&&e.target.closest('[data-share]');if(b){e.preventDefault();share(b.dataset.share);return}
@@ -2274,9 +2279,9 @@ function build(s){
     /* footer */
     var fy=H-M-128,cb=fy-24;
     c.fillStyle='rgba(255,255,255,.16)';c.fillRect(X,fy,CW,2);
-    c.fillStyle='#f6f6f4';c.font='600 31px '+SANS;c.textBaseline='alphabetic';c.fillText('Lament Mulundu',X,fy+62);
-    c.fillStyle='rgba(246,246,244,.6)';c.font='400 25px '+SANS;c.fillText('Poet · Writer · Storyteller',X,fy+100);
-    var bt='Read on Lemba  →';c.font='600 28px '+SANS;var bw=c.measureText(bt).width+56;
+    c.fillStyle='#f6f6f4';c.font='600 31px '+SANS;c.textBaseline='alphabetic';c.fillText('Lemba',X,fy+62);
+    c.fillStyle='rgba(246,246,244,.6)';c.font='400 25px '+SANS;c.fillText('Writer · Poet · Storyteller',X,fy+100);
+    var bt='Read more on Lemba  →';c.font='600 28px '+SANS;var bw=c.measureText(bt).width+56;
     rr(c,X+CW-bw,fy+30,bw,68,34);c.fillStyle='#f6f6f4';c.fill();c.fillStyle='#0a0a0a';c.textBaseline='middle';c.fillText(bt,X+CW-bw+28,fy+65);
     /* cover: the whole picture is shown, never cropped (soft blurred fill behind it) */
     if(cover){var ch=Math.max(170,Math.min(290,(cb-y)*.4));
@@ -2305,7 +2310,7 @@ function key(s){return s.id+':'+(s.cover||'').length+':'+(s.title||'')}
 function prep(s){if(!s)return Promise.resolve(null);var k=key(s);if(CACHE[k])return Promise.resolve(CACHE[k]);
   return build(s).then(function(b){if(b)CACHE[k]=b;return b}).catch(function(){return null})}
 function out(s,blob){
-  var url=link(s.id),text='“'+s.title+'” by Lament Mulundu on Lemba\n'+url;
+  var url=link(s.id),text='“'+s.title+'”\nRead more on Lemba\n'+url;
   if(blob&&navigator.canShare&&navigator.share){var f=new File([blob],'lemba-'+s.id+'.png',{type:'image/png'});
     if(navigator.canShare({files:[f]}))return navigator.share({files:[f],title:s.title+' · Lemba',text:text}).catch(function(e){if(e&&e.name==='AbortError')return;return fallback(s,blob,text,url)})}
   return fallback(s,blob,text,url)}
